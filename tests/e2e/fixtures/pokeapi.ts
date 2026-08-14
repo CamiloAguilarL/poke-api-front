@@ -69,13 +69,18 @@ async function fulfillJson(route: Route, json: unknown, status = 200) {
   await route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(json) })
 }
 
-export async function mockPokeApi(page: Page, failList = false) {
+export async function mockPokeApi(
+  page: Page,
+  options: { failList?: boolean; listDelayMs?: number } = {},
+) {
   await page.route('https://pokeapi.co/api/v2/**', async (route) => {
     const url = new URL(route.request().url())
     const path = url.pathname.replace('/api/v2/', '').replace(/\/$/, '')
 
     if (path === 'pokemon') {
-      if (failList) return fulfillJson(route, { detail: 'unavailable' }, 503)
+      if (options.listDelayMs)
+        await new Promise((resolve) => setTimeout(resolve, options.listDelayMs))
+      if (options.failList) return fulfillJson(route, { detail: 'unavailable' }, 503)
       return fulfillJson(route, {
         count: pokemon.length,
         results: pokemon.map((entry) => ({
@@ -151,11 +156,17 @@ export async function mockPokeApi(page: Page, failList = false) {
   })
 }
 
-export async function startOnCatalog(page: Page) {
-  await page.addInitScript(() => {
+export async function startOnCatalog(page: Page, favoriteNames: string[] = []) {
+  await page.addInitScript((names) => {
     localStorage.setItem(
       'global66-pokedex:preferences',
       JSON.stringify({ version: 1, state: { onboardingComplete: true } }),
     )
-  })
+    if (names.length) {
+      localStorage.setItem(
+        'global66-pokedex:favorites',
+        JSON.stringify({ version: 1, state: { names, lastRemoved: null } }),
+      )
+    }
+  }, favoriteNames)
 }

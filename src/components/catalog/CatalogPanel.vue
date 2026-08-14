@@ -155,7 +155,11 @@ onMounted(async () => {
       </div>
     </header>
 
-    <PokeballLoader v-if="status === 'loading' || status === 'idle'" class="flex-1" />
+    <PokeballLoader
+      v-if="status === 'loading' || status === 'idle'"
+      fullscreen
+      class="fixed inset-0 z-50"
+    />
     <ErrorState
       v-else-if="status === 'error'"
       class="flex-1"

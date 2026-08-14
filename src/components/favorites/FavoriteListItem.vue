@@ -23,11 +23,12 @@ function pointerMove(event: PointerEvent) {
 function pointerUp() {
   offset.value = offset.value < -42 ? -76 : 0
   startX = 0
+  window.getSelection()?.removeAllRanges()
 }
 </script>
 
 <template>
-  <div class="relative overflow-hidden rounded-2xl bg-destructive">
+  <div class="relative overflow-hidden rounded-2xl bg-destructive" data-testid="favorite-list-item">
     <Button
       variant="danger"
       size="icon"
@@ -38,14 +39,28 @@ function pointerUp() {
       <Trash2 class="size-5" />
     </Button>
     <div
-      class="relative touch-pan-y bg-background transition-transform"
+      class="favorite-gesture relative touch-pan-y select-none bg-background transition-transform"
+      data-testid="favorite-card-gesture"
       :style="{ transform: `translateX(${offset}px)` }"
-      @pointerdown="pointerDown"
-      @pointermove="pointerMove"
+      @pointerdown.prevent="pointerDown"
+      @pointermove.prevent="pointerMove"
       @pointerup="pointerUp"
       @pointercancel="pointerUp"
+      @dragstart.prevent
     >
       <PokemonCard :pokemon="pokemon" route-prefix="/favorites" />
     </div>
   </div>
 </template>
+
+<style scoped>
+.favorite-gesture,
+.favorite-gesture * {
+  user-select: none;
+}
+
+.favorite-gesture *::selection {
+  color: inherit;
+  background: transparent;
+}
+</style>

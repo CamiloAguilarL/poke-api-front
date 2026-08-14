@@ -15,8 +15,12 @@ withDefaults(defineProps<{ label?: string; fullscreen?: boolean }>(), {
     :aria-label="label"
   >
     <div class="flex flex-col items-center gap-5">
-      <div class="pokeball" aria-hidden="true"><span /></div>
-      <p class="text-sm font-medium text-muted-foreground">{{ label }}</p>
+      <div :class="['pokeball', { 'pokeball--large': fullscreen }]" aria-hidden="true">
+        <span />
+      </div>
+      <p :class="fullscreen ? 'sr-only' : 'text-sm font-medium text-muted-foreground'">
+        {{ label }}
+      </p>
     </div>
   </div>
 </template>
@@ -48,16 +52,57 @@ withDefaults(defineProps<{ label?: string; fullscreen?: boolean }>(), {
   transform: translate(-50%, -50%);
 }
 
+.pokeball::after {
+  position: absolute;
+  top: 14px;
+  right: 13px;
+  width: 25px;
+  height: 25px;
+  border: 4px solid transparent;
+  border-top-color: white;
+  border-right-color: white;
+  border-radius: 50%;
+  content: '';
+  transform: rotate(-18deg);
+}
+
 .pokeball span {
   position: absolute;
   z-index: 2;
   top: 50%;
   left: 50%;
-  width: 10px;
-  height: 10px;
+  width: 14px;
+  height: 14px;
+  border: 3px solid #757575;
   border-radius: 50%;
-  background: #e0e0e0;
+  background: white;
   transform: translate(-50%, -50%);
+}
+
+.pokeball--large {
+  width: 154px;
+  height: 154px;
+  border-width: 4px;
+}
+
+.pokeball--large::before {
+  width: 54px;
+  height: 54px;
+  border-width: 4px;
+}
+
+.pokeball--large::after {
+  top: 26px;
+  right: 25px;
+  width: 48px;
+  height: 48px;
+  border-width: 6px;
+}
+
+.pokeball--large span {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
 }
 
 @keyframes catch {

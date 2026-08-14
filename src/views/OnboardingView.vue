@@ -27,58 +27,63 @@ async function continueFlow() {
       class="relative mx-auto h-dvh min-h-[700px] w-full max-w-[520px] lg:max-w-none"
       aria-live="polite"
     >
-      <div class="absolute inset-x-0 top-[12%] h-[44%] sm:top-[8%] lg:top-[12%]">
-        <template v-if="firstStep">
+      <template v-if="firstStep">
+        <div class="absolute left-1/2 top-[207px] h-[257px] w-[360px] -translate-x-1/2">
           <img
             src="/assets/figma/onboarding-trainer-small.png"
             alt="Entrenador Pokémon"
-            class="absolute bottom-0 left-[5%] h-[78%] max-w-[64%] object-contain"
+            class="absolute left-[17px] top-[26px] size-[231px] object-contain"
           />
           <img
             src="/assets/figma/onboarding-trainer-large.png"
             alt="Entrenadora Pokémon"
-            class="absolute bottom-0 right-[-2%] h-[88%] max-w-[72%] object-contain"
+            class="absolute left-[102px] top-0 size-[257px] object-contain"
           />
-        </template>
-        <img
-          v-else
-          src="/assets/figma/onboarding-hilda.png"
-          alt="Entrenadora lista para comenzar"
-          class="absolute bottom-0 left-1/2 h-[92%] -translate-x-1/2 rounded-[32px] object-contain"
-        />
+        </div>
+      </template>
+      <img
+        v-else
+        src="/assets/figma/onboarding-hilda-cutout.png"
+        alt="Entrenadora lista para comenzar"
+        class="absolute left-1/2 top-[181px] size-[240px] -translate-x-1/2 object-contain [image-rendering:pixelated]"
+      />
+
+      <div class="absolute inset-x-4 bottom-[168px] text-center">
+        <h1 class="mx-auto w-[321px] text-[26px] font-medium leading-[1.25]">
+          {{ firstStep ? 'Todos los Pokémon en un solo lugar' : 'Mantén tu Pokédex actualizada' }}
+        </h1>
+        <p class="mx-auto mt-4 w-[320px] text-sm leading-6 text-muted-foreground">
+          {{
+            firstStep
+              ? 'Accede a una amplia lista de Pokémon de todas las generaciones creadas por Nintendo'
+              : 'Regístrate y guarda tu perfil, Pokémon favoritos, configuraciones y mucho más en la aplicación'
+          }}
+        </p>
       </div>
 
-      <div class="absolute inset-x-4 bottom-10 text-center sm:bottom-8">
-        <div class="mx-auto flex max-w-[328px] flex-col items-center">
-          <h1 class="text-[26px] font-medium leading-[1.25]">
-            {{ firstStep ? 'Todos los Pokémon en un solo lugar' : 'Tu aventura comienza ahora' }}
-          </h1>
-          <p class="mt-4 text-sm leading-6 text-muted-foreground">
-            {{
-              firstStep
-                ? 'Accede a una amplia lista de Pokémon de todas las generaciones creadas por Nintendo'
-                : 'Explora, descubre y guarda tus Pokémon favoritos en una Pokédex hecha para ti.'
-            }}
-          </p>
-          <div class="mt-6 flex items-center gap-2" aria-label="Paso del onboarding">
-            <span
-              :class="[
-                'h-[9px] rounded-full bg-[#173ea5] transition-all',
-                firstStep ? 'w-7' : 'w-[9px] opacity-25',
-              ]"
-            />
-            <span
-              :class="[
-                'h-[9px] rounded-full bg-[#173ea5] transition-all',
-                firstStep ? 'w-[9px] opacity-25' : 'w-7',
-              ]"
-            />
-          </div>
-          <Button class="mt-6 h-[58px] w-full rounded-full text-lg" @click="continueFlow">
-            {{ firstStep ? 'Continuar' : 'Comenzar' }}
-          </Button>
-        </div>
+      <div
+        class="absolute left-1/2 bottom-[122px] flex -translate-x-1/2 items-center gap-2"
+        aria-label="Paso del onboarding"
+      >
+        <span
+          :class="[
+            'h-[9px] rounded-full bg-[#173ea5] transition-all',
+            firstStep ? 'w-7' : 'w-[9px] opacity-25',
+          ]"
+        />
+        <span
+          :class="[
+            'h-[9px] rounded-full bg-[#173ea5] transition-all',
+            firstStep ? 'w-[9px] opacity-25' : 'w-7',
+          ]"
+        />
       </div>
+      <Button
+        class="absolute bottom-10 left-1/2 h-[58px] w-[328px] -translate-x-1/2 rounded-full text-lg"
+        @click="continueFlow"
+      >
+        {{ firstStep ? 'Continuar' : 'Empecemos' }}
+      </Button>
     </section>
 
     <aside class="hidden items-center justify-center bg-[#eef4fb] px-12 lg:flex">
