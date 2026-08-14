@@ -107,6 +107,13 @@
     box-sizing: border-box;
   }
 
+  html,
+  body,
+  #app {
+    width: 100%;
+    min-height: 100%;
+  }
+
   html {
     min-width: 320px;
     background: var(--surface-default);
@@ -120,6 +127,13 @@
     min-width: 320px;
     min-height: 100dvh;
     margin: 0;
+    background: var(--surface-default);
+    overflow-x: clip;
+  }
+
+  #app {
+    min-height: 100dvh;
+    isolation: isolate;
     background: var(--surface-default);
   }
 

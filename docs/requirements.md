@@ -13,15 +13,15 @@ La geometría y el sistema visual se reproducen desde el nuevo Figma. Los datos 
 
 ## Correo y solicitud
 
-| ID      | Requisito                                                                      | Evidencia de aceptación                                                                                             |
-| ------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| MAIL-01 | El diseño provisto está optimizado para mobile y debe adaptarse a desktop/web. | Mobile coincide con los frames de Figma; desktop usa shell master-detail a ancho completo, validado hasta 1920 px.  |
-| USER-01 | Vue, Pinia, Tailwind y shadcn-vue son obligatorios.                            | Primitives shadcn-vue sobre CVA/Reka y `components.json`; ESLint impide controles nativos fuera de `components/ui`. |
-| USER-02 | Componentes basados en tokens del sistema de diseño.                           | Paleta, estados, superficies, bordes y sombras centralizados; vistas sin colores crudos.                            |
-| USER-03 | Implementación pixel perfect.                                                  | Regresión visual en viewports Figma y revisión manual.                                                              |
-| USER-04 | Todos los datos visibles deben venir de PokeAPI; no inventar valores.          | Adaptadores API y fallbacks explícitos, sin fixtures productivas.                                                   |
-| USER-05 | Documentar inconsistencias y decisiones.                                       | README y `docs/decisions.md`.                                                                                       |
-| USER-06 | Entrega en GitHub, sin despliegue, con README que muestre todas las pantallas. | Repositorio, CI y galería de screenshots versionada.                                                                |
+| ID      | Requisito                                                                      | Evidencia de aceptación                                                                                                                 |
+| ------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| MAIL-01 | El diseño provisto está optimizado para mobile y debe adaptarse a desktop/web. | Mobile coincide con los frames de Figma; desktop usa catálogo expandido y shell master-detail a ancho completo, validado hasta 1920 px. |
+| USER-01 | Vue, Pinia, Tailwind y shadcn-vue son obligatorios.                            | Primitives shadcn-vue sobre CVA/Reka y `components.json`; ESLint impide controles nativos fuera de `components/ui`.                     |
+| USER-02 | Componentes basados en tokens del sistema de diseño.                           | Paleta, estados, superficies, bordes y sombras centralizados; vistas sin colores crudos.                                                |
+| USER-03 | Implementación pixel perfect.                                                  | Regresión visual en viewports Figma y revisión manual.                                                                                  |
+| USER-04 | Todos los datos visibles deben venir de PokeAPI; no inventar valores.          | Adaptadores API y fallbacks explícitos, sin fixtures productivas.                                                                       |
+| USER-05 | Documentar inconsistencias y decisiones.                                       | README y `docs/decisions.md`.                                                                                                           |
+| USER-06 | Entrega en GitHub, sin despliegue, con README que muestre todas las pantallas. | Repositorio, CI y galería de screenshots versionada.                                                                                    |
 
 ## PDF de la prueba
 

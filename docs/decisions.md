@@ -23,7 +23,7 @@ El segundo frame dice “Regístrate”, pero no existe flujo de autenticación 
 
 ## Desktop
 
-El correo pide adaptar una propuesta mobile a web sin aportar frames desktop. Se eligió master-detail: shell a ancho completo, rail estable, catálogo virtualizado de 420 px y ficha simultánea con bloques de lectura de máximo 896 px. Esta extensión elimina gutters laterales artificiales, conserva el lenguaje visual y evita estirar una card mobile a todo el viewport.
+El correo pide adaptar una propuesta mobile a web sin aportar frames desktop. El catálogo sin selección usa todo el ancho útil con una grilla virtualizada adaptativa de hasta cinco columnas. Al seleccionar un Pokémon cambia a master-detail: rail estable, listado de 420 px y ficha simultánea con bloques de lectura de máximo 896 px. Esta extensión elimina gutters y paneles vacíos artificiales, conserva el lenguaje visual y evita estirar una card mobile a todo el viewport.
 
 ## Extensiones controladas
 

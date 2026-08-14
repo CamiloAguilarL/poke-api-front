@@ -6,6 +6,7 @@ import { Sheet } from '@/components/ui/sheet'
 import { Toggle } from '@/components/ui/toggle'
 import { POKEMON_TYPES, type PokemonTypeName } from '@/features/pokemon/domain/models'
 import { TYPE_META } from '@/features/pokemon/domain/type-meta'
+import TypeIcon from '@/components/pokemon/TypeIcon.vue'
 
 const props = defineProps<{
   open: boolean
@@ -69,9 +70,10 @@ function apply() {
         >
           <span
             class="flex size-7 shrink-0 items-center justify-center rounded-full"
+            :class="TYPE_META[type].darkText ? 'text-foreground' : 'text-primary-foreground'"
             :style="{ backgroundColor: TYPE_META[type].color }"
           >
-            <img :src="TYPE_META[type].icon" alt="" class="size-4" />
+            <TypeIcon :type="type" class="size-4" />
           </span>
           <span class="min-w-0 flex-1 truncate">{{ TYPE_META[type].label }}</span>
           <Check v-if="draft.includes(type)" class="size-4 shrink-0" aria-hidden="true" />

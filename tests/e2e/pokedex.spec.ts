@@ -40,8 +40,27 @@ test.describe('Pokédex experience', () => {
   }, testInfo) => {
     await startOnCatalog(page)
     await page.goto('/')
-    await expect(page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })).toBeVisible()
+    const bulbasaurCard = page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })
+    await expect(bulbasaurCard).toBeVisible()
+    await expect(bulbasaurCard.getByTestId('type-icon')).toHaveCount(2)
     await expect(page).toHaveScreenshot('catalog.png')
+
+    if (testInfo.project.name === 'desktop-1920') {
+      const shell = await page.getByTestId('app-shell').boundingBox()
+      const catalog = await page.getByRole('region', { name: 'Catálogo Pokémon' }).boundingBox()
+      expect(shell?.x).toBe(0)
+      expect(shell?.width).toBe(1920)
+      expect(catalog?.x).toBe(104)
+      expect(catalog?.width).toBe(1816)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(1920)
+
+      const firstRowCards = await Promise.all(
+        ['Bulbasaur', 'Ivysaur', 'Venusaur', 'Charmander', 'Charmeleon'].map((name) =>
+          page.getByRole('link', { name: `Ver a ${name}`, exact: true }).boundingBox(),
+        ),
+      )
+      expect(firstRowCards.every((box) => box?.y === firstRowCards[0]?.y)).toBe(true)
+    }
 
     await page.getByPlaceholder('Buscar Pokémon...').fill('pika')
     await expect(page.getByRole('link', { name: 'Ver a Pikachu', exact: true })).toBeVisible()
@@ -50,16 +69,11 @@ test.describe('Pokédex experience', () => {
       await expect(page).toHaveScreenshot('search-filled.png')
     }
 
-    if (testInfo.project.name === 'desktop-1920') {
-      const shell = await page.getByTestId('app-shell').boundingBox()
-      const catalog = await page.getByRole('region', { name: 'Catálogo Pokémon' }).boundingBox()
-      expect(shell?.x).toBe(0)
-      expect(shell?.width).toBe(1920)
-      expect(catalog?.width).toBe(420)
-    }
-
     await page.getByRole('button', { name: 'Limpiar búsqueda' }).click()
     await page.getByTestId('open-filters').click()
+    await expect(
+      page.getByRole('group', { name: 'Tipos de Pokémon' }).getByTestId('type-icon'),
+    ).toHaveCount(18)
     if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('filter.png')
     await page.getByRole('button', { name: 'Fuego', exact: true }).click()
     await page.getByRole('button', { name: 'Aplicar', exact: true }).click()
@@ -84,6 +98,10 @@ test.describe('Pokédex experience', () => {
     ).toBeVisible()
     await expect(page.getByText('6,9 kg')).toBeVisible()
     await expect(page.getByText('Semilla', { exact: true })).toBeVisible()
+    if (testInfo.project.name === 'desktop-1920') {
+      const catalog = await page.getByRole('region', { name: 'Catálogo Pokémon' }).boundingBox()
+      expect(catalog?.width).toBe(420)
+    }
     await expect(page).toHaveScreenshot('detail.png', { fullPage: true })
 
     await page.getByTestId('share-pokemon').click()

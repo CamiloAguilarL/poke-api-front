@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import { SearchField } from '@/components/ui/search-field'
 import { Toggle } from '@/components/ui/toggle'
+import TypeBadge from '@/components/pokemon/TypeBadge.vue'
 
 describe('design system primitives', () => {
   it('owns the complete search interaction and renders a single clear action', async () => {
@@ -34,5 +35,14 @@ describe('design system primitives', () => {
     expect(toggle.attributes('aria-pressed')).toBe('false')
     await toggle.trigger('click')
     expect(wrapper.emitted('update:modelValue')).toEqual([[true]])
+  })
+
+  it('renders type artwork as a contrasting mask instead of a same-color image', () => {
+    const wrapper = mount(TypeBadge, { props: { type: 'grass', compact: true } })
+    const icon = wrapper.get('[data-testid="type-icon"]')
+
+    expect(wrapper.text()).toContain('Planta')
+    expect(icon.attributes('style')).toContain('grass.svg')
+    expect(wrapper.find('img').exists()).toBe(false)
   })
 })

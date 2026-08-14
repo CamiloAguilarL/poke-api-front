@@ -14,6 +14,7 @@ import { useCatalogStore } from '@/stores/catalog'
 import FilterSheet from './FilterSheet.vue'
 
 const store = useCatalogStore()
+const props = withDefaults(defineProps<{ expanded?: boolean }>(), { expanded: false })
 const route = useRoute()
 const router = useRouter()
 const {
@@ -96,7 +97,7 @@ onMounted(async () => {
     aria-label="Catálogo Pokémon"
   >
     <header class="shrink-0 px-4 pb-3 pt-11 lg:px-6 lg:pt-7">
-      <div class="flex items-center gap-2">
+      <div :class="['flex items-center gap-2', { 'lg:max-w-2xl': props.expanded }]">
         <SearchField
           :model-value="query"
           label="Buscar Pokémon"

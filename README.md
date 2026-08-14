@@ -1,6 +1,6 @@
 # Pokédex · Prueba Front End
 
-Una implementación Vue 3 de la prueba técnica, construida desde el draft móvil de Figma y adaptada a una experiencia master-detail para desktop. La prioridad fue entregar producto, no solo pantallas: PokeAPI real, arquitectura tipada, favoritos persistentes, accesibilidad, pruebas y evidencia visual reproducible.
+Una implementación Vue 3 de la prueba técnica, construida desde el draft móvil de Figma y adaptada a un catálogo expandido y una experiencia master-detail para desktop. La prioridad fue entregar producto, no solo pantallas: PokeAPI real, arquitectura tipada, favoritos persistentes, accesibilidad, pruebas y evidencia visual reproducible.
 
 [Figma editable](https://www.figma.com/design/4Uh3KoeuzsYusZ90pa4l1M/Pok%C3%A9dex--Copy-?node-id=0-1&p=f) · [Trazabilidad completa](docs/requirements.md) · [Decisiones](docs/decisions.md)
 
@@ -21,7 +21,7 @@ Una implementación Vue 3 de la prueba técnica, construida desde el draft móvi
 
 <img src="tests/e2e/__screenshots__/desktop-1920/detail.png" width="920" alt="Pokédex master-detail en desktop de 1920 px" />
 
-La misma suite congela catálogo y detalle en `768×1024`, `1440×900` y `1920×1080`. En pantallas amplias el shell ocupa todo el viewport, mientras el rail, el catálogo y la columna de lectura mantienen medidas controladas para no escalar el contenido.
+La misma suite congela catálogo y detalle en `768×1024`, `1440×900` y `1920×1080`. En pantallas amplias el catálogo distribuye sus cards en hasta cinco columnas y ocupa todo el espacio útil. Al abrir una ficha conserva un listado de 420 px y una columna de lectura controlada, sin escalar desproporcionadamente el contenido.
 
 ## Qué está implementado
 
@@ -32,7 +32,7 @@ La misma suite congela catálogo y detalle en `768×1024`, `1440×900` y `1920×
 - Clipboard con nombre y todos los atributos visibles separados por comas.
 - Favoritos Pinia persistidos, swipe-to-delete, botón accesible y undo.
 - Error/retry, búsqueda vacía, favoritos vacíos y secciones “muy pronto”.
-- Mobile pixel-matched, tablet en dos columnas y desktop master-detail.
+- Mobile pixel-matched, tablet en dos columnas, catálogo desktop expandido y detalle master-detail.
 - Reducción de movimiento, navegación semántica y auditoría axe.
 
 La [matriz de requisitos](docs/requirements.md) enlaza cada condición del correo, PDF y Figma con su evidencia de aceptación.

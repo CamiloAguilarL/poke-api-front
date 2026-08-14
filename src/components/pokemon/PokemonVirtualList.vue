@@ -16,7 +16,10 @@ const props = withDefaults(
 const emit = defineEmits<{ visible: [names: string[]] }>()
 const scrollElement = ref<HTMLElement | null>(null)
 const containerWidth = ref(0)
-const columns = computed(() => (containerWidth.value >= 640 && containerWidth.value < 1024 ? 2 : 1))
+const columns = computed(() => {
+  if (!containerWidth.value) return 1
+  return Math.min(5, Math.max(1, Math.floor((containerWidth.value + 12) / 312)))
+})
 let resizeObserver: ResizeObserver | undefined
 
 const options = computed(() => ({
@@ -65,8 +68,11 @@ onBeforeUnmount(() => resizeObserver?.disconnect())
         v-for="row in rows"
         :key="String(row.key)"
         class="absolute left-0 top-0 grid w-full gap-3 pb-3"
-        :class="columns === 2 ? 'grid-cols-2' : 'grid-cols-1'"
-        :style="{ height: `${row.size}px`, transform: `translateY(${row.start}px)` }"
+        :style="{
+          height: `${row.size}px`,
+          transform: `translateY(${row.start}px)`,
+          gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+        }"
       >
         <template v-for="column in columns" :key="column">
           <PokemonCard

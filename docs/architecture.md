@@ -33,7 +33,7 @@ Los filtros por tipo se resuelven en paralelo con `/type/{type}` y combinan una 
 
 - `360×800`: réplica de los frames fuente y navegación inferior.
 - `768×1024`: catálogo virtualizado en dos columnas y navegación inferior.
-- `≥1024 px`: shell al 100% del viewport, rail de 104 px, catálogo de 420 px y detalle master-detail. La ficha limita sus bloques de lectura a 896 px, de modo que el fondo aprovecha pantallas grandes sin escalar desproporcionadamente el contenido.
+- `≥1024 px`: shell al 100% del viewport y rail de 104 px. La ruta de catálogo ocupa todo el ancho útil con una grilla adaptativa de hasta cinco columnas. Cuando existe una ficha seleccionada, el catálogo conserva 420 px y activa el detalle master-detail; la ficha limita sus bloques de lectura a 896 px para no escalar desproporcionadamente el contenido.
 
 ## Persistencia
 
