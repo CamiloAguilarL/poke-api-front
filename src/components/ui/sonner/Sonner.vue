@@ -1,0 +1,8 @@
+<script setup lang="ts">
+import { Toaster } from 'vue-sonner'
+import 'vue-sonner/style.css'
+</script>
+
+<template>
+  <Toaster position="bottom-center" rich-colors close-button data-slot="sonner" />
+</template>

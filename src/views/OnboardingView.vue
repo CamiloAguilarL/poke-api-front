@@ -21,7 +21,7 @@ async function continueFlow() {
 
 <template>
   <main
-    class="mx-auto min-h-dvh w-full max-w-[1440px] overflow-hidden bg-background lg:grid lg:grid-cols-[1.1fr_0.9fr]"
+    class="min-h-dvh w-full overflow-hidden bg-background lg:grid lg:grid-cols-[minmax(520px,1.1fr)_minmax(480px,0.9fr)]"
   >
     <section
       class="relative mx-auto h-dvh min-h-[700px] w-full max-w-[520px] lg:max-w-none"
@@ -67,13 +67,13 @@ async function continueFlow() {
       >
         <span
           :class="[
-            'h-[9px] rounded-full bg-[#173ea5] transition-all',
+            'h-[9px] rounded-full bg-[var(--onboarding-active)] transition-all',
             firstStep ? 'w-7' : 'w-[9px] opacity-25',
           ]"
         />
         <span
           :class="[
-            'h-[9px] rounded-full bg-[#173ea5] transition-all',
+            'h-[9px] rounded-full bg-[var(--onboarding-active)] transition-all',
             firstStep ? 'w-[9px] opacity-25' : 'w-7',
           ]"
         />
@@ -86,7 +86,7 @@ async function continueFlow() {
       </Button>
     </section>
 
-    <aside class="hidden items-center justify-center bg-[#eef4fb] px-12 lg:flex">
+    <aside class="hidden items-center justify-center bg-[var(--surface-info)] px-12 lg:flex">
       <div class="max-w-md">
         <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Pokédex</p>
         <h2 class="mt-4 text-4xl font-semibold leading-tight">

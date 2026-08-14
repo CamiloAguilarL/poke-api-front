@@ -25,10 +25,10 @@ onMounted(async () => {
   >
     <div class="max-w-sm">
       <div
-        class="relative mx-auto flex size-52 items-center justify-center rounded-full bg-[#fff0f6]"
+        class="relative mx-auto flex size-52 items-center justify-center rounded-full bg-[var(--surface-feminine)]"
       >
         <span
-          class="absolute inset-5 rounded-full border-[18px] border-white/65"
+          class="absolute inset-5 rounded-full border-[18px] border-[var(--art-ring)]"
           aria-hidden="true"
         />
         <img

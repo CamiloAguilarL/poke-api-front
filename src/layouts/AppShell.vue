@@ -10,7 +10,8 @@ const hideMobileNavigation = computed(() => Boolean(route.meta.hideMobileNav))
 
 <template>
   <div
-    class="mx-auto min-h-dvh w-full max-w-[1600px] bg-background lg:grid lg:grid-cols-[104px_1fr] lg:shadow-2xl"
+    class="min-h-dvh w-full bg-background lg:grid lg:grid-cols-[104px_minmax(0,1fr)]"
+    data-testid="app-shell"
   >
     <AppNavigation :class="{ 'max-lg:hidden': hideMobileNavigation }" />
     <main :class="['min-w-0 lg:pb-0', hideMobileNavigation ? 'pb-0' : 'pb-[77px]']">

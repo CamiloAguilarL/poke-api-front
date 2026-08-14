@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PokemonTypeName } from '@/features/pokemon/domain/models'
 import { TYPE_META } from '@/features/pokemon/domain/type-meta'
+import { Badge } from '@/components/ui/badge'
 
 const props = withDefaults(defineProps<{ type: PokemonTypeName; compact?: boolean }>(), {
   compact: false,
@@ -8,12 +9,10 @@ const props = withDefaults(defineProps<{ type: PokemonTypeName; compact?: boolea
 </script>
 
 <template>
-  <span
-    :class="[
-      'inline-flex items-center rounded-full font-semibold text-white shadow-sm',
-      compact ? 'gap-1 px-2 py-1 text-[10px]' : 'gap-2 px-3 py-1.5 text-xs',
-      { '!text-black': TYPE_META[props.type].darkText },
-    ]"
+  <Badge
+    variant="type"
+    :size="compact ? 'compact' : 'default'"
+    :class="TYPE_META[props.type].darkText ? '!text-foreground' : ''"
     :style="{ backgroundColor: TYPE_META[props.type].color }"
   >
     <img
@@ -22,5 +21,5 @@ const props = withDefaults(defineProps<{ type: PokemonTypeName; compact?: boolea
       :class="compact ? 'size-3' : 'size-4'"
     />
     {{ TYPE_META[props.type].label }}
-  </span>
+  </Badge>
 </template>

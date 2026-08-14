@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { Heart, ImageOff } from '@lucide/vue'
 import { computed } from 'vue'
-import { RouterLink } from 'vue-router'
 import { formatPokemonNumber } from '@/features/pokemon/domain/formatters'
 import type { PokemonSummary } from '@/features/pokemon/domain/models'
 import { useFavoritesStore } from '@/stores/favorites'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Link } from '@/components/ui/link'
 import TypeBadge from './TypeBadge.vue'
 
 const props = withDefaults(
@@ -21,38 +22,46 @@ function toggleFavorite() {
 </script>
 
 <template>
-  <article
-    class="group relative flex h-[102px] overflow-hidden rounded-2xl border border-border bg-white shadow-[0_2px_8px_rgb(18_18_18_/_4%)] transition hover:-translate-y-0.5 hover:border-[#c8d7e8] hover:shadow-[0_8px_24px_rgb(13_71_161_/_10%)]"
+  <Card
+    as="article"
+    class="group relative flex h-[102px] overflow-hidden shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:border-[var(--border-card-hover)] hover:shadow-[var(--shadow-card-hover)]"
   >
-    <RouterLink
+    <Link
       :to="`${routePrefix}/${pokemon.name}`"
-      class="flex min-w-0 flex-1 items-center gap-3 p-3 pr-1"
+      variant="card"
       :aria-label="`Ver a ${pokemon.displayName}`"
     >
       <div
-        class="relative flex size-[78px] shrink-0 items-center justify-center rounded-2xl bg-[#f2f6f8]"
+        class="relative flex size-[78px] shrink-0 items-center justify-center rounded-2xl bg-muted"
       >
         <div
-          class="absolute inset-2 rounded-full border-[10px] border-white/70"
+          class="absolute inset-2 rounded-full border-[10px] border-[var(--card-art-ring)]"
           aria-hidden="true"
         />
         <img
           v-if="pokemon.sprite"
           :src="pokemon.sprite"
           :alt="pokemon.displayName"
+          draggable="false"
           class="relative size-[72px] object-contain [image-rendering:auto] transition-transform group-hover:scale-105"
           loading="lazy"
         />
-        <ImageOff v-else class="relative size-7 text-[#9e9e9e]" aria-label="Imagen no disponible" />
+        <ImageOff
+          v-else
+          class="relative size-7 text-[var(--text-disabled)]"
+          aria-label="Imagen no disponible"
+        />
       </div>
       <div class="min-w-0 flex-1">
-        <p class="text-[10px] font-medium text-[#757575]">{{ formatPokemonNumber(pokemon.id) }}</p>
+        <p class="text-[10px] font-medium text-[var(--text-tertiary)]">
+          {{ formatPokemonNumber(pokemon.id) }}
+        </p>
         <h2 class="truncate text-base font-semibold leading-6">{{ pokemon.displayName }}</h2>
         <div class="mt-1 flex flex-wrap gap-1.5">
           <TypeBadge v-for="type in pokemon.types" :key="type" :type="type" compact />
         </div>
       </div>
-    </RouterLink>
+    </Link>
     <Button
       variant="icon"
       size="icon"
@@ -67,8 +76,10 @@ function toggleFavorite() {
     >
       <Heart
         class="size-5"
-        :class="favorite ? 'fill-[var(--favorite)] text-[var(--favorite)]' : 'text-[#616161]'"
+        :class="
+          favorite ? 'fill-[var(--favorite)] text-[var(--favorite)]' : 'text-[var(--text-icon)]'
+        "
       />
     </Button>
-  </article>
+  </Card>
 </template>

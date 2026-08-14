@@ -56,7 +56,13 @@ function pointerUp() {
 <style scoped>
 .favorite-gesture,
 .favorite-gesture * {
+  -webkit-user-select: none;
   user-select: none;
+}
+
+.favorite-gesture a,
+.favorite-gesture img {
+  -webkit-user-drag: none;
 }
 
 .favorite-gesture *::selection {

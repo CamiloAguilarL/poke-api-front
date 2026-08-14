@@ -6,10 +6,11 @@ Una implementación Vue 3 de la prueba técnica, construida desde el draft móvi
 
 ## Recorrido visual
 
-| Onboarding                                                                                          | Catálogo                                                                                            | Filtros                                                                                                 |
-| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| <img src="tests/e2e/__screenshots__/mobile-360/onboarding-01.png" width="220" alt="Onboarding 1" /> | <img src="tests/e2e/__screenshots__/mobile-360/catalog.png" width="220" alt="Catálogo mobile" />    | <img src="tests/e2e/__screenshots__/mobile-360/filter.png" width="220" alt="Bottom sheet de filtros" /> |
-| <img src="tests/e2e/__screenshots__/mobile-360/onboarding-02.png" width="220" alt="Onboarding 2" /> | <img src="tests/e2e/__screenshots__/mobile-360/filtered.png" width="220" alt="Catálogo filtrado" /> | <img src="tests/e2e/__screenshots__/mobile-360/splash.png" width="220" alt="Splash con Pokébola CSS" /> |
+| Onboarding                                                                                          | Catálogo                                                                                                                         | Filtros                                                                                                 |
+| --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| <img src="tests/e2e/__screenshots__/mobile-360/onboarding-01.png" width="220" alt="Onboarding 1" /> | <img src="tests/e2e/__screenshots__/mobile-360/catalog.png" width="220" alt="Catálogo mobile" />                                 | <img src="tests/e2e/__screenshots__/mobile-360/filter.png" width="220" alt="Bottom sheet de filtros" /> |
+| <img src="tests/e2e/__screenshots__/mobile-360/onboarding-02.png" width="220" alt="Onboarding 2" /> | <img src="tests/e2e/__screenshots__/mobile-360/filtered.png" width="220" alt="Catálogo filtrado" />                              | <img src="tests/e2e/__screenshots__/mobile-360/splash.png" width="220" alt="Splash con Pokébola CSS" /> |
+|                                                                                                     | <img src="tests/e2e/__screenshots__/mobile-360/search-filled.png" width="220" alt="Búsqueda con una única acción de limpieza" /> |                                                                                                         |
 
 | Detalle                                                                                                              | Favoritos                                                                                                 | Estados                                                                                                       |
 | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -18,9 +19,9 @@ Una implementación Vue 3 de la prueba técnica, construida desde el draft móvi
 
 ### Adaptación web
 
-<img src="tests/e2e/__screenshots__/desktop-1440/detail.png" width="920" alt="Pokédex master-detail en desktop" />
+<img src="tests/e2e/__screenshots__/desktop-1920/detail.png" width="920" alt="Pokédex master-detail en desktop de 1920 px" />
 
-La misma suite también congela el catálogo y el detalle en `768×1024`; las imágenes viven en `tests/e2e/__screenshots__/tablet-768`.
+La misma suite congela catálogo y detalle en `768×1024`, `1440×900` y `1920×1080`. En pantallas amplias el shell ocupa todo el viewport, mientras el rail, el catálogo y la columna de lectura mantienen medidas controladas para no escalar el contenido.
 
 ## Qué está implementado
 
@@ -41,7 +42,7 @@ La [matriz de requisitos](docs/requirements.md) enlaza cada condición del corre
 - Vue 3, TypeScript estricto, Vite y Vue Router.
 - Pinia con persistencia local versionada.
 - Tailwind CSS v4 y tokens semánticos derivados de Figma.
-- Primitives shadcn-vue centralizados, CVA, Reka UI y Lucide.
+- Primitives shadcn-vue centralizados (`Button`, `Input/SearchField`, `Toggle`, `Link`, `Sheet`, `Card`, `Badge`, `Skeleton` y `Sonner`), CVA, Reka UI y Lucide.
 - Zod en el borde de PokeAPI.
 - TanStack Vue Virtual para el catálogo.
 - Vitest, Vue Test Utils, Playwright y axe-core.
@@ -64,13 +65,15 @@ La app queda disponible en `http://localhost:5173`.
 
 ```bash
 pnpm check            # formato, lint, tipos, cobertura y build
-pnpm test:e2e         # 360×800, 768×1024 y 1440×900
+pnpm test:e2e         # 360×800, 768×1024, 1440×900 y 1920×1080
 pnpm test:e2e:update  # actualiza goldens solo ante un cambio visual intencional
 ```
 
 La cobertura mínima exigida en CI es 80% de líneas/funciones/statements y 75% de ramas sobre dominio y stores. La ejecución actual alcanza 100% de líneas/funciones y 92% de ramas. Playwright valida flujos con un contrato PokeAPI determinista; la app productiva nunca usa esos fixtures.
 
 El workflow de GitHub Actions ejecuta formato, ESLint sin warnings, `vue-tsc`, cobertura, build, E2E, axe y comparación de screenshots.
+
+La regresión visual es exacta en el entorno local que genera los goldens. CI admite hasta 4% de diferencia por la rasterización de Chromium entre macOS y Linux; medidas estructurales críticas como el ancho de shell, catálogo y artwork se validan además con aserciones geométricas exactas.
 
 ## Estructura
 

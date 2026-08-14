@@ -3,7 +3,7 @@ import { RotateCcw, Trash2 } from '@lucide/vue'
 import { storeToRefs } from 'pinia'
 import { onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { toast } from 'vue-sonner'
+import { toast } from '@/components/ui/sonner'
 import FavoriteListItem from '@/components/favorites/FavoriteListItem.vue'
 import EmptyState from '@/components/states/EmptyState.vue'
 import { Button } from '@/components/ui/button'
@@ -47,7 +47,10 @@ onMounted(hydrate)
           :pokemon="summaries[name]!"
           @remove="remove(name)"
         />
-        <div v-else class="flex h-[102px] animate-pulse items-center rounded-2xl bg-[#edf1f4] px-4">
+        <div
+          v-else
+          class="flex h-[102px] animate-pulse items-center rounded-2xl bg-[var(--surface-skeleton-soft)] px-4"
+        >
           <span class="text-xs text-muted-foreground">Cargando {{ name }}...</span>
         </div>
       </div>

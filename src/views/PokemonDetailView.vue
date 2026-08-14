@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ArrowLeft, Heart, Mars, Share2, Venus } from '@lucide/vue'
 import { computed, ref, watch } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
-import { toast } from 'vue-sonner'
+import { useRouter } from 'vue-router'
+import { toast } from '@/components/ui/sonner'
 import ErrorState from '@/components/states/ErrorState.vue'
 import PokeballLoader from '@/components/PokeballLoader.vue'
 import TypeBadge from '@/components/pokemon/TypeBadge.vue'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Link } from '@/components/ui/link'
 import { pokemonRepository } from '@/features/pokemon/api/pokemon-repository'
 import {
   formatHeight,
@@ -92,14 +94,14 @@ watch(() => props.name, load, { immediate: true })
   />
   <article v-else-if="pokemon" class="min-h-dvh bg-background" data-testid="pokemon-detail">
     <header
-      class="pokemon-hero relative h-[354px] overflow-hidden px-4 pt-11 text-white sm:h-[390px] lg:h-[420px] lg:px-8 lg:pt-7"
+      class="pokemon-hero relative h-[354px] overflow-hidden px-4 pt-11 text-[var(--hero-foreground)] sm:h-[390px] lg:h-[420px] lg:px-8 lg:pt-7"
       :style="{ '--hero-color': heroColor }"
     >
       <div class="relative z-10 mx-auto flex max-w-4xl items-center justify-between">
         <Button
           variant="icon"
           size="icon"
-          class="bg-black/12 text-white hover:bg-black/20"
+          class="bg-[var(--hero-control)] text-[var(--hero-foreground)] hover:bg-[var(--hero-control-hover)]"
           aria-label="Volver"
           @click="goBack"
         >
@@ -109,7 +111,7 @@ watch(() => props.name, load, { immediate: true })
           <Button
             variant="icon"
             size="icon"
-            class="bg-black/12 text-white hover:bg-black/20"
+            class="bg-[var(--hero-control)] text-[var(--hero-foreground)] hover:bg-[var(--hero-control-hover)]"
             aria-label="Copiar información del Pokémon"
             data-testid="share-pokemon"
             @click="share"
@@ -119,19 +121,21 @@ watch(() => props.name, load, { immediate: true })
           <Button
             variant="icon"
             size="icon"
-            class="bg-black/12 text-white hover:bg-black/20"
+            class="bg-[var(--hero-control)] text-[var(--hero-foreground)] hover:bg-[var(--hero-control-hover)]"
             :aria-label="favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'"
             :aria-pressed="favorite"
             data-testid="favorite-detail"
             @click="toggleFavorite"
           >
-            <Heart :class="['size-6', { 'fill-white': favorite }]" />
+            <Heart :class="['size-6', { 'fill-[var(--hero-foreground)]': favorite }]" />
           </Button>
         </div>
       </div>
       <div class="relative z-10 mx-auto mt-1 flex max-w-4xl items-start justify-between gap-4">
         <div class="pt-4">
-          <p class="text-xs font-medium text-white/80">{{ formatPokemonNumber(pokemon.id) }}</p>
+          <p class="text-xs font-medium text-[var(--hero-foreground-muted)]">
+            {{ formatPokemonNumber(pokemon.id) }}
+          </p>
           <h1 class="mt-0.5 text-[28px] font-semibold leading-tight sm:text-4xl">
             {{ pokemon.displayName }}
           </h1>
@@ -144,7 +148,7 @@ watch(() => props.name, load, { immediate: true })
         v-if="pokemon.artwork || pokemon.sprite"
         :src="pokemon.artwork ?? pokemon.sprite ?? undefined"
         :alt="pokemon.displayName"
-        class="absolute bottom-[-8px] left-1/2 z-10 h-[244px] w-[280px] -translate-x-1/2 object-contain drop-shadow-[0_18px_20px_rgb(0_0_0_/_18%)] sm:h-[280px] lg:h-[315px] lg:w-[360px]"
+        class="pokemon-artwork absolute bottom-[-8px] left-1/2 z-10 h-[244px] w-[280px] -translate-x-1/2 object-contain sm:h-[280px] lg:h-[315px] lg:w-[360px]"
       />
     </header>
 
@@ -189,16 +193,16 @@ watch(() => props.name, load, { immediate: true })
             Este Pokémon no tiene género.
           </p>
           <div v-else class="mt-4 grid grid-cols-2 gap-4">
-            <div class="rounded-2xl bg-[#e8f4ff] p-4">
-              <Mars class="size-5 text-[#1976d2]" />
+            <Card class="border-transparent bg-[var(--surface-masculine)] p-4 shadow-none">
+              <Mars class="size-5 text-[var(--gender-male)]" />
               <p class="mt-2 text-xs text-muted-foreground">Masculino</p>
               <p class="text-base font-semibold">{{ formatPercentage(pokemon.gender.male) }}</p>
-            </div>
-            <div class="rounded-2xl bg-[#fff0f6] p-4">
-              <Venus class="size-5 text-[#d81b60]" />
+            </Card>
+            <Card class="border-transparent bg-[var(--surface-feminine)] p-4 shadow-none">
+              <Venus class="size-5 text-[var(--gender-female)]" />
               <p class="mt-2 text-xs text-muted-foreground">Femenino</p>
               <p class="text-base font-semibold">{{ formatPercentage(pokemon.gender.female) }}</p>
-            </div>
+            </Card>
           </div>
         </section>
 
@@ -209,7 +213,7 @@ watch(() => props.name, load, { immediate: true })
               <TypeBadge :type="weakness.type" />
               <span
                 v-if="weakness.multiplier > 2"
-                class="absolute -right-1 -top-1 rounded-full bg-white px-1 text-[9px] font-bold text-foreground shadow"
+                class="absolute -right-1 -top-1 rounded-full bg-card px-1 text-[9px] font-bold text-foreground shadow"
               >
                 ×{{ weakness.multiplier }}
               </span>
@@ -222,11 +226,11 @@ watch(() => props.name, load, { immediate: true })
           <div
             class="scrollbar-none -mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-2 lg:mx-0 lg:px-0"
           >
-            <RouterLink
+            <Link
               v-for="evolution in pokemon.evolutions"
               :key="evolution.name"
               :to="`/pokedex/${evolution.name}`"
-              class="flex w-[132px] shrink-0 flex-col items-center rounded-2xl border border-border bg-white p-3 text-center transition hover:border-primary"
+              variant="compactCard"
             >
               <img
                 v-if="evolution.sprite"
@@ -240,7 +244,7 @@ watch(() => props.name, load, { immediate: true })
                 formatPokemonNumber(evolution.id)
               }}</span>
               <span class="truncate text-xs font-semibold">{{ evolution.displayName }}</span>
-            </RouterLink>
+            </Link>
           </div>
         </section>
 
@@ -256,9 +260,17 @@ watch(() => props.name, load, { immediate: true })
 <style scoped>
 .pokemon-hero {
   background:
-    radial-gradient(circle at 82% 26%, rgb(255 255 255 / 15%) 0 58px, transparent 59px),
-    radial-gradient(circle at 18% 84%, rgb(255 255 255 / 10%) 0 82px, transparent 83px),
-    linear-gradient(145deg, color-mix(in srgb, var(--hero-color) 84%, white), var(--hero-color));
+    radial-gradient(circle at 82% 26%, var(--hero-spot-strong) 0 58px, transparent 59px),
+    radial-gradient(circle at 18% 84%, var(--hero-spot-soft) 0 82px, transparent 83px),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--hero-color) 84%, var(--surface-card)),
+      var(--hero-color)
+    );
+}
+
+.pokemon-artwork {
+  filter: drop-shadow(var(--shadow-sprite));
 }
 
 .pokemon-hero::after {
@@ -267,7 +279,7 @@ watch(() => props.name, load, { immediate: true })
   bottom: -72px;
   width: 280px;
   height: 280px;
-  border: 34px solid rgb(255 255 255 / 8%);
+  border: 34px solid var(--hero-ring);
   border-radius: 50%;
   content: '';
 }

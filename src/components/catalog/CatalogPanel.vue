@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { Search, SlidersHorizontal, X } from '@lucide/vue'
+import { Search, SlidersHorizontal } from '@lucide/vue'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { toast } from 'vue-sonner'
+import { toast } from '@/components/ui/sonner'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { SearchField } from '@/components/ui/search-field'
 import ErrorState from '@/components/states/ErrorState.vue'
 import PokeballLoader from '@/components/PokeballLoader.vue'
 import PokemonVirtualList from '@/components/pokemon/PokemonVirtualList.vue'
@@ -97,34 +97,18 @@ onMounted(async () => {
   >
     <header class="shrink-0 px-4 pb-3 pt-11 lg:px-6 lg:pt-7">
       <div class="flex items-center gap-2">
-        <label class="relative min-w-0 flex-1">
-          <span class="sr-only">Buscar Pokémon</span>
-          <Search
-            class="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-[#757575]"
-          />
-          <Input
-            :model-value="query"
-            type="search"
-            autocomplete="off"
-            placeholder="Buscar Pokémon..."
-            class="border-transparent bg-[#eeeeee] pl-11 pr-10 focus:border-primary focus:bg-white"
-            data-testid="pokemon-search"
-            @update:model-value="store.setQuery($event ?? '')"
-          />
-          <button
-            v-if="query"
-            type="button"
-            class="absolute right-2 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-[#616161] hover:bg-black/5"
-            aria-label="Limpiar búsqueda"
-            @click="store.setQuery('')"
-          >
-            <X class="size-4" />
-          </button>
-        </label>
+        <SearchField
+          :model-value="query"
+          label="Buscar Pokémon"
+          placeholder="Buscar Pokémon..."
+          test-id="pokemon-search"
+          class="flex-1"
+          @update:model-value="store.setQuery"
+        />
         <Button
           variant="secondary"
           size="icon"
-          class="relative bg-[#eeeeee]"
+          class="relative"
           aria-label="Filtrar por tipo"
           data-testid="open-filters"
           @click="filterOpen = true"
@@ -132,7 +116,7 @@ onMounted(async () => {
           <SlidersHorizontal class="size-5" />
           <span
             v-if="selectedTypes.length"
-            class="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-white"
+            class="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground"
           >
             {{ selectedTypes.length }}
           </span>
@@ -170,7 +154,7 @@ onMounted(async () => {
       v-else-if="filteredEntries.length === 0"
       class="flex flex-1 flex-col items-center justify-center px-8 text-center"
     >
-      <div class="flex size-20 items-center justify-center rounded-full bg-[#eef4fb]">
+      <div class="flex size-20 items-center justify-center rounded-full bg-[var(--surface-info)]">
         <Search class="size-9 text-primary" />
       </div>
       <h2 class="mt-5 text-lg font-semibold">No encontramos Pokémon</h2>

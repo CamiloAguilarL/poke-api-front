@@ -22,6 +22,19 @@ test.describe('Pokédex experience', () => {
     await expect(page.getByTestId('pokemon-list')).toBeVisible()
   })
 
+  test('onboarding fills wide desktop without scaling its source artwork', async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop-1920', 'The wide viewport owns this contract')
+    await page.goto('/')
+    const main = await page.getByRole('main').boundingBox()
+    const artwork = await page.getByAltText('Entrenadora Pokémon').boundingBox()
+    expect(main?.x).toBe(0)
+    expect(main?.width).toBe(1920)
+    expect(artwork?.width).toBe(257)
+    await expect(page).toHaveScreenshot('onboarding-desktop.png')
+  })
+
   test('catalog searches, filters and remains usable at the project viewport', async ({
     page,
   }, testInfo) => {
@@ -32,6 +45,19 @@ test.describe('Pokédex experience', () => {
 
     await page.getByPlaceholder('Buscar Pokémon...').fill('pika')
     await expect(page.getByRole('link', { name: 'Ver a Pikachu', exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Limpiar búsqueda' })).toHaveCount(1)
+    if (testInfo.project.name === 'mobile-360') {
+      await expect(page).toHaveScreenshot('search-filled.png')
+    }
+
+    if (testInfo.project.name === 'desktop-1920') {
+      const shell = await page.getByTestId('app-shell').boundingBox()
+      const catalog = await page.getByRole('region', { name: 'Catálogo Pokémon' }).boundingBox()
+      expect(shell?.x).toBe(0)
+      expect(shell?.width).toBe(1920)
+      expect(catalog?.width).toBe(420)
+    }
+
     await page.getByRole('button', { name: 'Limpiar búsqueda' }).click()
     await page.getByTestId('open-filters').click()
     if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('filter.png')
@@ -125,6 +151,7 @@ test.describe('Resilient states', () => {
     await page.mouse.down()
     await page.mouse.move(box.x + 100, box.y + box.height / 2, { steps: 8 })
     await page.mouse.up()
+    expect(await page.evaluate(() => window.getSelection()?.toString() ?? '')).toBe('')
     await expect(page).toHaveScreenshot('favorite-swipe.png')
     await page.getByRole('button', { name: 'Eliminar a Bulbasaur de favoritos' }).click()
     await expect(page.getByRole('heading', { name: 'Aún no tienes favoritos' })).toBeVisible()

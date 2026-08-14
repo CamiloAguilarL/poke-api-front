@@ -8,17 +8,19 @@ const hasDetail = computed(() => route.name === 'pokemon-detail')
 </script>
 
 <template>
-  <div class="lg:grid lg:h-dvh lg:grid-cols-[420px_minmax(0,1fr)] lg:divide-x lg:divide-border">
+  <div
+    class="bg-background lg:grid lg:min-h-dvh lg:grid-cols-[420px_minmax(0,1fr)] lg:divide-x lg:divide-border"
+  >
     <CatalogPanel :class="{ 'max-lg:hidden': hasDetail }" />
     <div :class="['min-w-0 bg-background', { 'max-lg:hidden': !hasDetail }]">
       <RouterView />
       <section
         v-if="!hasDetail"
-        class="hidden h-dvh items-center justify-center bg-[#f4f7fa] px-8 text-center lg:flex"
+        class="hidden h-dvh items-center justify-center bg-[var(--surface-panel)] px-8 text-center lg:flex"
       >
         <div class="max-w-sm">
           <div
-            class="mx-auto flex size-24 items-center justify-center rounded-full bg-white shadow-sm"
+            class="mx-auto flex size-24 items-center justify-center rounded-full bg-card shadow-sm"
           >
             <span class="text-5xl" aria-hidden="true">⚡</span>
           </div>

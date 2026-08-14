@@ -3,6 +3,7 @@ import { Check } from '@lucide/vue'
 import { ref, watch } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Sheet } from '@/components/ui/sheet'
+import { Toggle } from '@/components/ui/toggle'
 import { POKEMON_TYPES, type PokemonTypeName } from '@/features/pokemon/domain/models'
 import { TYPE_META } from '@/features/pokemon/domain/type-meta'
 
@@ -59,18 +60,12 @@ function apply() {
         role="group"
         aria-label="Tipos de Pokémon"
       >
-        <button
+        <Toggle
           v-for="type in POKEMON_TYPES"
           :key="type"
-          type="button"
-          :aria-pressed="draft.includes(type)"
-          class="flex h-12 items-center gap-2 rounded-2xl border px-3 text-left text-xs font-medium transition"
-          :class="
-            draft.includes(type)
-              ? 'border-primary bg-primary/8 text-primary'
-              : 'border-border bg-white hover:border-[#b5c9df]'
-          "
-          @click="toggle(type)"
+          :model-value="draft.includes(type)"
+          class="justify-start text-left"
+          @update:model-value="toggle(type)"
         >
           <span
             class="flex size-7 shrink-0 items-center justify-center rounded-full"
@@ -80,7 +75,7 @@ function apply() {
           </span>
           <span class="min-w-0 flex-1 truncate">{{ TYPE_META[type].label }}</span>
           <Check v-if="draft.includes(type)" class="size-4 shrink-0" aria-hidden="true" />
-        </button>
+        </Toggle>
       </div>
 
       <div class="mt-6 grid grid-cols-2 gap-3">

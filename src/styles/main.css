@@ -9,12 +9,26 @@
   --surface-default: #fafafa;
   --surface-subtle: #f4f6f8;
   --surface-canvas: #e9eef4;
+  --surface-card: #ffffff;
+  --surface-info: #eef4fb;
+  --surface-panel: #f4f7fa;
+  --surface-favorite: #ffebee;
+  --surface-masculine: #e8f4ff;
+  --surface-feminine: #fff0f6;
+  --surface-skeleton: #e8edf1;
+  --surface-skeleton-soft: #edf1f4;
   --text-primary: #121212;
   --text-secondary: #424242;
+  --text-tertiary: #757575;
+  --text-icon: #616161;
+  --text-placeholder: #8d8d8d;
   --text-disabled: #9e9e9e;
   --text-inverse: #fafafa;
   --border-default: #e0e0e0;
   --border-strong: #d6d6d6;
+  --border-interactive: #b5c9df;
+  --border-card-hover: #c8d7e8;
+  --drag-handle: #c9c9c9;
   --action-primary: #1e88e5;
   --action-primary-hover: #1976d2;
   --action-primary-pressed: #1565c0;
@@ -22,8 +36,28 @@
   --action-secondary-hover: #e0e0e0;
   --action-secondary-pressed: #d6d6d6;
   --navigation-active: #0d47a1;
+  --onboarding-active: #173ea5;
   --favorite: #ef5350;
   --danger: #d32f2f;
+  --danger-hover: #b71c1c;
+  --danger-pressed: #9f1717;
+  --gender-male: #1976d2;
+  --gender-female: #d81b60;
+  --pokeball-ink: #212121;
+  --hero-foreground: #ffffff;
+  --hero-foreground-muted: rgb(255 255 255 / 80%);
+  --hero-control: rgb(0 0 0 / 12%);
+  --hero-control-hover: rgb(0 0 0 / 20%);
+  --hero-spot-strong: rgb(255 255 255 / 15%);
+  --hero-spot-soft: rgb(255 255 255 / 10%);
+  --hero-ring: rgb(255 255 255 / 8%);
+  --art-ring: rgb(255 255 255 / 65%);
+  --card-art-ring: rgb(255 255 255 / 70%);
+  --sheet-overlay: rgb(0 0 0 / 45%);
+  --shadow-card: 0 2px 8px rgb(18 18 18 / 4%);
+  --shadow-card-hover: 0 8px 24px rgb(13 71 161 / 10%);
+  --shadow-loader: 0 10px 28px rgb(13 71 161 / 18%);
+  --shadow-sprite: 0 18px 20px rgb(0 0 0 / 18%);
   --type-normal: #78909c;
   --type-fighting: #e53935;
   --type-flying: #00bcd4;
@@ -48,6 +82,8 @@
   --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
   --color-background: var(--surface-default);
   --color-foreground: var(--text-primary);
+  --color-card: var(--surface-card);
+  --color-card-foreground: var(--text-primary);
   --color-muted: var(--surface-subtle);
   --color-muted-foreground: var(--text-secondary);
   --color-border: var(--border-default);
@@ -73,7 +109,7 @@
 
   html {
     min-width: 320px;
-    background: var(--surface-canvas);
+    background: var(--surface-default);
     font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
     color: var(--text-primary);
     text-rendering: optimizeLegibility;
@@ -84,12 +120,25 @@
     min-width: 320px;
     min-height: 100dvh;
     margin: 0;
-    background: var(--surface-canvas);
+    background: var(--surface-default);
   }
 
   button,
   input {
     font: inherit;
+  }
+
+  input[type='search']::-webkit-search-cancel-button,
+  input[type='search']::-webkit-search-decoration {
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input[type='search']::-ms-clear,
+  input[type='search']::-ms-reveal {
+    display: none;
+    width: 0;
+    height: 0;
   }
 
   button,

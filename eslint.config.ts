@@ -30,5 +30,34 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
+  {
+    files: ['src/**/*.{ts,vue}'],
+    ignores: ['src/components/ui/**/*.{ts,vue}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'vue-router',
+              importNames: ['RouterLink'],
+              message: 'Usa el componente Link de @/components/ui/link.',
+            },
+            {
+              name: 'vue-sonner',
+              message: 'Usa la capa centralizada @/components/ui/sonner.',
+            },
+          ],
+        },
+      ],
+      'vue/no-restricted-html-elements': [
+        'error',
+        {
+          element: ['button', 'input', 'select', 'textarea', 'a', 'label'],
+          message: 'Usa un primitive de @/components/ui; los controles nativos solo viven allí.',
+        },
+      ],
+    },
+  },
   eslintConfigPrettier,
 )

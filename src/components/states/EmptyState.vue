@@ -23,7 +23,7 @@ defineEmits<{ action: [] }>()
   <section class="flex h-full min-h-[460px] flex-col items-center justify-center px-6 text-center">
     <div
       v-if="showHeart"
-      class="flex size-24 items-center justify-center rounded-full bg-[#ffebee]"
+      class="flex size-24 items-center justify-center rounded-full bg-[var(--surface-favorite)]"
     >
       <Heart class="size-11 fill-[var(--favorite)] text-[var(--favorite)]" />
     </div>

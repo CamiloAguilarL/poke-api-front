@@ -31,10 +31,15 @@ withDefaults(defineProps<{ label?: string; fullscreen?: boolean }>(), {
   width: 84px;
   height: 84px;
   overflow: hidden;
-  border: 5px solid #212121;
+  border: 5px solid var(--pokeball-ink);
   border-radius: 50%;
-  background: linear-gradient(to bottom, #ef5350 0 46%, #212121 46% 54%, white 54% 100%);
-  box-shadow: 0 10px 28px rgb(13 71 161 / 18%);
+  background: linear-gradient(
+    to bottom,
+    var(--favorite) 0 46%,
+    var(--pokeball-ink) 46% 54%,
+    var(--surface-card) 54% 100%
+  );
+  box-shadow: var(--shadow-loader);
   animation: catch 1.1s ease-in-out infinite;
 }
 
@@ -45,9 +50,9 @@ withDefaults(defineProps<{ label?: string; fullscreen?: boolean }>(), {
   left: 50%;
   width: 28px;
   height: 28px;
-  border: 5px solid #212121;
+  border: 5px solid var(--pokeball-ink);
   border-radius: 50%;
-  background: white;
+  background: var(--surface-card);
   content: '';
   transform: translate(-50%, -50%);
 }
@@ -59,8 +64,8 @@ withDefaults(defineProps<{ label?: string; fullscreen?: boolean }>(), {
   width: 25px;
   height: 25px;
   border: 4px solid transparent;
-  border-top-color: white;
-  border-right-color: white;
+  border-top-color: var(--surface-card);
+  border-right-color: var(--surface-card);
   border-radius: 50%;
   content: '';
   transform: rotate(-18deg);
@@ -73,9 +78,9 @@ withDefaults(defineProps<{ label?: string; fullscreen?: boolean }>(), {
   left: 50%;
   width: 14px;
   height: 14px;
-  border: 3px solid #757575;
+  border: 3px solid var(--text-tertiary);
   border-radius: 50%;
-  background: white;
+  background: var(--surface-card);
   transform: translate(-50%, -50%);
 }
 

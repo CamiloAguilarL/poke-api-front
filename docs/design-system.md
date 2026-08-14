@@ -4,25 +4,32 @@
 
 Los valores se extrajeron del draft editable de Figma. `src/styles/main.css` publica tokens semánticos y `@theme inline` los expone a Tailwind; las vistas no definen una segunda paleta.
 
-| Grupo        | Tokens principales                                                        |
-| ------------ | ------------------------------------------------------------------------- |
-| Superficie   | `--surface-default`, `--surface-subtle`, `--surface-canvas`               |
-| Texto        | `--text-primary`, `--text-secondary`, `--text-disabled`, `--text-inverse` |
-| Acción       | `--action-primary`, `--action-primary-hover`, `--action-primary-pressed`  |
-| Navegación   | `--navigation-active`, `--favorite`, `--danger`                           |
-| Tipo Pokémon | `--type-normal` … `--type-fairy`                                          |
-| Forma        | radios Tailwind `sm/md/lg/xl` = `8/12/16/24 px`                           |
+| Grupo        | Tokens principales                                                         |
+| ------------ | -------------------------------------------------------------------------- |
+| Superficie   | `--surface-default`, `--surface-card`, `--surface-info`, `--surface-panel` |
+| Texto        | `--text-primary`, `--text-secondary`, `--text-tertiary`, `--text-inverse`  |
+| Acción       | `--action-primary`, `--action-primary-hover`, `--action-primary-pressed`   |
+| Estado       | `--navigation-active`, `--favorite`, `--danger`, `--gender-*`              |
+| Tipo Pokémon | `--type-normal` … `--type-fairy`                                           |
+| Forma/sombra | radios Tailwind `sm/md/lg/xl`; `--shadow-card`, `--shadow-sprite`          |
 
 La tipografía renderizada en los frames es Poppins. Los residuos de Montserrat presentes en algunos styles internos de Figma no se propagan a producción.
 
 ## Primitives
 
-- `Button`: CVA para `primary`, `secondary`, `tertiary`, `icon` y `danger`, tres tamaños y loading accesible.
-- `Input`: atributos nativos, `v-model` y estilos de foco centralizados.
+- `Button`: CVA para `primary`, `secondary`, `tertiary`, `icon` y `danger`, tamaños táctiles y loading accesible.
+- `Input`, `Label` y `SearchField`: composición de campo accesible, foco y acción clear única.
+- `Toggle`: primitive Reka UI con estados `on/off`, usado por los filtros de tipo.
+- `Link`: única frontera sobre Vue Router, con variantes de navegación y cards.
 - `Sheet`: composición accesible de Reka UI para el bottom sheet mobile y diálogo centrado en desktop.
-- `Skeleton`: loading progresivo de cards.
+- `Card`, `Badge` y `Skeleton`: superficies, tipos y loading sin repetir estilos de base.
+- `Sonner`: frontera centralizada para toasts y su viewport.
 
 `components.json` conserva la configuración shadcn-vue y los aliases. Los componentes viven en el repositorio —la práctica estándar de shadcn— para poder adaptarlos a los tokens del ejercicio.
+
+## Regla de adopción
+
+Las vistas y los componentes de feature pueden usar HTML semántico de contenido y layout (`main`, `section`, encabezados, listas), pero no crean controles HTML interactivos. ESLint bloquea `button`, `input`, `select`, `textarea`, `a` y `label`, además de imports directos de `RouterLink` y `vue-sonner`, fuera de `src/components/ui`. De esta manera todo estado, foco, variante y token atraviesa una capa propia sin sacrificar semántica ni accesibilidad.
 
 ## Accesibilidad
 

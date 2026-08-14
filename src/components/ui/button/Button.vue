@@ -22,7 +22,13 @@ const classes = computed(() => {
 </script>
 
 <template>
-  <button :type="type" :class="classes" :disabled="disabled || loading" :aria-busy="loading">
+  <button
+    :type="type"
+    :class="classes"
+    :disabled="disabled || loading"
+    :aria-busy="loading"
+    data-slot="button"
+  >
     <LoaderCircle v-if="loading" class="size-4 animate-spin" aria-hidden="true" />
     <slot />
   </button>

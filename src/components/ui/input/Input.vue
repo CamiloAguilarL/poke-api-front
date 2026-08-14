@@ -12,9 +12,10 @@ const attrs = useAttrs()
   <input
     v-bind="attrs"
     :value="modelValue"
+    data-slot="input"
     :class="
       cn(
-        'h-12 w-full rounded-2xl border border-border bg-white text-sm text-foreground placeholder:text-[#8d8d8d] transition-shadow',
+        'h-12 w-full rounded-2xl border border-border bg-card text-sm text-foreground placeholder:text-[var(--text-placeholder)] transition-shadow',
         props.class,
       )
     "
