@@ -46,7 +46,7 @@ watch(
     <div class="relative w-full" :style="{ height: `${totalSize}px` }">
       <div
         v-for="row in rows"
-        :key="row.key"
+        :key="String(row.key)"
         class="absolute left-0 top-0 w-full pb-3"
         :style="{ height: `${row.size}px`, transform: `translateY(${row.start}px)` }"
       >
