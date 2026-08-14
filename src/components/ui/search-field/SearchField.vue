@@ -11,12 +11,14 @@ withDefaults(
     label?: string
     placeholder?: string
     autocomplete?: string
+    name?: string
     testId?: string
   }>(),
   {
     label: 'Buscar',
     placeholder: 'Buscar...',
     autocomplete: 'off',
+    name: 'search',
   },
 )
 
@@ -35,7 +37,11 @@ const inputId = `search-${useId()}`
       :id="inputId"
       :model-value="modelValue"
       type="search"
+      :name="name"
       :autocomplete="autocomplete"
+      inputmode="search"
+      enterkeyhint="search"
+      :spellcheck="false"
       :placeholder="placeholder"
       class="border-transparent bg-secondary pl-11 pr-10 focus:border-primary focus:bg-card"
       :data-testid="testId"

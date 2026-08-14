@@ -21,6 +21,7 @@ async function continueFlow() {
 
 <template>
   <main
+    id="main-content"
     class="min-h-dvh w-full overflow-hidden bg-background lg:grid lg:grid-cols-[minmax(520px,1.1fr)_minmax(480px,0.9fr)]"
   >
     <section
@@ -32,11 +33,17 @@ async function continueFlow() {
           <img
             src="/assets/figma/onboarding-trainer-small.png"
             alt="Entrenador Pokémon"
+            width="231"
+            height="231"
+            fetchpriority="high"
             class="absolute left-[17px] top-[26px] size-[231px] object-contain"
           />
           <img
             src="/assets/figma/onboarding-trainer-large.png"
             alt="Entrenadora Pokémon"
+            width="257"
+            height="257"
+            fetchpriority="high"
             class="absolute left-[102px] top-0 size-[257px] object-contain"
           />
         </div>
@@ -45,14 +52,17 @@ async function continueFlow() {
         v-else
         src="/assets/figma/onboarding-hilda-cutout.png"
         alt="Entrenadora lista para comenzar"
+        width="240"
+        height="240"
+        fetchpriority="high"
         class="absolute left-1/2 top-[181px] size-[240px] -translate-x-1/2 object-contain [image-rendering:pixelated]"
       />
 
       <div class="absolute inset-x-4 bottom-[168px] text-center">
-        <h1 class="mx-auto w-[321px] text-[26px] font-medium leading-[1.25]">
+        <h1 class="mx-auto w-[321px] text-balance text-[26px] font-medium leading-[1.25]">
           {{ firstStep ? 'Todos los Pokémon en un solo lugar' : 'Mantén tu Pokédex actualizada' }}
         </h1>
-        <p class="mx-auto mt-4 w-[320px] text-sm leading-6 text-muted-foreground">
+        <p class="mx-auto mt-4 w-[320px] text-pretty text-sm leading-6 text-muted-foreground">
           {{
             firstStep
               ? 'Accede a una amplia lista de Pokémon de todas las generaciones creadas por Nintendo'
@@ -67,13 +77,13 @@ async function continueFlow() {
       >
         <span
           :class="[
-            'h-[9px] rounded-full bg-[var(--onboarding-active)] transition-all',
+            'h-[9px] rounded-full bg-[var(--onboarding-active)] transition-opacity',
             firstStep ? 'w-7' : 'w-[9px] opacity-25',
           ]"
         />
         <span
           :class="[
-            'h-[9px] rounded-full bg-[var(--onboarding-active)] transition-all',
+            'h-[9px] rounded-full bg-[var(--onboarding-active)] transition-opacity',
             firstStep ? 'w-[9px] opacity-25' : 'w-7',
           ]"
         />
@@ -89,10 +99,10 @@ async function continueFlow() {
     <aside class="hidden items-center justify-center bg-[var(--surface-info)] px-12 lg:flex">
       <div class="max-w-md">
         <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Pokédex</p>
-        <h2 class="mt-4 text-4xl font-semibold leading-tight">
+        <h2 class="mt-4 text-balance text-4xl font-semibold leading-tight">
           Todo un mundo Pokémon, también en tu escritorio.
         </h2>
-        <p class="mt-5 text-base leading-7 text-muted-foreground">
+        <p class="mt-5 text-pretty text-base leading-7 text-muted-foreground">
           La experiencia conserva el flujo mobile del diseño y se expande a un espacio de
           exploración cómodo para web.
         </p>

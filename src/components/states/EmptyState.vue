@@ -27,8 +27,10 @@ defineEmits<{ action: [] }>()
     >
       <Heart class="size-11 fill-[var(--favorite)] text-[var(--favorite)]" />
     </div>
-    <h1 class="mt-6 text-xl font-semibold">{{ title }}</h1>
-    <p class="mt-2 max-w-[310px] text-sm leading-6 text-muted-foreground">{{ description }}</p>
+    <h1 class="mt-6 text-balance text-xl font-semibold">{{ title }}</h1>
+    <p class="mt-2 max-w-[310px] text-pretty text-sm leading-6 text-muted-foreground">
+      {{ description }}
+    </p>
     <Button class="mt-6" @click="$emit('action')">{{ actionLabel }}</Button>
   </section>
 </template>

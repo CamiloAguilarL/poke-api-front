@@ -2,7 +2,7 @@
 
 Una implementación Vue 3 de la prueba técnica, construida desde el draft móvil de Figma y adaptada a un catálogo expandido y una experiencia master-detail para desktop. La prioridad fue entregar producto, no solo pantallas: PokeAPI real, arquitectura tipada, favoritos persistentes, accesibilidad, pruebas y evidencia visual reproducible.
 
-[Figma editable](https://www.figma.com/design/4Uh3KoeuzsYusZ90pa4l1M/Pok%C3%A9dex--Copy-?node-id=0-1&p=f) · [Trazabilidad completa](docs/requirements.md) · [Decisiones](docs/decisions.md)
+[Figma editable](https://www.figma.com/design/4Uh3KoeuzsYusZ90pa4l1M/Pok%C3%A9dex--Copy-?node-id=0-1&p=f) · [Trazabilidad completa](docs/requirements.md) · [Decisiones](docs/decisions.md) · [Checklist UI](docs/ui-quality-checklist.md)
 
 ## Recorrido visual
 
@@ -42,7 +42,7 @@ La [matriz de requisitos](docs/requirements.md) enlaza cada condición del corre
 - Vue 3, TypeScript estricto, Vite y Vue Router.
 - Pinia con persistencia local versionada.
 - Tailwind CSS v4 y tokens semánticos derivados de Figma.
-- Primitives shadcn-vue centralizados (`Button`, `Input/SearchField`, `Toggle`, `Link`, `Sheet`, `Card`, `Badge`, `Skeleton` y `Sonner`), CVA, Reka UI y Lucide.
+- Primitives shadcn-vue centralizados (`Button`, `Input/SearchField`, `Toggle`, `Link`, `Sheet`, `Card`, `Badge`, `Skeleton`, `SkipLink` y `Sonner`), CVA, Reka UI y Lucide.
 - Zod en el borde de PokeAPI.
 - TanStack Vue Virtual para el catálogo.
 - Vitest, Vue Test Utils, Playwright y axe-core.

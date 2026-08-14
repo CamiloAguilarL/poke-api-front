@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
 export const linkVariants = cva(
-  'rounded-2xl transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/35',
+  'touch-manipulation rounded-2xl transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/35',
   {
     variants: {
       variant: {

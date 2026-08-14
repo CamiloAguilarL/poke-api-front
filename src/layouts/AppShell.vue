@@ -14,10 +14,7 @@ const hideMobileNavigation = computed(() => Boolean(route.meta.hideMobileNav))
     data-testid="app-shell"
   >
     <AppNavigation :class="{ 'max-lg:hidden': hideMobileNavigation }" />
-    <main
-      id="main-content"
-      :class="['min-h-dvh min-w-0 lg:pb-0', hideMobileNavigation ? 'pb-0' : 'pb-[77px]']"
-    >
+    <main id="main-content" class="min-h-dvh min-w-0">
       <RouterView />
     </main>
   </div>

@@ -22,6 +22,7 @@ La tipografía renderizada en los frames es Poppins. Los residuos de Montserrat 
 - `Toggle`: primitive Reka UI con estados `on/off`, usado por los filtros de tipo.
 - `Link`: única frontera sobre Vue Router, con variantes de navegación y cards.
 - `Sheet`: composición accesible de Reka UI para el bottom sheet mobile y diálogo centrado en desktop.
+- `SkipLink`: atajo de teclado centralizado hacia el contenido principal.
 - `Card`, `Badge` y `Skeleton`: superficies, tipos y loading sin repetir estilos de base.
 - `Sonner`: frontera centralizada para toasts y su viewport.
 

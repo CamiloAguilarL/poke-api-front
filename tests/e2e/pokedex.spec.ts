@@ -7,6 +7,18 @@ test.describe('Pokédex experience', () => {
     await mockPokeApi(page)
   })
 
+  test('offers a visible keyboard shortcut to the main content', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile-360', 'One viewport covers the keyboard contract')
+    await page.goto('/')
+    await page.keyboard.press('Tab')
+    const skipLink = page.getByRole('link', { name: 'Saltar al contenido', exact: true })
+    await expect(skipLink).toBeFocused()
+    await expect(skipLink).toBeVisible()
+    await page.keyboard.press('Enter')
+    await expect(page).toHaveURL(/#main-content$/)
+    await expect(page.getByRole('main')).toHaveAttribute('id', 'main-content')
+  })
+
   test('onboarding follows the Figma two-step flow', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== 'mobile-360', 'The source onboarding frame is mobile')
     await page.goto('/')
@@ -38,12 +50,22 @@ test.describe('Pokédex experience', () => {
   test('catalog searches, filters and remains usable at the project viewport', async ({
     page,
   }, testInfo) => {
+    const browserErrors: string[] = []
+    page.on('pageerror', (error) => browserErrors.push(error.message))
+    page.on('console', (message) => {
+      if (message.type() === 'error') browserErrors.push(message.text())
+    })
     await startOnCatalog(page)
     await page.goto('/')
     const bulbasaurCard = page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })
     await expect(bulbasaurCard).toBeVisible()
     await expect(bulbasaurCard.getByTestId('type-icon')).toHaveCount(2)
     await expect(page).toHaveScreenshot('catalog.png')
+    const viewport = page.viewportSize()
+    expect(viewport).not.toBeNull()
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(viewport!.width)
+    expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBe(viewport!.height)
+    await expect(page.locator('img:not([width]), img:not([height])')).toHaveCount(0)
 
     if (testInfo.project.name === 'desktop-1920') {
       const shell = await page.getByTestId('app-shell').boundingBox()
@@ -88,6 +110,7 @@ test.describe('Pokédex experience', () => {
         ({ impact }) => impact === 'critical' || impact === 'serious',
       ),
     ).toEqual([])
+    expect(browserErrors).toEqual([])
   })
 
   test('detail copies all attributes and persists favorites', async ({ page }, testInfo) => {

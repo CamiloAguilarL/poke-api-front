@@ -102,6 +102,7 @@ onMounted(async () => {
           :model-value="query"
           label="Buscar Pokémon"
           placeholder="Buscar Pokémon..."
+          name="pokemon-search"
           test-id="pokemon-search"
           class="flex-1"
           @update:model-value="store.setQuery"
@@ -125,7 +126,7 @@ onMounted(async () => {
       </div>
 
       <div v-if="status === 'ready'" class="mt-4 flex h-6 items-center justify-between">
-        <p class="text-xs font-medium text-muted-foreground" aria-live="polite">
+        <p class="tabular-nums text-xs font-medium text-muted-foreground" aria-live="polite">
           {{ resultLabel }}
         </p>
         <Button
@@ -158,8 +159,8 @@ onMounted(async () => {
       <div class="flex size-20 items-center justify-center rounded-full bg-[var(--surface-info)]">
         <Search class="size-9 text-primary" />
       </div>
-      <h2 class="mt-5 text-lg font-semibold">No encontramos Pokémon</h2>
-      <p class="mt-2 text-sm leading-6 text-muted-foreground">
+      <h2 class="mt-5 text-balance text-lg font-semibold">No encontramos Pokémon</h2>
+      <p class="mt-2 text-pretty text-sm leading-6 text-muted-foreground">
         Prueba con otro nombre, número o combinación de tipos.
       </p>
       <Button class="mt-5" variant="secondary" @click="clearFilters">Borrar filtros</Button>

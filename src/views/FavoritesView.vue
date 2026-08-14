@@ -36,7 +36,9 @@ onMounted(hydrate)
   <section class="min-h-[calc(100dvh-77px)] bg-background lg:min-h-dvh">
     <header class="px-4 pb-5 pt-11 lg:px-8 lg:pt-8">
       <h1 class="text-[26px] font-semibold">Favoritos</h1>
-      <p class="mt-1 text-sm text-muted-foreground">{{ favorites.count }} Pokémon guardados</p>
+      <p class="mt-1 tabular-nums text-sm text-muted-foreground">
+        {{ favorites.count }} Pokémon guardados
+      </p>
     </header>
 
     <EmptyState v-if="favorites.count === 0" @action="router.push('/pokedex')" />

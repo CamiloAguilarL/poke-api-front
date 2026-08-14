@@ -35,12 +35,14 @@ onMounted(async () => {
           v-if="jigglypuff?.sprite"
           :src="jigglypuff.sprite"
           :alt="jigglypuff.displayName"
+          width="160"
+          height="160"
           class="relative size-40 object-contain"
         />
         <span v-else class="relative text-7xl" aria-hidden="true">?</span>
       </div>
-      <h1 class="mt-7 text-[26px] font-semibold">{{ title }}</h1>
-      <p class="mt-3 text-sm leading-6 text-muted-foreground">
+      <h1 class="mt-7 text-balance text-[26px] font-semibold">{{ title }}</h1>
+      <p class="mt-3 text-pretty text-sm leading-6 text-muted-foreground">
         Estamos preparando esta sección. Mientras tanto, puedes seguir explorando y guardando
         Pokémon.
       </p>

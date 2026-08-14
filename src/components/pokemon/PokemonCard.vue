@@ -42,6 +42,8 @@ function toggleFavorite() {
           v-if="pokemon.sprite"
           :src="pokemon.sprite"
           :alt="pokemon.displayName"
+          width="72"
+          height="72"
           draggable="false"
           class="relative size-[72px] object-contain [image-rendering:auto] transition-transform group-hover:scale-105"
           loading="lazy"
@@ -53,7 +55,7 @@ function toggleFavorite() {
         />
       </div>
       <div class="min-w-0 flex-1">
-        <p class="text-[10px] font-medium text-[var(--text-tertiary)]">
+        <p class="tabular-nums text-[10px] font-medium text-[var(--text-tertiary)]">
           {{ formatPokemonNumber(pokemon.id) }}
         </p>
         <h2 class="truncate text-base font-semibold leading-6">{{ pokemon.displayName }}</h2>

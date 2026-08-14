@@ -17,10 +17,14 @@ defineEmits<{ retry: [] }>()
     <img
       src="/assets/figma/error-magikarp.png"
       alt="Magikarp confundido"
+      width="181"
+      height="210"
       class="h-[210px] w-auto object-contain"
     />
-    <h1 class="mt-5 text-xl font-semibold">{{ title }}</h1>
-    <p class="mt-2 max-w-[310px] text-sm leading-6 text-muted-foreground">{{ description }}</p>
+    <h1 class="mt-5 text-balance text-xl font-semibold">{{ title }}</h1>
+    <p class="mt-2 max-w-[310px] text-pretty text-sm leading-6 text-muted-foreground">
+      {{ description }}
+    </p>
     <Button class="mt-6 min-w-40" :loading="retrying" @click="$emit('retry')">Reintentar</Button>
   </section>
 </template>

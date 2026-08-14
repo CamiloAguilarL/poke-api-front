@@ -133,7 +133,7 @@ watch(() => props.name, load, { immediate: true })
       </div>
       <div class="relative z-10 mx-auto mt-1 flex max-w-4xl items-start justify-between gap-4">
         <div class="pt-4">
-          <p class="text-xs font-medium text-[var(--hero-foreground-muted)]">
+          <p class="tabular-nums text-xs font-medium text-[var(--hero-foreground-muted)]">
             {{ formatPokemonNumber(pokemon.id) }}
           </p>
           <h1 class="mt-0.5 text-[28px] font-semibold leading-tight sm:text-4xl">
@@ -148,6 +148,9 @@ watch(() => props.name, load, { immediate: true })
         v-if="pokemon.artwork || pokemon.sprite"
         :src="pokemon.artwork ?? pokemon.sprite ?? undefined"
         :alt="pokemon.displayName"
+        width="360"
+        height="315"
+        fetchpriority="high"
         class="pokemon-artwork absolute bottom-[-8px] left-1/2 z-10 h-[244px] w-[280px] -translate-x-1/2 object-contain sm:h-[280px] lg:h-[315px] lg:w-[360px]"
       />
     </header>
@@ -158,7 +161,9 @@ watch(() => props.name, load, { immediate: true })
       <div class="mx-auto max-w-4xl">
         <section aria-labelledby="about-heading">
           <h2 id="about-heading" class="text-lg font-semibold">Descripción</h2>
-          <p class="mt-3 text-sm leading-6 text-muted-foreground">{{ pokemon.description }}</p>
+          <p class="mt-3 text-pretty text-sm leading-6 text-muted-foreground">
+            {{ pokemon.description }}
+          </p>
         </section>
 
         <section class="mt-7" aria-labelledby="features-heading">
@@ -166,13 +171,13 @@ watch(() => props.name, load, { immediate: true })
           <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-5 sm:grid-cols-4">
             <div>
               <dt class="text-xs text-muted-foreground">Peso</dt>
-              <dd class="mt-1 text-sm font-semibold">
+              <dd class="mt-1 tabular-nums text-sm font-semibold">
                 {{ formatWeight(pokemon.weightHectograms) }}
               </dd>
             </div>
             <div>
               <dt class="text-xs text-muted-foreground">Altura</dt>
-              <dd class="mt-1 text-sm font-semibold">
+              <dd class="mt-1 tabular-nums text-sm font-semibold">
                 {{ formatHeight(pokemon.heightDecimeters) }}
               </dd>
             </div>
@@ -196,12 +201,16 @@ watch(() => props.name, load, { immediate: true })
             <Card class="border-transparent bg-[var(--surface-masculine)] p-4 shadow-none">
               <Mars class="size-5 text-[var(--gender-male)]" />
               <p class="mt-2 text-xs text-muted-foreground">Masculino</p>
-              <p class="text-base font-semibold">{{ formatPercentage(pokemon.gender.male) }}</p>
+              <p class="tabular-nums text-base font-semibold">
+                {{ formatPercentage(pokemon.gender.male) }}
+              </p>
             </Card>
             <Card class="border-transparent bg-[var(--surface-feminine)] p-4 shadow-none">
               <Venus class="size-5 text-[var(--gender-female)]" />
               <p class="mt-2 text-xs text-muted-foreground">Femenino</p>
-              <p class="text-base font-semibold">{{ formatPercentage(pokemon.gender.female) }}</p>
+              <p class="tabular-nums text-base font-semibold">
+                {{ formatPercentage(pokemon.gender.female) }}
+              </p>
             </Card>
           </div>
         </section>
@@ -213,7 +222,7 @@ watch(() => props.name, load, { immediate: true })
               <TypeBadge :type="weakness.type" />
               <span
                 v-if="weakness.multiplier > 2"
-                class="absolute -right-1 -top-1 rounded-full bg-card px-1 text-[9px] font-bold text-foreground shadow"
+                class="absolute -right-1 -top-1 rounded-full bg-card px-1 text-[9px] font-bold tabular-nums text-foreground shadow"
               >
                 ×{{ weakness.multiplier }}
               </span>
@@ -236,11 +245,13 @@ watch(() => props.name, load, { immediate: true })
                 v-if="evolution.sprite"
                 :src="evolution.sprite"
                 :alt="evolution.displayName"
+                width="78"
+                height="78"
                 class="size-[78px] object-contain"
                 loading="lazy"
               />
               <div v-else class="size-[78px]" />
-              <span class="mt-1 text-[10px] text-muted-foreground">{{
+              <span class="mt-1 text-[10px] tabular-nums text-muted-foreground">{{
                 formatPokemonNumber(evolution.id)
               }}</span>
               <span class="truncate text-xs font-semibold">{{ evolution.displayName }}</span>

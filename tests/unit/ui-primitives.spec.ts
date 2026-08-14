@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import { SearchField } from '@/components/ui/search-field'
+import { SkipLink } from '@/components/ui/skip-link'
 import { Toggle } from '@/components/ui/toggle'
 import TypeBadge from '@/components/pokemon/TypeBadge.vue'
 
@@ -16,6 +17,13 @@ describe('design system primitives', () => {
 
     const input = wrapper.get('input[type="search"]')
     expect(wrapper.get('label').attributes('for')).toBe(input.attributes('id'))
+    expect(input.attributes()).toMatchObject({
+      autocomplete: 'off',
+      enterkeyhint: 'search',
+      inputmode: 'search',
+      name: 'search',
+      spellcheck: 'false',
+    })
     expect(wrapper.findAll('button[aria-label="Limpiar búsqueda"]')).toHaveLength(1)
 
     await input.setValue('pikachu')
@@ -44,5 +52,14 @@ describe('design system primitives', () => {
     expect(wrapper.text()).toContain('Planta')
     expect(icon.attributes('style')).toContain('grass.svg')
     expect(wrapper.find('img').exists()).toBe(false)
+  })
+
+  it('provides a centralized keyboard shortcut to the main content', () => {
+    const wrapper = mount(SkipLink)
+    const link = wrapper.get('a')
+
+    expect(link.text()).toBe('Saltar al contenido')
+    expect(link.attributes('href')).toBe('#main-content')
+    expect(link.attributes('data-slot')).toBe('skip-link')
   })
 })
