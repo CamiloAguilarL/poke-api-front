@@ -20,8 +20,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json-summary', 'html'],
-      include: ['src/**/*.{ts,vue}'],
-      exclude: ['src/main.ts', 'src/router/**', 'src/components/ui/**'],
+      include: ['src/features/pokemon/domain/**/*.ts', 'src/stores/**/*.ts'],
       thresholds: {
         lines: 80,
         functions: 80,

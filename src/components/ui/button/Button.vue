@@ -24,7 +24,8 @@ const classes = computed(() => {
       'bg-primary text-primary-foreground shadow-sm hover:bg-[var(--action-primary-hover)] active:bg-[var(--action-primary-pressed)]',
     secondary:
       'bg-secondary text-secondary-foreground hover:bg-[var(--action-secondary-hover)] active:bg-[var(--action-secondary-pressed)]',
-    tertiary: 'bg-transparent text-primary hover:bg-primary/8 active:bg-primary/14',
+    tertiary:
+      'bg-transparent text-[var(--navigation-active)] hover:bg-primary/8 active:bg-primary/14',
     icon: 'bg-transparent text-foreground hover:bg-black/5 active:bg-black/10',
     danger: 'bg-destructive text-white hover:bg-red-700 active:bg-red-800',
   }

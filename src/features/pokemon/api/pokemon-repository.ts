@@ -236,7 +236,7 @@ class PokeApiRepository implements PokemonRepository {
     const displayName = localized(species.names, formatPokemonName(pokemon.name))
     const category = localized(
       species.genera.map(({ genus, language }) => ({
-        name: genus.replace(/\s+Pokémon$/i, ''),
+        name: genus.replace(/Pokémon\s*/i, '').trim(),
         language,
       })),
       'Sin categoría',

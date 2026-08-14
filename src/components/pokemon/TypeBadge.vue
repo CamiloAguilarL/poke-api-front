@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<{ type: PokemonTypeName; compact?: boolea
     :class="[
       'inline-flex items-center rounded-full font-semibold text-white shadow-sm',
       compact ? 'gap-1 px-2 py-1 text-[10px]' : 'gap-2 px-3 py-1.5 text-xs',
-      { '!text-[#263238]': TYPE_META[props.type].darkText },
+      { '!text-black': TYPE_META[props.type].darkText },
     ]"
     :style="{ backgroundColor: TYPE_META[props.type].color }"
   >

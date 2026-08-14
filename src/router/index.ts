@@ -10,7 +10,7 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   scrollBehavior: () => ({ top: 0 }),
   routes: [
-    { path: '/', name: 'home', component: { template: '<div />' } },
+    { path: '/', name: 'home', component: { render: () => null } },
     { path: '/welcome', name: 'welcome', component: OnboardingView },
     {
       path: '/',
@@ -20,7 +20,7 @@ export const router = createRouter({
           path: 'pokedex',
           component: PokedexShell,
           children: [
-            { path: '', name: 'pokedex', component: { template: '<div />' } },
+            { path: '', name: 'pokedex', component: { render: () => null } },
             {
               path: ':name',
               name: 'pokemon-detail',
