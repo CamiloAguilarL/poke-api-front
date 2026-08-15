@@ -7,8 +7,8 @@ export const linkVariants = cva(
       variant: {
         default: 'text-primary underline-offset-4 hover:underline',
         navigation:
-          'group flex min-w-[72px] flex-col items-center gap-1 px-2 py-1.5 text-[10px] font-medium text-[var(--text-tertiary)] hover:bg-foreground/4 lg:w-full lg:py-3',
-        card: 'flex min-w-0 flex-1 items-center gap-3 p-3 pr-1',
+          'group flex min-w-[72px] flex-col items-center gap-1 px-2 py-1.5 text-[10px] font-medium text-[var(--text-secondary)] hover:bg-foreground/4 lg:w-full lg:py-3',
+        card: 'relative flex min-w-0 flex-1',
         compactCard:
           'flex w-[132px] shrink-0 flex-col items-center border border-border bg-card p-3 text-center hover:border-primary',
       },

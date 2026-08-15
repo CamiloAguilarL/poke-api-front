@@ -14,6 +14,9 @@ importers:
       '@lucide/vue':
         specifier: ^1.31.0
         version: 1.31.0(vue@3.5.41(typescript@6.0.3))
+      '@material-design-icons/svg':
+        specifier: ^0.14.15
+        version: 0.14.15
       '@tanstack/vue-virtual':
         specifier: ^3.13.35
         version: 3.13.35(vue@3.5.41(typescript@6.0.3))
@@ -321,6 +324,9 @@ packages:
     resolution: {integrity: sha512-NtjEHhcAa7umPh40wrRmlESJqNGdnpc7LziBKFnW3fmlrW0g2xMCDpdWU7WeEHRSl3xOpxbqiFTLKxoK3CoVCg==}
     peerDependencies:
       vue: '>=3.0.1'
+
+  '@material-design-icons/svg@0.14.15':
+    resolution: {integrity: sha512-6nbjwGwyJnphwQUscJAYqw1Tk6+W8KvsgOAeyVgzIFXVsHfgX5XyplTUcZ29wbcTUysMMyCUi1LYpmFKA/e61g==}
 
   '@one-ini/wasm@0.1.1':
     resolution: {integrity: sha512-XuySG1E38YScSJoMlqovLru4KTUNSjgVTIjyh7qMX6aNN5HY5Ct5LhRJdxO79JtTzKfzV/bnWpz+zquYrISsvw==}
@@ -2259,6 +2265,8 @@ snapshots:
   '@lucide/vue@1.31.0(vue@3.5.41(typescript@6.0.3))':
     dependencies:
       vue: 3.5.41(typescript@6.0.3)
+
+  '@material-design-icons/svg@0.14.15': {}
 
   '@one-ini/wasm@0.1.1': {}
 

@@ -13,10 +13,14 @@ const props = withDefaults(defineProps<{ type: PokemonTypeName; compact?: boolea
   <Badge
     variant="type"
     :size="compact ? 'compact' : 'default'"
-    :class="TYPE_META[props.type].darkText ? '!text-foreground' : ''"
     :style="{ backgroundColor: TYPE_META[props.type].color }"
   >
-    <TypeIcon :type="type" :class="compact ? 'size-3' : 'size-4'" />
+    <span
+      class="flex size-[18px] items-center justify-center rounded-full bg-white"
+      :style="{ color: TYPE_META[props.type].color }"
+    >
+      <TypeIcon :type="type" class="size-[11px]" />
+    </span>
     {{ TYPE_META[props.type].label }}
   </Badge>
 </template>

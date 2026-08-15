@@ -43,7 +43,7 @@ const inputId = `search-${useId()}`
       enterkeyhint="search"
       :spellcheck="false"
       :placeholder="placeholder"
-      class="border-transparent bg-secondary pl-11 pr-10 focus:border-primary focus:bg-card"
+      class="rounded-full border-[1.5px] border-[var(--border-default)] bg-card pl-11 pr-10 focus:border-primary"
       :data-testid="testId"
       @update:model-value="emit('update:modelValue', $event)"
     />

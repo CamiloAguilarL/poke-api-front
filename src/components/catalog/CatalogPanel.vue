@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Search, SlidersHorizontal } from '@lucide/vue'
+import { Search } from '@lucide/vue'
 import { storeToRefs } from 'pinia'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from '@/components/ui/sonner'
 import { Button } from '@/components/ui/button'
@@ -24,22 +24,13 @@ const {
   status,
   filterStatus,
   nextPageStatus,
-  errorMessage,
   entries,
-  totalCount,
   resultVersion,
-  hasActiveFilters,
   hasNextPage,
 } = storeToRefs(store)
 const filterOpen = ref(false)
 const catalogReady = ref(false)
 const suppressSearch = ref(false)
-
-const resultLabel = computed(() => {
-  const count = totalCount.value
-  if (!hasActiveFilters.value) return `${count.toLocaleString('es-CO')} Pokémon`
-  return `${count.toLocaleString('es-CO')} resultado${count === 1 ? '' : 's'}`
-})
 
 function typesFromRoute(): PokemonTypeName[] {
   const value = typeof route.query.types === 'string' ? route.query.types.split(',') : []
@@ -104,47 +95,26 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
     class="flex h-[calc(100dvh-77px)] min-h-[560px] flex-col bg-background lg:h-dvh"
     aria-label="Catálogo Pokémon"
   >
-    <header class="shrink-0 px-4 pb-3 pt-11 lg:px-6 lg:pt-7">
-      <div :class="['flex items-center gap-2', { 'lg:max-w-2xl': props.expanded }]">
+    <header v-if="status !== 'error'" class="shrink-0 px-4 pb-4 pt-11 lg:px-6 lg:pt-7">
+      <div :class="['flex items-center gap-4', { 'lg:max-w-2xl': props.expanded }]">
         <SearchField
           :model-value="query"
           label="Buscar Pokémon"
           placeholder="Buscar Pokémon..."
           name="pokemon-search"
           test-id="pokemon-search"
-          class="flex-1"
+          class="min-w-0 flex-1"
           @update:model-value="store.setQuery"
         />
         <Button
-          variant="secondary"
+          variant="icon"
           size="icon"
-          class="relative"
+          class="relative size-12 rounded-full border-[1.5px] border-[var(--border-default)] bg-card"
           aria-label="Filtrar por tipo"
           data-testid="open-filters"
           @click="filterOpen = true"
         >
-          <SlidersHorizontal class="size-5" />
-          <span
-            v-if="selectedTypes.length"
-            class="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground"
-          >
-            {{ selectedTypes.length }}
-          </span>
-        </Button>
-      </div>
-
-      <div v-if="status === 'ready'" class="mt-4 flex h-6 items-center justify-between">
-        <p class="tabular-nums text-xs font-medium text-muted-foreground" aria-live="polite">
-          {{ resultLabel }}
-        </p>
-        <Button
-          v-if="hasActiveFilters"
-          variant="tertiary"
-          size="sm"
-          class="h-7 px-2"
-          @click="clearFilters"
-        >
-          Borrar filtros
+          <Search class="size-5 text-[var(--text-tertiary)]" />
         </Button>
       </div>
     </header>
@@ -157,7 +127,8 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
     <ErrorState
       v-else-if="status === 'error'"
       class="flex-1"
-      :description="errorMessage"
+      title="Algo salió mal…"
+      description="No pudimos cargar la información en este momento. Verifica tu conexión o intenta nuevamente más tarde."
       @retry="retry"
     />
     <div
