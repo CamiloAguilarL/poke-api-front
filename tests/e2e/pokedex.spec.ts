@@ -153,6 +153,7 @@ test.describe('Pokédex experience', () => {
     ).toHaveCount(18)
     const filterSheet = page.locator('[data-slot="sheet-content"]')
     await expect(filterSheet).toHaveAttribute('data-state', 'open')
+    await expect(page.getByTestId('filter-type-header').locator('svg')).toHaveCount(0)
     if (testInfo.project.name === 'mobile-360') {
       await expect
         .poll(() =>
@@ -164,6 +165,22 @@ test.describe('Pokédex experience', () => {
     }
     await page.getByRole('checkbox', { name: 'Fuego', exact: true }).click()
     if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('filter.png')
+    if (testInfo.project.name === 'desktop-1920') {
+      const gridColumns = await page
+        .getByRole('group', { name: 'Tipos de Pokémon' })
+        .evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' ').length)
+      expect(gridColumns).toBe(2)
+
+      const applyButton = await page
+        .getByRole('button', { name: 'Aplicar', exact: true })
+        .boundingBox()
+      const cancelButton = await page
+        .getByRole('button', { name: 'Cancelar', exact: true })
+        .boundingBox()
+      expect(applyButton?.y).toBe(cancelButton?.y)
+      expect(cancelButton!.x).toBeLessThan(applyButton!.x)
+      await expect(page).toHaveScreenshot('filter-desktop.png')
+    }
     await page.getByRole('button', { name: 'Cancelar', exact: true }).click()
     await expect(filterSheet).toBeHidden()
     await expect(page).not.toHaveURL(/types=/)
