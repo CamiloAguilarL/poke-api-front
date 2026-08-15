@@ -33,7 +33,7 @@ Las tarjetas usan el sprite frontal liviano que puede derivarse directamente del
 
 ## Contraste de los chips de tipo
 
-Los chips preservan el color y texto blanco definidos por el sistema visual de Figma. Axe se ejecuta sobre todas las reglas críticas y serias salvo `color-contrast`, documentada como excepción visual: algunos tokens claros —Fuego y Volador— no alcanzan AA con texto de 10–12 px. Cambiar el texto a oscuro rompería el componente fuente.
+Los chips siguen la matriz del componente `Elementos Status` de Figma, sin inferir el color de contenido por luminancia. Eléctrico y Tierra usan `text/primary`; las otras 16 variantes usan `text/inverse`. El círculo usa `surface/default` y el pictograma conserva el color del tipo. Normal, Acero y Siniestro comparten `Status/steel` (`#546E7A`). Axe mantiene la excepción `color-contrast` porque varias combinaciones claras son una decisión explícita del componente fuente.
 
 ## Extensiones controladas
 

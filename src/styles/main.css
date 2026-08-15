@@ -59,7 +59,7 @@
   --shadow-loader: 0 10px 28px rgb(13 71 161 / 18%);
   --shadow-sprite: 0 18px 20px rgb(0 0 0 / 18%);
   --layout-content-max: 99rem;
-  --type-normal: #78909c;
+  --type-normal: #546e7a;
   --type-fighting: #e53935;
   --type-flying: #00bcd4;
   --type-poison: #9c27b0;
@@ -75,7 +75,7 @@
   --type-psychic: #673ab7;
   --type-ice: #3d8bff;
   --type-dragon: #00acc1;
-  --type-dark: #455a64;
+  --type-dark: #546e7a;
   --type-fairy: #e91e63;
 }
 

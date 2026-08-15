@@ -50,6 +50,10 @@ describe('design system primitives', () => {
     const icon = wrapper.get('[data-testid="type-icon"]')
 
     expect(wrapper.text()).toContain('Planta')
+    expect(wrapper.get('[data-slot="badge"]').attributes('style')).toContain(
+      'color: var(--text-inverse)',
+    )
+    expect(icon.element.parentElement?.getAttribute('style')).toContain('color: var(--type-grass)')
     expect(icon.attributes('style')).toContain('grass.svg')
     expect(wrapper.find('img').exists()).toBe(false)
   })

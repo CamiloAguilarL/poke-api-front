@@ -14,6 +14,7 @@ describe('Pokémon type domain', () => {
       expect(TYPE_META[type].label).toBeTruthy()
       expect(TYPE_META[type].color).toBe(`var(--type-${type})`)
       expect(TYPE_META[type].icon).toBe(`/assets/types/${type}.svg`)
+      expect(['primary', 'inverse']).toContain(TYPE_META[type].contentTone)
     }
   })
 })
