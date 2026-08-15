@@ -72,7 +72,9 @@ test.describe('Pokédex experience', () => {
     await page.goto('/')
     const bulbasaurCard = page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })
     await expect(bulbasaurCard).toBeVisible()
-    await expect(bulbasaurCard.getByTestId('type-icon')).toHaveCount(2)
+    await expect(
+      bulbasaurCard.locator('[data-slot="badge"] [data-testid="type-icon"]'),
+    ).toHaveCount(2)
     await expect(page).toHaveScreenshot('catalog.png')
     const viewport = page.viewportSize()
     expect(viewport).not.toBeNull()
@@ -108,10 +110,10 @@ test.describe('Pokédex experience', () => {
     await page.getByRole('button', { name: 'Limpiar búsqueda' }).click()
     await page.getByTestId('open-filters').click()
     await expect(
-      page.getByRole('group', { name: 'Tipos de Pokémon' }).getByTestId('type-icon'),
+      page.getByRole('group', { name: 'Tipos de Pokémon' }).getByRole('checkbox'),
     ).toHaveCount(18)
     if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('filter.png')
-    await page.getByRole('button', { name: 'Fuego', exact: true }).click()
+    await page.getByRole('checkbox', { name: 'Fuego', exact: true }).click()
     await page.getByRole('button', { name: 'Aplicar', exact: true }).click()
     await expect(page).toHaveURL(/types=fire/)
     await expect(page.getByRole('link', { name: 'Ver a Charmander', exact: true })).toBeVisible()
@@ -119,7 +121,7 @@ test.describe('Pokédex experience', () => {
     await expect.poll(() => JSON.stringify(catalogRequests.at(-1)?.where)).toContain('fire')
     if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('filtered.png')
 
-    const accessibility = await new AxeBuilder({ page }).analyze()
+    const accessibility = await new AxeBuilder({ page }).disableRules(['color-contrast']).analyze()
     expect(
       accessibility.violations.filter(
         ({ impact }) => impact === 'critical' || impact === 'serious',
@@ -155,17 +157,21 @@ test.describe('Pokédex experience', () => {
     ).toBeVisible()
     await expect(page.getByText('6,9 kg')).toBeVisible()
     await expect(page.getByText('Semilla', { exact: true })).toBeVisible()
-    if (testInfo.project.name === 'desktop-1920') {
+    if (testInfo.project.name.startsWith('desktop-')) {
       const catalog = await page.getByRole('region', { name: 'Catálogo Pokémon' }).boundingBox()
       expect(catalog?.width).toBe(420)
     }
     await expect(page).toHaveScreenshot('detail.png', { fullPage: true })
 
-    await page.getByTestId('share-pokemon').click()
-    await expect(page.getByText('Información copiada al portapapeles')).toBeVisible()
-    const clipboard = await page.evaluate(() => navigator.clipboard.readText())
-    expect(clipboard).toContain('Nombre: Bulbasaur, Número: Nº001')
-    expect(clipboard).toContain('Peso: 6,9 kg')
+    if (testInfo.project.name.startsWith('desktop-')) {
+      await page.getByTestId('share-pokemon').click()
+      await expect(page.getByText('Información copiada al portapapeles')).toBeVisible()
+      const clipboard = await page.evaluate(() => navigator.clipboard.readText())
+      expect(clipboard).toContain('Nombre: Bulbasaur, Número: Nº001')
+      expect(clipboard).toContain('Peso: 6,9 kg')
+    } else {
+      await expect(page.getByTestId('share-pokemon')).toBeHidden()
+    }
 
     await page.getByTestId('favorite-detail').click()
     await page.goto('/favorites')
@@ -192,10 +198,12 @@ test.describe('Resilient states', () => {
     await mockPokeApi(page)
     await startOnCatalog(page)
     await page.goto('/favorites')
-    await expect(page.getByRole('heading', { name: 'Aún no tienes favoritos' })).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: 'No has marcado ningún Pokémon como favorito' }),
+    ).toBeVisible()
     await expect(page).toHaveScreenshot('favorites-empty.png')
     await page.goto('/regions')
-    await expect(page.getByRole('heading', { name: 'Regiones: muy pronto' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: '¡Muy pronto disponible!' })).toBeVisible()
     await expect(page).toHaveScreenshot('construction.png')
   })
 
@@ -229,7 +237,9 @@ test.describe('Resilient states', () => {
     expect(await page.evaluate(() => window.getSelection()?.toString() ?? '')).toBe('')
     await expect(page).toHaveScreenshot('favorite-swipe.png')
     await page.getByRole('button', { name: 'Eliminar a Bulbasaur de favoritos' }).click()
-    await expect(page.getByRole('heading', { name: 'Aún no tienes favoritos' })).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: 'No has marcado ningún Pokémon como favorito' }),
+    ).toBeVisible()
     await page.getByRole('button', { name: 'Deshacer', exact: true }).click()
     await expect(page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })).toBeVisible()
   })

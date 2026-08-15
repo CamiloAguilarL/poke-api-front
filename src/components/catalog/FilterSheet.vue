@@ -64,14 +64,14 @@ function apply() {
         </Button>
         <h2 class="text-center text-[20px] font-semibold leading-7">Filtra por tus preferencias</h2>
 
-        <div class="mt-[68px] flex h-12 items-center justify-between">
+        <div class="mt-16 flex h-12 items-center justify-between">
           <h3 class="text-base font-medium">Tipo</h3>
           <ChevronUp class="size-5" aria-hidden="true" />
         </div>
       </header>
 
       <div
-        class="scrollbar-none h-72 shrink-0 overflow-y-auto border-y border-[var(--border-default)]"
+        class="scrollbar-none h-[252px] shrink-0 overflow-y-auto border-y border-[var(--border-default)]"
         role="group"
         aria-label="Tipos de Pokémon"
       >
@@ -79,7 +79,7 @@ function apply() {
           v-for="type in filterTypes"
           :key="type"
           :for="`filter-${type}`"
-          class="flex h-12 cursor-pointer items-center justify-between px-6 text-sm font-normal"
+          class="flex h-[42px] cursor-pointer items-center justify-between px-6 text-sm font-normal"
         >
           <span>{{ TYPE_META[type].label }}</span>
           <Checkbox
@@ -90,7 +90,7 @@ function apply() {
         </Label>
       </div>
 
-      <footer class="shrink-0 space-y-4 px-6 py-4">
+      <footer class="shrink-0 space-y-4 px-4 pb-4 pt-[25px]">
         <Button class="w-full rounded-full" :loading="loading" @click="apply">Aplicar</Button>
         <Button variant="secondary" class="w-full rounded-full" @click="emit('update:open', false)">
           Cancelar

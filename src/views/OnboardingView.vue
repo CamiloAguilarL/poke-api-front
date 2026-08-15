@@ -63,7 +63,12 @@ async function continueFlow() {
         />
       </div>
 
-      <div class="absolute inset-x-4 bottom-[168px] text-center lg:static lg:mt-8 lg:w-full">
+      <div
+        :class="[
+          'absolute inset-x-4 text-center lg:static lg:mt-8 lg:w-full',
+          firstStep ? 'top-[496px]' : 'top-[482px]',
+        ]"
+      >
         <h1 class="mx-auto w-[321px] text-balance text-[26px] font-medium leading-[1.25]">
           {{ firstStep ? 'Todos los Pokémon en un solo lugar' : 'Mantén tu Pokédex actualizada' }}
         </h1>
@@ -77,7 +82,7 @@ async function continueFlow() {
       </div>
 
       <div
-        class="absolute left-1/2 bottom-[122px] flex -translate-x-1/2 items-center gap-2 lg:static lg:mt-7 lg:translate-x-0"
+        class="absolute left-1/2 top-[667px] flex -translate-x-1/2 items-center gap-2 lg:static lg:mt-7 lg:translate-x-0"
         aria-label="Paso del onboarding"
       >
         <span
@@ -94,7 +99,7 @@ async function continueFlow() {
         />
       </div>
       <Button
-        class="absolute bottom-10 left-1/2 h-[58px] w-[328px] -translate-x-1/2 rounded-full text-lg lg:static lg:mt-5 lg:translate-x-0"
+        class="absolute left-1/2 top-[700px] h-[58px] w-[328px] -translate-x-1/2 rounded-full text-lg lg:static lg:mt-5 lg:translate-x-0"
         @click="continueFlow"
       >
         {{ firstStep ? 'Continuar' : 'Empecemos' }}

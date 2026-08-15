@@ -17,7 +17,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
     :disabled="disabled"
     :class="
       cn(
-        'flex size-5 shrink-0 items-center justify-center rounded-[4px] border border-[var(--border-default)] bg-card text-primary-foreground transition-colors data-[state=checked]:border-primary data-[state=checked]:bg-[var(--navigation-active)] disabled:opacity-45',
+        'flex size-[18px] shrink-0 items-center justify-center rounded-[3px] border border-[var(--border-default)] bg-card text-primary-foreground transition-colors data-[state=checked]:border-primary data-[state=checked]:bg-[var(--navigation-active)] disabled:opacity-45',
         props.class,
       )
     "
@@ -25,7 +25,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
     @update:model-value="emit('update:modelValue', Boolean($event))"
   >
     <CheckboxIndicator class="flex items-center justify-center">
-      <Check class="size-3.5" :stroke-width="3" />
+      <Check class="size-3" :stroke-width="3" />
     </CheckboxIndicator>
   </CheckboxRoot>
 </template>

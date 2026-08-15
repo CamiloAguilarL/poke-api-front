@@ -25,6 +25,8 @@ const {
   filterStatus,
   nextPageStatus,
   entries,
+  totalCount,
+  hasActiveFilters,
   resultVersion,
   hasNextPage,
 } = storeToRefs(store)
@@ -95,7 +97,10 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
     class="flex h-[calc(100dvh-77px)] min-h-[560px] flex-col bg-background lg:h-dvh"
     aria-label="Catálogo Pokémon"
   >
-    <header v-if="status !== 'error'" class="shrink-0 px-4 pb-4 pt-11 lg:px-6 lg:pt-7">
+    <header
+      v-if="status !== 'error'"
+      :class="['shrink-0 px-4 pt-11 lg:px-6 lg:pt-7', hasActiveFilters ? 'pb-[10px]' : 'pb-4']"
+    >
       <div :class="['flex items-center gap-4', { 'lg:max-w-2xl': props.expanded }]">
         <SearchField
           :model-value="query"
@@ -115,6 +120,22 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
           @click="filterOpen = true"
         >
           <Search class="size-5 text-[var(--text-tertiary)]" />
+        </Button>
+      </div>
+      <div
+        v-if="hasActiveFilters && status === 'ready'"
+        class="mt-2 flex min-h-[18px] items-center gap-1 text-xs text-[var(--text-secondary)]"
+      >
+        <p class="tabular-nums">
+          Se han encontrado {{ totalCount }} {{ totalCount === 1 ? 'resultado' : 'resultados' }}
+        </p>
+        <Button
+          variant="tertiary"
+          size="sm"
+          class="h-auto rounded-none p-0 font-normal underline underline-offset-2"
+          @click="clearFilters"
+        >
+          Borrar filtro
         </Button>
       </div>
     </header>

@@ -159,27 +159,27 @@ watch(() => props.name, load, { immediate: true })
       </Button>
 
       <img
-        v-if="pokemon.sprite"
-        :src="pokemon.sprite"
+        v-if="pokemon.detailSprite"
+        :src="pokemon.detailSprite"
         :alt="pokemon.displayName"
-        width="420"
-        height="420"
+        width="175"
+        height="175"
         fetchpriority="high"
-        class="absolute left-1/2 top-0 z-10 size-[420px] -translate-x-1/2 object-contain [image-rendering:pixelated]"
+        class="absolute left-1/2 top-[136px] z-10 size-[175px] -translate-x-1/2 object-contain opacity-80 mix-blend-multiply [image-rendering:pixelated]"
       />
     </header>
 
     <div class="mx-auto min-h-[586px] w-[calc(100%-24px)] max-w-[337px]">
       <section aria-labelledby="pokemon-name">
-        <h1 id="pokemon-name" class="text-[26px] font-medium leading-8">
+        <h1 id="pokemon-name" class="text-[26px] font-medium leading-10">
           {{ pokemon.displayName }}
         </h1>
-        <p class="tabular-nums text-xs text-[var(--text-secondary)]">
+        <p class="mt-1 tabular-nums text-xs text-[var(--text-secondary)]">
           {{ formatPokemonNumber(pokemon.id) }}
         </p>
       </section>
 
-      <div class="mt-5 flex flex-wrap gap-1.5">
+      <div class="mt-8 flex flex-wrap gap-1.5">
         <TypeBadge v-for="type in pokemon.types" :key="type" :type="type" compact />
       </div>
 
@@ -240,7 +240,7 @@ watch(() => props.name, load, { immediate: true })
         </dl>
       </div>
 
-      <section class="mt-6" aria-labelledby="gender-heading">
+      <section class="mt-5" aria-labelledby="gender-heading">
         <h2
           id="gender-heading"
           class="text-center text-[10px] font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
@@ -266,7 +266,7 @@ watch(() => props.name, load, { immediate: true })
         </template>
       </section>
 
-      <section class="mt-11" aria-labelledby="weakness-heading">
+      <section class="mt-10" aria-labelledby="weakness-heading">
         <h2 id="weakness-heading" class="text-[20px] font-medium leading-7">Debilidades</h2>
         <div class="mt-4 flex flex-wrap gap-x-4 gap-y-3">
           <TypeBadge

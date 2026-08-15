@@ -50,6 +50,7 @@ export interface EvolutionStage extends CatalogEntry {
 }
 
 export interface PokemonDetail extends PokemonSummary {
+  detailSprite: string | null
   description: string
   weightHectograms: number
   heightDecimeters: number

@@ -14,6 +14,7 @@ const bulbasaur: PokemonDetail = {
   name: 'bulbasaur',
   displayName: 'Bulbasaur',
   sprite: 'sprite.png',
+  detailSprite: 'detail-sprite.png',
   artwork: 'artwork.png',
   types: ['grass', 'poison'],
   description: 'Una rara semilla, crece con este Pokémon.',

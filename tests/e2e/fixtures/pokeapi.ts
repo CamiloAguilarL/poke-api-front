@@ -30,6 +30,7 @@ const named = (name: string, resource: string) => ({
 
 function pokemonResponse(entry: PokemonFixture) {
   const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${entry.id}.png`
+  const crystalSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/${entry.id}.png`
   const artwork = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${entry.id}.png`
   return {
     id: entry.id,
@@ -43,20 +44,34 @@ function pokemonResponse(entry: PokemonFixture) {
     ],
     sprites: {
       front_default: sprite,
-      versions: { 'generation-v': { 'black-white': { front_default: sprite } } },
+      versions: {
+        'generation-ii': { crystal: { front_default: crystalSprite } },
+        'generation-v': { 'black-white': { front_default: sprite } },
+      },
       other: { 'official-artwork': { front_default: artwork } },
     },
   }
 }
 
 function typeResponse(type: string) {
-  const weakness = type === 'grass' ? ['fire', 'ice', 'poison', 'flying', 'bug'] : ['ground']
+  const doubleDamageFrom =
+    type === 'grass'
+      ? ['fire', 'ice', 'poison', 'flying', 'bug']
+      : type === 'poison'
+        ? ['ground', 'psychic']
+        : ['ground']
+  const halfDamageFrom =
+    type === 'grass'
+      ? ['water', 'electric', 'grass', 'ground']
+      : type === 'poison'
+        ? ['fighting', 'poison', 'bug', 'grass', 'fairy']
+        : []
   return {
     name: type,
     names: [{ name: type, language: named('es', 'language') }],
     damage_relations: {
-      double_damage_from: weakness.map((name) => named(name, 'type')),
-      half_damage_from: [],
+      double_damage_from: doubleDamageFrom.map((name) => named(name, 'type')),
+      half_damage_from: halfDamageFrom.map((name) => named(name, 'type')),
       no_damage_from: [],
     },
     pokemon: pokemon
@@ -144,7 +159,8 @@ export async function mockPokeApi(
         ],
         flavor_text_entries: [
           {
-            flavor_text: 'Una rara semilla le fue plantada en el lomo al nacer.',
+            flavor_text:
+              'Una rara semilla le fue plantada en el lomo al nacer. La planta brota y crece con este Pokémon.',
             language: named('es', 'language'),
           },
         ],

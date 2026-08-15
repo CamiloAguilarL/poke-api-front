@@ -206,6 +206,11 @@ function preferredSprite(sprites: PokemonDto['sprites']): string | null {
   )
 }
 
+function detailSprite(sprites: PokemonDto['sprites']): string | null {
+  const source = sprites as Record<string, any>
+  return source.versions?.['generation-ii']?.crystal?.front_default ?? preferredSprite(sprites)
+}
+
 function officialArtwork(sprites: PokemonDto['sprites']): string | null {
   const source = sprites as Record<string, any>
   return source.other?.['official-artwork']?.front_default ?? source.front_default ?? null
@@ -352,6 +357,7 @@ class PokeApiRepository implements PokemonRepository {
 
     return {
       ...toSummary(pokemon, displayName),
+      detailSprite: detailSprite(pokemon.sprites),
       description: descriptionFromSpecies(species),
       weightHectograms: pokemon.weight,
       heightDecimeters: pokemon.height,

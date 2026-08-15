@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
 export const badgeVariants = cva(
-  'inline-flex h-6 items-center rounded-full font-medium text-primary-foreground',
+  'inline-flex items-center rounded-full font-medium text-primary-foreground',
   {
     variants: {
       variant: {
@@ -9,8 +9,8 @@ export const badgeVariants = cva(
         type: '',
       },
       size: {
-        default: 'gap-1 pl-1 pr-2 text-[10px]',
-        compact: 'gap-1 pl-1 pr-2 text-[10px]',
+        default: 'h-6 gap-2 pl-1 pr-5 text-xs',
+        compact: 'h-6 gap-1 pl-1 pr-2 text-[10px]',
       },
     },
     defaultVariants: { variant: 'default', size: 'default' },

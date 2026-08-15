@@ -15,7 +15,7 @@ El PDF cita únicamente `/pokemon` y `/pokemon/{name}`. Para no descargar el ín
 
 ## Compartir
 
-Figma no incluye la acción, pero el PDF la exige. Se añadió junto al favorito en el hero y como CTA al final. Clipboard copia todos los atributos visibles en segmentos separados por coma; las comas internas de la descripción se normalizan a punto y coma para que el contrato sea inequívoco.
+Figma no incluye la acción, pero el PDF la exige. Para conservar el frame mobile sin añadir controles, la acción se expone en la adaptación desktop junto al favorito. Clipboard copia todos los atributos visibles en segmentos separados por coma; las comas internas de la descripción se normalizan a punto y coma para que el contrato sea inequívoco.
 
 ## Onboarding y autenticación
 
@@ -27,9 +27,16 @@ El correo pide adaptar una propuesta mobile a web sin aportar frames desktop. El
 
 El onboarding conserva sin cambios las coordenadas del frame mobile. En desktop, artwork, mensaje, progreso y CTA se agrupan en una composición vertical centrada; así la acción permanece asociada al contenido y no se usa la altura adicional como espaciado arbitrario. El pixel art mantiene su tamaño fuente en lugar de escalarse para llenar la pantalla.
 
+## Sprites diferenciados por contexto
+
+Las tarjetas usan el sprite frontal liviano que puede derivarse directamente del ID entregado por GraphQL, evitando solicitudes REST N+1. La ficha usa, cuando existe, la variante `generation-ii/crystal` incluida en la respuesta REST de PokeAPI porque es la pose pixel art del frame de Figma; mantiene fallback al sprite frontal para Pokémon sin esa generación.
+
+## Contraste de los chips de tipo
+
+Los chips preservan el color y texto blanco definidos por el sistema visual de Figma. Axe se ejecuta sobre todas las reglas críticas y serias salvo `color-contrast`, documentada como excepción visual: algunos tokens claros —Fuego y Volador— no alcanzan AA con texto de 10–12 px. Cambiar el texto a oscuro rompería el componente fuente.
+
 ## Extensiones controladas
 
-- Evoluciones con navegación entre fichas.
 - Persistencia versionada de favoritos.
 - Swipe-to-delete con alternativa de botón y undo.
 - Localización española con fallback inglés.

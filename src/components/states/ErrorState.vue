@@ -27,7 +27,7 @@ defineEmits<{ retry: [] }>()
       {{ description }}
     </p>
     <Button
-      class="mt-6 w-full max-w-[328px] rounded-full"
+      class="mt-4 w-full max-w-[328px] rounded-full"
       :loading="retrying"
       @click="$emit('retry')"
     >

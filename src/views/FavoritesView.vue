@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RotateCcw, Trash2 } from '@lucide/vue'
+import { ChevronLeft, RotateCcw } from '@lucide/vue'
 import { storeToRefs } from 'pinia'
 import { onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
@@ -34,14 +34,20 @@ onMounted(hydrate)
 
 <template>
   <section class="min-h-[calc(100dvh-77px)] bg-background lg:min-h-dvh">
-    <header class="px-4 pb-5 pt-11 lg:px-8 lg:pt-8">
-      <h1 class="text-[26px] font-semibold">Favoritos</h1>
-      <p class="mt-1 tabular-nums text-sm text-muted-foreground">
-        {{ favorites.count }} Pokémon guardados
-      </p>
+    <header v-if="favorites.count" class="relative h-[102px] px-4">
+      <Button
+        variant="icon"
+        size="icon"
+        class="absolute left-3 top-7"
+        aria-label="Volver a la Pokédex"
+        @click="router.push('/pokedex')"
+      >
+        <ChevronLeft class="size-6" />
+      </Button>
+      <h1 class="pt-[38px] text-center text-base font-semibold">Favoritos</h1>
     </header>
 
-    <EmptyState v-if="favorites.count === 0" @action="router.push('/pokedex')" />
+    <EmptyState v-if="favorites.count === 0" />
     <div v-else class="mx-auto grid max-w-5xl gap-3 px-4 pb-8 md:grid-cols-2 lg:px-8">
       <div v-for="name in favorites.names" :key="name">
         <FavoriteListItem
@@ -56,11 +62,6 @@ onMounted(hydrate)
           <span class="text-xs text-muted-foreground">Cargando {{ name }}...</span>
         </div>
       </div>
-      <p
-        class="col-span-full mt-3 flex items-center justify-center gap-2 text-center text-xs text-muted-foreground md:hidden"
-      >
-        <Trash2 class="size-4" /> Desliza una tarjeta a la izquierda para eliminarla.
-      </p>
       <Button
         v-if="favorites.lastRemoved"
         variant="tertiary"
