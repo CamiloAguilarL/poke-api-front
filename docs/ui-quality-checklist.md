@@ -11,7 +11,7 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 - [x] `1917×957`: app de `1917×957`, catálogo de 1813 px y cinco columnas; los cuatro bordes coinciden con el viewport.
 - [x] `1920×1080`: app de `1920×1080`, catálogo de 1816 px y cinco columnas.
 - [x] Ningún viewport presenta overflow horizontal, gutter lateral artificial ni espacio fantasma inferior.
-- [x] La ruta de catálogo usa todo el ancho útil; la ruta de detalle conserva el listado de 420 px y bloques de lectura de máximo 896 px.
+- [x] La ruta de catálogo usa todo el ancho útil; la ruta de detalle conserva el listado de 420 px y centra la composición visual/lectura en un máximo de 1120 px.
 - [x] La cabecera de búsqueda conserva un ancho cómodo en desktop y no estira el input hasta una longitud difícil de leer.
 - [x] El onboarding desktop agrupa artwork, copy, progreso y CTA como una sola unidad centrada; el botón conserva relación visual con la imagen en 1440 y 1920 px.
 - [x] La lista virtual mantiene altura de fila, gaps, padding y alineación constante mientras cambia el número de columnas.
@@ -34,29 +34,31 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 - [x] El control nativo de limpieza del input está suprimido; con texto existe exactamente una acción “Limpiar búsqueda”.
 - [x] El filtro contiene 18 checkboxes accesibles, selección múltiple, scroll interno, cancelar y aplicar; las primeras seis opciones y su orden coinciden con Figma.
 - [x] El sheet contiene su propio scroll y evita propagar overscroll al documento.
+- [x] Overlay de sheet al 76%, elevación del diálogo, sombras de hover, sprite y loader usan tokens semánticos; ningún borde corta la sombra de las cards extremas.
 - [x] Todos los botones solo-icono inspeccionados tienen nombre accesible y los toggles exponen su estado.
 - [x] Botones, links y toggles centralizados usan `touch-action: manipulation`; el swipe conserva desplazamiento vertical.
 - [x] Favorito funciona desde card y detalle; eliminación por swipe dispone de botón equivalente y undo.
 - [x] Compartir copia nombre y todos los atributos visibles; el toast confirma la operación.
 - [x] Loading, error/retry, búsqueda sin resultados, favoritos vacíos, favoritos hidratando y secciones futuras tienen representación explícita.
 - [x] Back, compartir, favorito desde detalle y persistencia después de recargar se revisaron dentro de los flujos E2E.
+- [x] En master-detail, catálogo y ficha conservan scroll independiente; cambiar de Pokémon reinicia solo el panel derecho arriba y cambiar query no desmonta la ficha.
 
 ## Accesibilidad y robustez
 
 - [x] El primer foco por teclado expone “Saltar al contenido” y apunta a `#main-content`.
 - [x] El foco visible está definido para botones, links, inputs y contenido del diálogo.
 - [x] `prefers-reduced-motion` neutraliza animaciones y transiciones no esenciales.
-- [x] Axe no reporta violaciones críticas ni serias en el flujo principal filtrado, salvo la excepción documentada de contraste para chips fieles a Figma.
+- [x] Axe no reporta violaciones críticas ni serias en onboarding, catálogo, detalle, error, favoritos vacíos y construcción; solo se excluye el primitive Badge por la decisión de contraste fiel a Figma.
 - [x] Todas las imágenes inspeccionadas tienen texto alternativo y dimensiones explícitas; no hubo imágenes rotas.
 - [x] No se encontraron botones sin texto o `aria-label`, errores de consola ni excepciones de página durante el flujo principal.
 - [x] La app usa `dvh`, safe area inferior y `viewport-fit=cover` para responder a chrome móvil y dispositivos con inset.
-- [x] La lista pide páginas remotas de 40 con infinite scroll, virtualiza filas y no descarga el índice completo ni ejecuta N+1 de detalles.
+- [x] La lista pide páginas remotas de 40 con infinite scroll, virtualiza filas y no descarga el índice completo; favoritos se rehidratan en lotes GraphQL de máximo 100 sin N+1 REST.
 - [x] Búsqueda parcial, ID y tipos viajan a GraphQL; ningún resultado se filtra localmente.
 
 ## Evidencia automatizada
 
-- [x] 24 pruebas unitarias.
-- [x] Matriz Playwright de 40 entradas entre `360×800`, `768×1024`, `1440×900` y `1920×1080`: 17 escenarios ejecutados y 23 combinaciones no aplicables omitidas explícitamente.
+- [x] 52 pruebas unitarias.
+- [x] Matriz Playwright de 68 entradas entre `360×800`, `768×1024`, `1440×900` y `1920×1080`: 24 escenarios aplicables y 44 combinaciones no aplicables omitidas explícitamente.
 - [x] Regresión visual de onboarding, catálogo, búsqueda, filtros, detalle, favoritos, swipe, loading, error, vacío y construcción.
 - [x] Aserciones geométricas bloquean regresiones del ancho/alto del documento, shell, catálogo y artwork.
-- [x] Cobertura actual: 99,38% statements, 100% functions, 100% lines y 92,59% branches sobre el alcance configurado.
+- [x] Cobertura actual: 99,39% statements, 100% functions, 100% lines y 92,45% branches sobre el alcance configurado.

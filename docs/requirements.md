@@ -1,6 +1,6 @@
 # Matriz de requisitos y trazabilidad
 
-Última validación de fuentes: 2026-08-14.
+Última validación de fuentes: 2026-08-15.
 
 ## Precedencia
 
@@ -25,36 +25,36 @@ La geometría y el sistema visual se reproducen desde el nuevo Figma. Los datos 
 
 ## PDF de la prueba
 
-| ID     | Requisito                                               | Evidencia de aceptación                                                        |
-| ------ | ------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| PDF-01 | Aplicación creada con Vue.js.                           | Vue 3 + TypeScript + Vite.                                                     |
-| PDF-02 | Datos desde PokeAPI; catálogo y detalle son el núcleo.  | GraphQL oficial para catálogo paginado y REST `pokemon/{name}` para detalle.   |
-| PDF-03 | Loading con efecto CSS sobre Pokébola.                  | Splash y loader reducido por preferencia de movimiento.                        |
-| PDF-04 | Compartir copia nombre y atributos separados por comas. | Test de Clipboard API y payload determinista.                                  |
-| PDF-05 | Sin backend ni base de datos; favoritos en store.       | Pinia + persistencia versionada local.                                         |
-| PDF-06 | Repositorio compartible en GitHub.                      | Historial Git y workflow de CI.                                                |
-| PDF-07 | UI visual y técnicamente bien implementada.             | Sistema de diseño, accesibilidad y visual tests.                               |
-| PDF-08 | Buena arquitectura, KISS, DRY y SOLID.                  | Dominio normalizado y capas con responsabilidades concretas.                   |
-| PDF-09 | Unit tests como punto extra.                            | Vitest con cobertura.                                                          |
-| PDF-10 | README con tecnologías y decisiones.                    | README orientado al reclutador.                                                |
-| PDF-11 | Pensar en gran volumen de datos.                        | Páginas remotas de 40, infinite scroll, virtualización, caché y deduplicación. |
+| ID     | Requisito                                               | Evidencia de aceptación                                                                                                        |
+| ------ | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| PDF-01 | Aplicación creada con Vue.js.                           | Vue 3 + TypeScript + Vite.                                                                                                     |
+| PDF-02 | Datos desde PokeAPI; catálogo y detalle son el núcleo.  | GraphQL oficial para catálogo paginado y REST `pokemon/{name}` para detalle.                                                   |
+| PDF-03 | Loading con efecto CSS sobre Pokébola.                  | Splash y loader reducido por preferencia de movimiento.                                                                        |
+| PDF-04 | Compartir copia nombre y atributos separados por comas. | Test de Clipboard API y payload determinista.                                                                                  |
+| PDF-05 | Sin backend ni base de datos; favoritos en store.       | Pinia + persistencia versionada local.                                                                                         |
+| PDF-06 | Repositorio compartible en GitHub.                      | Historial Git y workflow de CI.                                                                                                |
+| PDF-07 | UI visual y técnicamente bien implementada.             | Sistema de diseño, accesibilidad y visual tests.                                                                               |
+| PDF-08 | Buena arquitectura, KISS, DRY y SOLID.                  | Dominio normalizado y capas con responsabilidades concretas.                                                                   |
+| PDF-09 | Unit tests como punto extra.                            | Vitest con cobertura.                                                                                                          |
+| PDF-10 | README con tecnologías y decisiones.                    | README orientado al reclutador.                                                                                                |
+| PDF-11 | Pensar en gran volumen de datos.                        | Páginas remotas de 40, infinite scroll, virtualización, caché, deduplicación e hidratación de favoritos en lotes de hasta 100. |
 
 ## Flujo extraído del nuevo Figma
 
-| ID     | Pantalla/estado    | Nodo de Figma | Comportamiento requerido                            |
-| ------ | ------------------ | ------------- | --------------------------------------------------- |
-| FIG-01 | Splash             | `6:20`        | Pokébola centrada y animada durante carga real.     |
-| FIG-02 | Onboarding 1       | `4:58`        | Continuar al segundo paso.                          |
-| FIG-03 | Onboarding 2       | `4:76`        | Completar onboarding y abrir catálogo.              |
-| FIG-04 | Catálogo           | `10:2805`     | Cards, búsqueda, favoritos y navegación.            |
-| FIG-05 | Filtro             | `10:3486`     | Bottom sheet, selección múltiple, aplicar/cancelar. |
-| FIG-06 | Resultado filtrado | `10:6670`     | Conteo y acción para borrar filtro.                 |
-| FIG-07 | Detalle            | `10:6948`     | Datos completos, favorito, compartir y debilidades. |
-| FIG-08 | Favoritos          | `10:3195`     | Lista persistida.                                   |
-| FIG-09 | Swipe delete       | `10:3346`     | Eliminación móvil y alternativa accesible.          |
-| FIG-10 | Favoritos vacíos   | `10:3117`     | Empty state instructivo.                            |
-| FIG-11 | Error de API       | `10:2945`     | Mensaje y reintento.                                |
-| FIG-12 | Regiones/Perfil    | `28:891`      | Estado “Muy pronto disponible”.                     |
+| ID     | Pantalla/estado    | Nodo de Figma | Comportamiento requerido                                                                                        |
+| ------ | ------------------ | ------------- | --------------------------------------------------------------------------------------------------------------- |
+| FIG-01 | Splash             | `6:20`        | Pokébola centrada y animada durante carga real.                                                                 |
+| FIG-02 | Onboarding 1       | `4:58`        | Continuar al segundo paso.                                                                                      |
+| FIG-03 | Onboarding 2       | `4:76`        | Completar onboarding y abrir catálogo.                                                                          |
+| FIG-04 | Catálogo           | `10:2805`     | Cards, búsqueda, favoritos y navegación.                                                                        |
+| FIG-05 | Filtro             | `10:3486`     | Bottom sheet, selección múltiple, aplicar/cancelar.                                                             |
+| FIG-06 | Resultado filtrado | `10:6670`     | Conteo y acción para borrar filtro.                                                                             |
+| FIG-07 | Detalle            | `10:6948`     | Datos completos, favorito, navegación y debilidades; compartir se integra en desktop por requerimiento del PDF. |
+| FIG-08 | Favoritos          | `10:3195`     | Lista persistida.                                                                                               |
+| FIG-09 | Swipe delete       | `10:3346`     | Eliminación móvil y alternativa accesible.                                                                      |
+| FIG-10 | Favoritos vacíos   | `10:3117`     | Empty state instructivo.                                                                                        |
+| FIG-11 | Error de API       | `10:2945`     | Mensaje y reintento.                                                                                            |
+| FIG-12 | Regiones/Perfil    | `28:891`      | Estado “Muy pronto disponible”.                                                                                 |
 
 ## Inconsistencias conocidas
 

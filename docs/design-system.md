@@ -4,15 +4,15 @@
 
 Los valores se extrajeron del draft editable de Figma. `src/styles/main.css` publica tokens semánticos y `@theme inline` los expone a Tailwind; las vistas no definen una segunda paleta.
 
-| Grupo        | Tokens principales                                                         |
-| ------------ | -------------------------------------------------------------------------- |
-| Superficie   | `--surface-default`, `--surface-card`, `--surface-info`, `--surface-panel` |
-| Texto        | `--text-primary`, `--text-secondary`, `--text-tertiary`, `--text-inverse`  |
-| Acción       | `--action-primary`, `--action-primary-hover`, `--action-primary-pressed`   |
-| Estado       | `--navigation-active`, `--favorite`, `--danger`, `--gender-*`              |
-| Tipo Pokémon | `--type-normal` … `--type-fairy`                                           |
-| Forma/sombra | radios Tailwind `sm/md/lg/xl`; `--shadow-card`, `--shadow-sprite`          |
-| Layout       | `--layout-content-max` limita y centra el panel principal tras el sidebar  |
+| Grupo        | Tokens principales                                                                                                            |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| Superficie   | `--surface-default`, `--surface-card`, `--surface-info`, `--surface-panel`                                                    |
+| Texto        | `--text-primary`, `--text-secondary`, `--text-tertiary`, `--text-inverse`                                                     |
+| Acción       | `--action-primary`, `--action-primary-hover`, `--action-primary-pressed`                                                      |
+| Estado       | `--navigation-active`, `--favorite`, `--danger`, `--gender-*`                                                                 |
+| Tipo Pokémon | `--type-normal` … `--type-fairy`                                                                                              |
+| Forma/sombra | radios Tailwind `sm/md/lg/xl`; `--shadow-card`, `--shadow-card-hover`, `--shadow-sheet`, `--shadow-loader`, `--shadow-sprite` |
+| Layout       | `--layout-content-max` limita y centra el panel principal tras el sidebar                                                     |
 
 La tipografía renderizada en los frames es Poppins. Los residuos de Montserrat presentes en algunos styles internos de Figma no se propagan a producción.
 
@@ -38,4 +38,4 @@ Las vistas y los componentes de feature pueden usar HTML semántico de contenido
 
 ## Accesibilidad
 
-La geometría y la paleta base se mantienen. Las acciones terciarias pequeñas usan el azul de navegación, más oscuro. La suite axe bloquea violaciones `critical` o `serious`, salvo la excepción documentada de contraste en chips cuyo texto blanco es parte explícita de Figma; los targets táctiles principales miden al menos 44 px y `prefers-reduced-motion` reduce animaciones.
+La geometría y la paleta base se mantienen. Las acciones primarias usan el tono accesible más cercano de la escala azul y las terciarias pequeñas usan el azul de navegación, más oscuro. La suite axe bloquea violaciones `critical` o `serious` en las pantallas principales; solo excluye los badges cuyo contraste es parte explícita de Figma. Los targets táctiles principales miden al menos 44 px y `prefers-reduced-motion` reduce animaciones.

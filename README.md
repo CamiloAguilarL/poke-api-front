@@ -27,7 +27,7 @@ La misma suite congela catálogo y detalle en `768×1024`, `1440×900` y `1920×
 
 - Onboarding de dos pasos y splash Pokébola animado con CSS.
 - Catálogo paginado desde PokeAPI GraphQL, búsqueda parcial por nombre/ID y filtro multi-tipo ejecutados en servidor.
-- Infinite scroll, virtualización, caché TTL y deduplicación; ninguna descarga masiva ni N+1 de detalles para las cards.
+- Infinite scroll, virtualización, caché TTL y deduplicación; ninguna descarga masiva ni N+1 de detalles para cards o favoritos persistidos.
 - Detalle localizado: descripción, tipos, medidas, categoría, habilidades, género y debilidades.
 - Clipboard con nombre y todos los atributos visibles separados por comas.
 - Favoritos Pinia persistidos, swipe-to-delete, botón accesible y undo.
@@ -69,7 +69,7 @@ pnpm test:e2e         # 360×800, 768×1024, 1440×900 y 1920×1080
 pnpm test:e2e:update  # actualiza goldens solo ante un cambio visual intencional
 ```
 
-La cobertura mínima exigida en CI es 80% de líneas/funciones/statements y 75% de ramas sobre dominio y stores. La ejecución actual alcanza 100% de líneas/funciones y 92% de ramas. Playwright valida flujos con un contrato PokeAPI determinista; la app productiva nunca usa esos fixtures.
+La cobertura mínima exigida en CI es 80% de líneas/funciones/statements y 75% de ramas sobre dominio y stores. La ejecución actual alcanza 100% de líneas/funciones y 92,45% de ramas. Playwright valida flujos con un contrato PokeAPI determinista; la app productiva nunca usa esos fixtures.
 
 El workflow de GitHub Actions ejecuta formato, ESLint sin warnings, `vue-tsc`, cobertura, build, E2E, axe y comparación de screenshots.
 
