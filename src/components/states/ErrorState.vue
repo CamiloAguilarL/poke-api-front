@@ -1,12 +1,21 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
 
-withDefaults(defineProps<{ title?: string; description?: string; retrying?: boolean }>(), {
-  title: 'Algo salió mal…',
-  description:
-    'No pudimos cargar la información en este momento. Verifica tu conexión o intenta nuevamente más tarde.',
-  retrying: false,
-})
+withDefaults(
+  defineProps<{
+    title?: string
+    description?: string
+    retrying?: boolean
+    headingTag?: 'h1' | 'h2'
+  }>(),
+  {
+    title: 'Algo salió mal…',
+    description:
+      'No pudimos cargar la información en este momento. Verifica tu conexión o intenta nuevamente más tarde.',
+    retrying: false,
+    headingTag: 'h1',
+  },
+)
 defineEmits<{ retry: [] }>()
 </script>
 
@@ -22,7 +31,9 @@ defineEmits<{ retry: [] }>()
       height="210"
       class="h-[210px] w-auto object-contain"
     />
-    <h1 class="mt-5 text-balance text-xl font-semibold">{{ title }}</h1>
+    <component :is="headingTag" class="mt-5 text-balance text-xl font-semibold">
+      {{ title }}
+    </component>
     <p class="mt-2 max-w-[310px] text-pretty text-sm leading-6 text-muted-foreground">
       {{ description }}
     </p>

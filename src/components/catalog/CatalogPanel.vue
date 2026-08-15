@@ -5,6 +5,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from '@/components/ui/sonner'
 import ContentContainer from '@/components/layout/ContentContainer.vue'
+import SectionHeader from '@/components/layout/SectionHeader.vue'
 import { Button } from '@/components/ui/button'
 import { SearchField } from '@/components/ui/search-field'
 import { ProgressBar } from '@/components/ui/progress'
@@ -103,16 +104,15 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
     class="flex h-[calc(100dvh-77px)] min-h-[560px] flex-col bg-background lg:h-dvh"
     aria-label="Catálogo Pokémon"
   >
-    <ContentContainer
-      v-if="status !== 'error'"
-      as="header"
+    <SectionHeader
+      title="Pokédex"
       data-testid="catalog-header-container"
-      :class="[
-        'relative shrink-0 px-4 pt-11 lg:px-6 lg:pt-7',
-        hasActiveFilters ? 'pb-[10px]' : 'pb-4',
-      ]"
+      :class="['relative', hasActiveFilters ? 'pb-[10px]' : 'pb-4']"
     >
-      <div :class="['flex items-center gap-4', { 'lg:max-w-2xl': props.expanded }]">
+      <div
+        v-if="status !== 'error'"
+        :class="['mt-4 flex items-center gap-4', { 'lg:max-w-2xl': props.expanded }]"
+      >
         <SearchField
           :model-value="query"
           label="Buscar Pokémon"
@@ -135,7 +135,7 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
         </Button>
       </div>
       <div
-        v-if="hasActiveFilters && status === 'ready'"
+        v-if="status !== 'error' && hasActiveFilters && status === 'ready'"
         class="mt-2 flex min-h-[18px] items-center gap-1 text-xs text-[var(--text-secondary)]"
       >
         <p class="tabular-nums">
@@ -151,11 +151,12 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
         </Button>
       </div>
       <ProgressBar
+        v-if="status !== 'error'"
         :active="refreshing"
         label="Buscando Pokémon…"
         class="absolute inset-x-4 bottom-0 lg:inset-x-6"
       />
-    </ContentContainer>
+    </SectionHeader>
 
     <Transition name="state-fade" mode="out-in">
       <PokeballLoader
@@ -170,6 +171,7 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
         class="flex-1"
         title="Algo salió mal…"
         description="No pudimos cargar la información en este momento. Verifica tu conexión o intenta nuevamente más tarde."
+        heading-tag="h2"
         @retry="retry"
       />
       <div

@@ -30,6 +30,7 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 
 ## Interacción y estados
 
+- [x] Pokédex, Favoritos, Regiones y Perfil comparten una cabecera de sección consistente con un único `h1`; Favoritos no muestra un botón de volver redundante con la navegación principal.
 - [x] El campo de búsqueda tiene label asociado, `name`, autocomplete, teclado de búsqueda, enter key hint y spellcheck adecuados.
 - [x] El control nativo de limpieza del input está suprimido; con texto existe exactamente una acción “Limpiar búsqueda”.
 - [x] El filtro contiene 18 checkboxes accesibles, selección múltiple, scroll interno, cancelar y aplicar; las primeras seis opciones y su orden coinciden con Figma.

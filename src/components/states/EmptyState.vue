@@ -1,8 +1,16 @@
 <script setup lang="ts">
-withDefaults(defineProps<{ title?: string; description?: string }>(), {
-  title: 'No has marcado ningún Pokémon como favorito',
-  description: 'Haz clic en el icono de corazón de tus Pokémon favoritos y aparecerán aquí.',
-})
+withDefaults(
+  defineProps<{
+    title?: string
+    description?: string
+    headingTag?: 'h1' | 'h2'
+  }>(),
+  {
+    title: 'No has marcado ningún Pokémon como favorito',
+    description: 'Haz clic en el icono de corazón de tus Pokémon favoritos y aparecerán aquí.',
+    headingTag: 'h1',
+  },
+)
 </script>
 
 <template>
@@ -16,7 +24,12 @@ withDefaults(defineProps<{ title?: string; description?: string }>(), {
       height="210"
       class="h-[210px] w-auto object-contain"
     />
-    <h1 class="mt-5 max-w-[270px] text-balance text-xl font-semibold leading-7">{{ title }}</h1>
+    <component
+      :is="headingTag"
+      class="mt-5 max-w-[270px] text-balance text-xl font-semibold leading-7"
+    >
+      {{ title }}
+    </component>
     <p class="mt-2 max-w-[300px] text-pretty text-xs leading-[18px] text-muted-foreground">
       {{ description }}
     </p>

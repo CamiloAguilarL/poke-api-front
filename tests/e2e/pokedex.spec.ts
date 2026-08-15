@@ -88,6 +88,7 @@ test.describe('Pokédex experience', () => {
     })
     await startOnCatalog(page)
     await page.goto('/')
+    await expect(page.getByRole('heading', { name: 'Pokédex', exact: true })).toBeVisible()
     const bulbasaurCard = page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })
     await expect(bulbasaurCard).toBeVisible()
     await expect(
@@ -314,6 +315,14 @@ test.describe('Pokédex experience', () => {
     await startOnCatalog(page)
     await page.goto('/pokedex/bulbasaur')
     await expect(page.getByTestId('pokemon-detail')).toBeVisible()
+    await expect
+      .poll(() =>
+        page
+          .getByTestId('desktop-pokemon-detail')
+          .getByRole('img', { name: 'Bulbasaur' })
+          .evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0),
+      )
+      .toBe(true)
 
     const catalog = page.getByTestId('pokemon-list')
     const detail = page.getByTestId('pokemon-detail-scroll-panel')
@@ -389,6 +398,8 @@ test.describe('Pokédex experience', () => {
     const { summaryBatchRequests } = await mockPokeApi(page)
     await startOnCatalog(page, ['bulbasaur', 'ivysaur', 'charmander', 'blastoise'])
     await page.goto('/favorites')
+    await expect(page.getByRole('heading', { name: 'Favoritos', exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Volver a la Pokédex' })).toHaveCount(0)
 
     const cards = await Promise.all(
       ['Bulbasaur', 'Ivysaur', 'Charmander', 'Blastoise'].map(async (name) => {
@@ -442,15 +453,20 @@ test.describe('Resilient states', () => {
     await mockPokeApi(page)
     await startOnCatalog(page)
     await page.goto('/favorites')
+    await expect(page.getByRole('heading', { name: 'Favoritos', exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Volver a la Pokédex' })).toHaveCount(0)
     await expect(
       page.getByRole('heading', { name: 'No has marcado ningún Pokémon como favorito' }),
     ).toBeVisible()
     await expectNoSeriousAccessibilityViolations(page)
     await expect(page).toHaveScreenshot('favorites-empty.png')
     await page.goto('/regions')
+    await expect(page.getByRole('heading', { name: 'Regiones', exact: true })).toBeVisible()
     await expect(page.getByRole('heading', { name: '¡Muy pronto disponible!' })).toBeVisible()
     await expectNoSeriousAccessibilityViolations(page)
     await expect(page).toHaveScreenshot('construction.png')
+    await page.goto('/profile')
+    await expect(page.getByRole('heading', { name: 'Perfil', exact: true })).toBeVisible()
   })
 
   test('shows the CSS Pokéball while the real catalog request is pending', async ({
