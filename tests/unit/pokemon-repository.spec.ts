@@ -94,4 +94,44 @@ describe('pokemon repository catalog', () => {
     await expect(rejectedPage).rejects.toBeInstanceOf(PokeApiError)
     await expect(rejectedPage).rejects.toThrow('rate limit exceeded')
   })
+
+  it('hydrates favorite summaries in deduplicated GraphQL batches', async () => {
+    vi.mocked(fetch).mockResolvedValue(
+      response({
+        data: {
+          pokemon_aggregate: { aggregate: { count: 2 } },
+          pokemon: [
+            {
+              id: 1,
+              name: 'bulbasaur',
+              pokemontypes: [{ type: { name: 'grass' } }, { type: { name: 'poison' } }],
+            },
+            {
+              id: 4,
+              name: 'charmander',
+              pokemontypes: [{ type: { name: 'fire' } }],
+            },
+          ],
+        },
+      }),
+    )
+
+    const summaries = await pokemonRepository.getSummaries([
+      'Bulbasaur',
+      'charmander',
+      'bulbasaur',
+      ' ',
+    ])
+
+    expect(fetch).toHaveBeenCalledOnce()
+    const body = JSON.parse(String(vi.mocked(fetch).mock.calls[0]?.[1]?.body))
+    expect(body.query).toContain('query Summaries')
+    expect(body.variables).toEqual({
+      where: {
+        is_default: { _eq: true },
+        name: { _in: ['bulbasaur', 'charmander'] },
+      },
+    })
+    expect(summaries.map(({ name }) => name)).toEqual(['bulbasaur', 'charmander'])
+  })
 })

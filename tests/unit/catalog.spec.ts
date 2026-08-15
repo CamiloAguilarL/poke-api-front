@@ -4,7 +4,7 @@ import type { PokemonSummary } from '@/features/pokemon/domain/models'
 
 const repositoryMock = vi.hoisted(() => ({
   searchPage: vi.fn(),
-  getSummary: vi.fn(),
+  getSummaries: vi.fn(),
 }))
 
 vi.mock('@/features/pokemon/api/pokemon-repository', () => ({
@@ -32,7 +32,7 @@ describe('catalog store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     repositoryMock.searchPage.mockReset()
-    repositoryMock.getSummary.mockReset()
+    repositoryMock.getSummaries.mockReset()
     repositoryMock.searchPage.mockResolvedValue({
       count: 3,
       summaries: [bulbasaur, charmander, pikachu],
@@ -83,17 +83,25 @@ describe('catalog store', () => {
 
   it('hydrates only summaries that did not arrive with a catalog page', async () => {
     const store = useCatalogStore()
-    repositoryMock.getSummary.mockImplementation(async (name: string) => {
-      if (name === 'missing') throw new Error('missing')
-      return summary(1, name)
-    })
+    repositoryMock.getSummaries.mockResolvedValue([bulbasaur])
 
-    await store.ensureSummaries(['bulbasaur', 'bulbasaur', 'missing'], 2)
-    expect(repositoryMock.getSummary).toHaveBeenCalledTimes(2)
+    await store.ensureSummaries(['bulbasaur', 'bulbasaur', 'missing'])
+    expect(repositoryMock.getSummaries).toHaveBeenCalledOnce()
+    expect(repositoryMock.getSummaries).toHaveBeenCalledWith(['bulbasaur', 'missing'])
     expect(store.summaries.bulbasaur).toBeTruthy()
     expect(store.summaryErrors.missing).toBe(true)
-    await store.ensureSummary('bulbasaur')
-    expect(repositoryMock.getSummary).toHaveBeenCalledTimes(2)
+    await store.ensureSummaries(['bulbasaur'])
+    expect(repositoryMock.getSummaries).toHaveBeenCalledOnce()
+  })
+
+  it('marks the entire pending batch when favorite hydration fails', async () => {
+    const store = useCatalogStore()
+    repositoryMock.getSummaries.mockRejectedValue(new Error('offline'))
+
+    await store.ensureSummaries(['bulbasaur', 'charmander'])
+
+    expect(store.summaryErrors).toMatchObject({ bulbasaur: true, charmander: true })
+    expect(store.loadingNames.size).toBe(0)
   })
 
   it('reloads remotely when applying or clearing filters', async () => {

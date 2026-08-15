@@ -44,6 +44,23 @@ const CATALOG_QUERY = `
   }
 `
 
+const SUMMARY_BATCH_QUERY = `
+  query Summaries($where: pokemon_bool_exp!) {
+    pokemon_aggregate(where: $where) {
+      aggregate { count }
+    }
+    pokemon(order_by: { id: asc }, where: $where) {
+      id
+      name
+      pokemontypes(order_by: { slot: asc }) {
+        type { name }
+      }
+    }
+  }
+`
+
+const SUMMARY_BATCH_SIZE = 100
+
 interface CacheEntry {
   expiresAt: number
   value: unknown
@@ -61,7 +78,7 @@ export class PokeApiError extends Error {
 
 export interface PokemonRepository {
   searchPage(query: PokemonCatalogQuery): Promise<PokemonSummaryPage>
-  getSummary(name: string): Promise<PokemonSummary>
+  getSummaries(names: string[]): Promise<PokemonSummary[]>
   getDetail(name: string): Promise<PokemonDetail>
   clearCache(): void
 }
@@ -287,9 +304,30 @@ class PokeApiRepository implements PokemonRepository {
     }
   }
 
-  async getSummary(name: string): Promise<PokemonSummary> {
-    const pokemon = await request(`/pokemon/${encodeURIComponent(name)}`, pokemonSchema)
-    return toSummary(pokemon)
+  async getSummaries(names: string[]): Promise<PokemonSummary[]> {
+    const uniqueNames = [
+      ...new Set(names.map((name) => name.trim().toLocaleLowerCase('es'))),
+    ].filter(Boolean)
+    const chunks = Array.from(
+      { length: Math.ceil(uniqueNames.length / SUMMARY_BATCH_SIZE) },
+      (_, index) => uniqueNames.slice(index * SUMMARY_BATCH_SIZE, (index + 1) * SUMMARY_BATCH_SIZE),
+    )
+    const responses = await Promise.all(
+      chunks.map((chunk) =>
+        graphQlRequest(
+          SUMMARY_BATCH_QUERY,
+          {
+            where: {
+              is_default: { _eq: true },
+              name: { _in: chunk },
+            },
+          },
+          pokemonCatalogDataSchema,
+        ),
+      ),
+    )
+
+    return responses.flatMap(({ pokemon }) => pokemon.map(catalogSummary))
   }
 
   async getDetail(name: string): Promise<PokemonDetail> {

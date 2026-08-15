@@ -294,6 +294,13 @@ test.describe('Pokédex experience', () => {
     page,
   }, testInfo) => {
     test.skip(testInfo.project.name !== 'desktop-1920', 'The ultrawide viewport owns this contract')
+    const restPokemonRequests: string[] = []
+    page.on('request', (request) => {
+      if (/\/api\/v2\/pokemon\/[^/]+\/?$/.test(request.url())) {
+        restPokemonRequests.push(request.url())
+      }
+    })
+    const { summaryBatchRequests } = await mockPokeApi(page)
     await startOnCatalog(page, ['bulbasaur', 'ivysaur', 'charmander', 'blastoise'])
     await page.goto('/favorites')
 
@@ -311,6 +318,8 @@ test.describe('Pokédex experience', () => {
     expect(grid?.width).toBe(1536)
     expect(cards.every((box) => box?.y === cards[0]?.y)).toBe(true)
     expect(firstItem?.width).toBeCloseTo(297.6, 0)
+    expect(summaryBatchRequests).toEqual([['bulbasaur', 'ivysaur', 'charmander', 'blastoise']])
+    expect(restPokemonRequests).toEqual([])
     await expect(page).toHaveScreenshot('favorites-desktop.png')
   })
 })

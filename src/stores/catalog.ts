@@ -119,30 +119,31 @@ export const useCatalogStore = defineStore('catalog', () => {
     }
   }
 
-  async function ensureSummary(name: string) {
-    if (summaries[name] || loadingNames.has(name)) return
-    loadingNames.add(name)
-    delete summaryErrors[name]
-    try {
-      summaries[name] = await pokemonRepository.getSummary(name)
-    } catch {
-      summaryErrors[name] = true
-    } finally {
-      loadingNames.delete(name)
-    }
-  }
-
-  async function ensureSummaries(names: string[], concurrency = 6) {
+  async function ensureSummaries(names: string[]) {
     const queue = [...new Set(names)].filter((name) => !summaries[name] && !loadingNames.has(name))
-    let cursor = 0
-    const workers = Array.from({ length: Math.min(concurrency, queue.length) }, async () => {
-      while (cursor < queue.length) {
-        const name = queue[cursor]!
-        cursor += 1
-        await ensureSummary(name)
-      }
+    if (!queue.length) return
+
+    queue.forEach((name) => {
+      loadingNames.add(name)
+      delete summaryErrors[name]
     })
-    await Promise.all(workers)
+
+    try {
+      const hydrated = await pokemonRepository.getSummaries(queue)
+      const hydratedNames = new Set(hydrated.map(({ name }) => name))
+      hydrated.forEach((summary) => {
+        summaries[summary.name] = summary
+      })
+      queue.forEach((name) => {
+        if (!hydratedNames.has(name)) summaryErrors[name] = true
+      })
+    } catch {
+      queue.forEach((name) => {
+        summaryErrors[name] = true
+      })
+    } finally {
+      queue.forEach((name) => loadingNames.delete(name))
+    }
   }
 
   function setQuery(value: string) {
@@ -192,7 +193,6 @@ export const useCatalogStore = defineStore('catalog', () => {
     initialize,
     reload,
     loadNextPage,
-    ensureSummary,
     ensureSummaries,
     setQuery,
     setSelectedTypes,

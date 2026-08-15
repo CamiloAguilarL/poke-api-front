@@ -94,6 +94,7 @@ export async function mockPokeApi(
   } = {},
 ) {
   const catalogRequests: Array<{ limit: number; offset: number; where: Record<string, any> }> = []
+  const summaryBatchRequests: string[][] = []
   let listAttempts = 0
 
   await page.route('https://graphql.pokeapi.co/v1beta2', async (route) => {
@@ -105,13 +106,31 @@ export async function mockPokeApi(
     }
 
     const body = route.request().postDataJSON() as {
-      variables: { limit: number; offset: number; where: Record<string, any> }
+      variables: { limit?: number; offset?: number; where: Record<string, any> }
     }
-    const { where, offset } = body.variables
+    const { where } = body.variables
+    const summaryNames: string[] | undefined = where.name?._in
+    if (summaryNames) {
+      summaryBatchRequests.push(summaryNames)
+      const matches = pokemon.filter((entry) => summaryNames.includes(entry.name))
+      return fulfillJson(route, {
+        data: {
+          pokemon_aggregate: { aggregate: { count: matches.length } },
+          pokemon: matches.map((entry) => ({
+            id: entry.id,
+            name: entry.name,
+            pokemontypes: entry.types.map((type) => ({ type: { name: type } })),
+          })),
+        },
+      })
+    }
+
+    const offset = body.variables.offset ?? 0
+    const requestedLimit = body.variables.limit ?? pokemon.length
     const limit = options.pageSizeCap
-      ? Math.min(body.variables.limit, options.pageSizeCap)
-      : body.variables.limit
-    catalogRequests.push({ limit: body.variables.limit, offset, where })
+      ? Math.min(requestedLimit, options.pageSizeCap)
+      : requestedLimit
+    catalogRequests.push({ limit: requestedLimit, offset, where })
 
     const clauses = Array.isArray(where._and) ? where._and : []
     const searchClause = clauses.find(
@@ -224,7 +243,7 @@ export async function mockPokeApi(
     return fulfillJson(route, { detail: 'not mocked' }, 404)
   })
 
-  return { catalogRequests }
+  return { catalogRequests, summaryBatchRequests }
 }
 
 export async function startOnCatalog(page: Page, favoriteNames: string[] = []) {
