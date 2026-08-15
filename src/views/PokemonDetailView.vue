@@ -1,14 +1,24 @@
 <script setup lang="ts">
-import { ArrowLeft, Heart, Mars, Share2, Venus } from '@lucide/vue'
+import {
+  ChevronLeft,
+  CircleDot,
+  Grid2X2,
+  Heart,
+  Mars,
+  Ruler,
+  Share2,
+  Venus,
+  Weight,
+} from '@lucide/vue'
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { toast } from '@/components/ui/sonner'
+import AppNavigation from '@/components/AppNavigation.vue'
+import TypeBadge from '@/components/pokemon/TypeBadge.vue'
+import TypeIcon from '@/components/pokemon/TypeIcon.vue'
 import ErrorState from '@/components/states/ErrorState.vue'
 import PokeballLoader from '@/components/PokeballLoader.vue'
-import TypeBadge from '@/components/pokemon/TypeBadge.vue'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Link } from '@/components/ui/link'
+import { toast } from '@/components/ui/sonner'
 import { pokemonRepository } from '@/features/pokemon/api/pokemon-repository'
 import {
   formatHeight,
@@ -28,10 +38,19 @@ const pokemon = ref<PokemonDetail | null>(null)
 const status = ref<'loading' | 'ready' | 'error'>('loading')
 const errorMessage = ref('')
 const favorite = computed(() => (pokemon.value ? favorites.has(pokemon.value.name) : false))
-const heroColor = computed(() => {
-  const type = pokemon.value?.types[0]
-  return type ? TYPE_META[type].color : 'var(--action-primary)'
-})
+const primaryType = computed(() => pokemon.value?.types[0] ?? 'normal')
+const heroColor = computed(() => TYPE_META[primaryType.value].color)
+const weaknessPriority = ['fire', 'psychic', 'ice', 'flying']
+const sortedWeaknesses = computed(() =>
+  [...(pokemon.value?.weaknesses ?? [])].sort((left, right) => {
+    const leftPriority = weaknessPriority.indexOf(left.type)
+    const rightPriority = weaknessPriority.indexOf(right.type)
+    if (leftPriority === -1 && rightPriority === -1) return 0
+    if (leftPriority === -1) return 1
+    if (rightPriority === -1) return -1
+    return leftPriority - rightPriority
+  }),
+)
 
 async function load() {
   status.value = 'loading'
@@ -92,206 +111,174 @@ watch(() => props.name, load, { immediate: true })
     :description="errorMessage"
     @retry="load"
   />
-  <article v-else-if="pokemon" class="min-h-dvh bg-background" data-testid="pokemon-detail">
-    <header
-      class="pokemon-hero relative h-[354px] overflow-hidden px-4 pt-11 text-[var(--hero-foreground)] sm:h-[390px] lg:h-[420px] lg:px-8 lg:pt-7"
-      :style="{ '--hero-color': heroColor }"
-    >
-      <div class="relative z-10 mx-auto flex max-w-4xl items-center justify-between">
-        <Button
-          variant="icon"
-          size="icon"
-          class="bg-[var(--hero-control)] text-[var(--hero-foreground)] hover:bg-[var(--hero-control-hover)]"
-          aria-label="Volver"
-          @click="goBack"
-        >
-          <ArrowLeft class="size-6" />
-        </Button>
-        <div class="flex gap-1">
-          <Button
-            variant="icon"
-            size="icon"
-            class="bg-[var(--hero-control)] text-[var(--hero-foreground)] hover:bg-[var(--hero-control-hover)]"
-            aria-label="Copiar información del Pokémon"
-            data-testid="share-pokemon"
-            @click="share"
-          >
-            <Share2 class="size-5" />
-          </Button>
-          <Button
-            variant="icon"
-            size="icon"
-            class="bg-[var(--hero-control)] text-[var(--hero-foreground)] hover:bg-[var(--hero-control-hover)]"
-            :aria-label="favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'"
-            :aria-pressed="favorite"
-            data-testid="favorite-detail"
-            @click="toggleFavorite"
-          >
-            <Heart :class="['size-6', { 'fill-[var(--hero-foreground)]': favorite }]" />
-          </Button>
-        </div>
-      </div>
-      <div class="relative z-10 mx-auto mt-1 flex max-w-4xl items-start justify-between gap-4">
-        <div class="pt-4">
-          <p class="tabular-nums text-xs font-medium text-[var(--hero-foreground-muted)]">
-            {{ formatPokemonNumber(pokemon.id) }}
-          </p>
-          <h1 class="mt-0.5 text-[28px] font-semibold leading-tight sm:text-4xl">
-            {{ pokemon.displayName }}
-          </h1>
-        </div>
-        <div class="mt-4 flex flex-wrap justify-end gap-1.5">
-          <TypeBadge v-for="type in pokemon.types" :key="type" :type="type" compact />
-        </div>
-      </div>
+  <article
+    v-else-if="pokemon"
+    class="mx-auto min-h-dvh w-full bg-background lg:max-w-[720px]"
+    data-testid="pokemon-detail"
+  >
+    <header class="relative h-[325px] overflow-hidden">
+      <div
+        class="absolute left-1/2 top-[-260px] h-[520px] w-[520px] -translate-x-1/2 rounded-full"
+        :style="{ backgroundColor: heroColor }"
+        aria-hidden="true"
+      />
+      <TypeIcon
+        :type="primaryType"
+        class="absolute left-1/2 top-[54px] size-[190px] -translate-x-1/2 -rotate-12 text-white opacity-60"
+      />
+
+      <Button
+        variant="icon"
+        size="icon"
+        class="absolute left-4 top-3 z-20 text-white hover:bg-white/10"
+        aria-label="Volver"
+        @click="goBack"
+      >
+        <ChevronLeft class="size-7" :stroke-width="2.25" />
+      </Button>
+      <Button
+        variant="icon"
+        size="icon"
+        class="absolute right-4 top-3 z-20 text-white hover:bg-white/10"
+        :aria-label="favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+        :aria-pressed="favorite"
+        data-testid="favorite-detail"
+        @click="toggleFavorite"
+      >
+        <Heart :class="['size-7', { 'fill-white': favorite }]" :stroke-width="2.1" />
+      </Button>
+      <Button
+        variant="icon"
+        size="icon"
+        class="absolute right-[68px] top-3 z-20 hidden text-white hover:bg-white/10 lg:flex"
+        aria-label="Copiar información del Pokémon"
+        data-testid="share-pokemon"
+        @click="share"
+      >
+        <Share2 class="size-6" />
+      </Button>
+
       <img
-        v-if="pokemon.artwork || pokemon.sprite"
-        :src="pokemon.artwork ?? pokemon.sprite ?? undefined"
+        v-if="pokemon.sprite"
+        :src="pokemon.sprite"
         :alt="pokemon.displayName"
-        width="360"
-        height="315"
+        width="420"
+        height="420"
         fetchpriority="high"
-        class="pokemon-artwork absolute bottom-[-8px] left-1/2 z-10 h-[244px] w-[280px] -translate-x-1/2 object-contain sm:h-[280px] lg:h-[315px] lg:w-[360px]"
+        class="absolute left-1/2 top-0 z-10 size-[420px] -translate-x-1/2 object-contain [image-rendering:pixelated]"
       />
     </header>
 
-    <div
-      class="relative z-20 -mt-5 rounded-t-[24px] bg-background px-4 pb-12 pt-7 lg:px-8 lg:pb-16"
-    >
-      <div class="mx-auto max-w-4xl">
-        <section aria-labelledby="about-heading">
-          <h2 id="about-heading" class="text-lg font-semibold">Descripción</h2>
-          <p class="mt-3 text-pretty text-sm leading-6 text-muted-foreground">
-            {{ pokemon.description }}
-          </p>
-        </section>
+    <div class="mx-auto min-h-[586px] w-[calc(100%-24px)] max-w-[337px]">
+      <section aria-labelledby="pokemon-name">
+        <h1 id="pokemon-name" class="text-[26px] font-medium leading-8">
+          {{ pokemon.displayName }}
+        </h1>
+        <p class="tabular-nums text-xs text-[var(--text-secondary)]">
+          {{ formatPokemonNumber(pokemon.id) }}
+        </p>
+      </section>
 
-        <section class="mt-7" aria-labelledby="features-heading">
-          <h2 id="features-heading" class="text-lg font-semibold">Características</h2>
-          <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-5 sm:grid-cols-4">
-            <div>
-              <dt class="text-xs text-muted-foreground">Peso</dt>
-              <dd class="mt-1 tabular-nums text-sm font-semibold">
-                {{ formatWeight(pokemon.weightHectograms) }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs text-muted-foreground">Altura</dt>
-              <dd class="mt-1 tabular-nums text-sm font-semibold">
-                {{ formatHeight(pokemon.heightDecimeters) }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs text-muted-foreground">Categoría</dt>
-              <dd class="mt-1 text-sm font-semibold">{{ pokemon.category }}</dd>
-            </div>
-            <div>
-              <dt class="text-xs text-muted-foreground">Habilidad</dt>
-              <dd class="mt-1 text-sm font-semibold">{{ pokemon.abilities.join(', ') }}</dd>
-            </div>
-          </dl>
-        </section>
-
-        <section class="mt-7" aria-labelledby="gender-heading">
-          <h2 id="gender-heading" class="text-lg font-semibold">Género</h2>
-          <p v-if="pokemon.gender.genderless" class="mt-3 text-sm text-muted-foreground">
-            Este Pokémon no tiene género.
-          </p>
-          <div v-else class="mt-4 grid grid-cols-2 gap-4">
-            <Card class="border-transparent bg-[var(--surface-masculine)] p-4 shadow-none">
-              <Mars class="size-5 text-[var(--gender-male)]" />
-              <p class="mt-2 text-xs text-muted-foreground">Masculino</p>
-              <p class="tabular-nums text-base font-semibold">
-                {{ formatPercentage(pokemon.gender.male) }}
-              </p>
-            </Card>
-            <Card class="border-transparent bg-[var(--surface-feminine)] p-4 shadow-none">
-              <Venus class="size-5 text-[var(--gender-female)]" />
-              <p class="mt-2 text-xs text-muted-foreground">Femenino</p>
-              <p class="tabular-nums text-base font-semibold">
-                {{ formatPercentage(pokemon.gender.female) }}
-              </p>
-            </Card>
-          </div>
-        </section>
-
-        <section class="mt-7" aria-labelledby="weakness-heading">
-          <h2 id="weakness-heading" class="text-lg font-semibold">Debilidades</h2>
-          <div class="mt-4 flex flex-wrap gap-2">
-            <div v-for="weakness in pokemon.weaknesses" :key="weakness.type" class="relative">
-              <TypeBadge :type="weakness.type" />
-              <span
-                v-if="weakness.multiplier > 2"
-                class="absolute -right-1 -top-1 rounded-full bg-card px-1 text-[9px] font-bold tabular-nums text-foreground shadow"
-              >
-                ×{{ weakness.multiplier }}
-              </span>
-            </div>
-          </div>
-        </section>
-
-        <section v-if="pokemon.evolutions.length" class="mt-8" aria-labelledby="evolutions-heading">
-          <h2 id="evolutions-heading" class="text-lg font-semibold">Evoluciones</h2>
-          <div
-            class="scrollbar-none -mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-2 lg:mx-0 lg:px-0"
-          >
-            <Link
-              v-for="evolution in pokemon.evolutions"
-              :key="evolution.name"
-              :to="`/pokedex/${evolution.name}`"
-              variant="compactCard"
-            >
-              <img
-                v-if="evolution.sprite"
-                :src="evolution.sprite"
-                :alt="evolution.displayName"
-                width="78"
-                height="78"
-                class="size-[78px] object-contain"
-                loading="lazy"
-              />
-              <div v-else class="size-[78px]" />
-              <span class="mt-1 text-[10px] tabular-nums text-muted-foreground">{{
-                formatPokemonNumber(evolution.id)
-              }}</span>
-              <span class="truncate text-xs font-semibold">{{ evolution.displayName }}</span>
-            </Link>
-          </div>
-        </section>
-
-        <Button class="mt-8 w-full sm:w-auto" @click="share">
-          <Share2 class="size-4" />
-          Copiar información
-        </Button>
+      <div class="mt-5 flex flex-wrap gap-1.5">
+        <TypeBadge v-for="type in pokemon.types" :key="type" :type="type" compact />
       </div>
+
+      <p class="mt-6 text-pretty text-xs leading-[18px] text-[var(--text-secondary)]">
+        {{ pokemon.description }}
+      </p>
+
+      <div class="mt-5 border-t border-[var(--border-default)] pt-5">
+        <dl class="grid grid-cols-2 gap-x-4 gap-y-4">
+          <div>
+            <dt
+              class="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
+            >
+              <Weight class="size-3.5" /> Peso
+            </dt>
+            <dd
+              class="flex h-11 items-center justify-center rounded-xl border border-[var(--border-default)] text-sm font-medium tabular-nums"
+            >
+              {{ formatWeight(pokemon.weightHectograms) }}
+            </dd>
+          </div>
+          <div>
+            <dt
+              class="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
+            >
+              <Ruler class="size-3.5" /> Altura
+            </dt>
+            <dd
+              class="flex h-11 items-center justify-center rounded-xl border border-[var(--border-default)] text-sm font-medium tabular-nums"
+            >
+              {{ formatHeight(pokemon.heightDecimeters) }}
+            </dd>
+          </div>
+          <div>
+            <dt
+              class="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
+            >
+              <Grid2X2 class="size-3.5" /> Categoría
+            </dt>
+            <dd
+              class="flex h-11 items-center justify-center rounded-xl border border-[var(--border-default)] px-2 text-center text-sm font-medium uppercase"
+            >
+              {{ pokemon.category }}
+            </dd>
+          </div>
+          <div>
+            <dt
+              class="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
+            >
+              <CircleDot class="size-3.5" /> Habilidad
+            </dt>
+            <dd
+              class="flex h-11 items-center justify-center rounded-xl border border-[var(--border-default)] px-2 text-center text-sm font-medium"
+            >
+              {{ pokemon.abilities[0] }}
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <section class="mt-6" aria-labelledby="gender-heading">
+        <h2
+          id="gender-heading"
+          class="text-center text-[10px] font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
+        >
+          Género
+        </h2>
+        <p v-if="pokemon.gender.genderless" class="mt-3 text-center text-xs text-muted-foreground">
+          Sin género
+        </p>
+        <template v-else>
+          <div class="mt-3 flex h-2 overflow-hidden rounded-full" aria-hidden="true">
+            <span class="bg-[var(--gender-male)]" :style="{ width: `${pokemon.gender.male}%` }" />
+            <span class="min-w-2 flex-1 bg-[var(--gender-female)]" />
+          </div>
+          <div class="mt-2 flex items-center justify-between text-xs tabular-nums">
+            <span class="flex items-center gap-1"
+              ><Mars class="size-3.5" />{{ formatPercentage(pokemon.gender.male) }}</span
+            >
+            <span class="flex items-center gap-1"
+              ><Venus class="size-3.5" />{{ formatPercentage(pokemon.gender.female) }}</span
+            >
+          </div>
+        </template>
+      </section>
+
+      <section class="mt-11" aria-labelledby="weakness-heading">
+        <h2 id="weakness-heading" class="text-[20px] font-medium leading-7">Debilidades</h2>
+        <div class="mt-4 flex flex-wrap gap-x-4 gap-y-3">
+          <TypeBadge
+            v-for="weakness in sortedWeaknesses"
+            :key="weakness.type"
+            :type="weakness.type"
+          />
+        </div>
+      </section>
     </div>
+
+    <div class="h-[53px]" aria-hidden="true" />
+    <AppNavigation class="!static !inset-auto !z-auto lg:hidden" />
   </article>
 </template>
-
-<style scoped>
-.pokemon-hero {
-  background:
-    radial-gradient(circle at 82% 26%, var(--hero-spot-strong) 0 58px, transparent 59px),
-    radial-gradient(circle at 18% 84%, var(--hero-spot-soft) 0 82px, transparent 83px),
-    linear-gradient(
-      145deg,
-      color-mix(in srgb, var(--hero-color) 84%, var(--surface-card)),
-      var(--hero-color)
-    );
-}
-
-.pokemon-artwork {
-  filter: drop-shadow(var(--shadow-sprite));
-}
-
-.pokemon-hero::after {
-  position: absolute;
-  right: -68px;
-  bottom: -72px;
-  width: 280px;
-  height: 280px;
-  border: 34px solid var(--hero-ring);
-  border-radius: 50%;
-  content: '';
-}
-</style>

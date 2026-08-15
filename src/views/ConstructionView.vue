@@ -1,52 +1,23 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { Button } from '@/components/ui/button'
-import { pokemonRepository } from '@/features/pokemon/api/pokemon-repository'
-import type { PokemonSummary } from '@/features/pokemon/domain/models'
-
-const props = defineProps<{ section: string }>()
-const router = useRouter()
-const jigglypuff = ref<PokemonSummary | null>(null)
-const title = computed(() => `${props.section}: muy pronto`)
-
-onMounted(async () => {
-  try {
-    jigglypuff.value = await pokemonRepository.getSummary('jigglypuff')
-  } catch {
-    jigglypuff.value = null
-  }
-})
+defineProps<{ section: string }>()
 </script>
 
 <template>
   <section
-    class="flex min-h-[calc(100dvh-77px)] items-center justify-center bg-background px-6 text-center lg:min-h-dvh"
+    class="flex min-h-[calc(100dvh-77px)] flex-col items-center bg-background px-6 pt-[190px] text-center lg:min-h-dvh lg:justify-center lg:pt-0"
+    :aria-label="section"
   >
-    <div class="max-w-sm">
-      <div
-        class="relative mx-auto flex size-52 items-center justify-center rounded-full bg-[var(--surface-feminine)]"
-      >
-        <span
-          class="absolute inset-5 rounded-full border-[18px] border-[var(--art-ring)]"
-          aria-hidden="true"
-        />
-        <img
-          v-if="jigglypuff?.sprite"
-          :src="jigglypuff.sprite"
-          :alt="jigglypuff.displayName"
-          width="160"
-          height="160"
-          class="relative size-40 object-contain"
-        />
-        <span v-else class="relative text-7xl" aria-hidden="true">?</span>
-      </div>
-      <h1 class="mt-7 text-balance text-[26px] font-semibold">{{ title }}</h1>
-      <p class="mt-3 text-pretty text-sm leading-6 text-muted-foreground">
-        Estamos preparando esta sección. Mientras tanto, puedes seguir explorando y guardando
-        Pokémon.
-      </p>
-      <Button class="mt-6" @click="router.push('/pokedex')">Volver a la Pokédex</Button>
-    </div>
+    <img
+      src="/assets/figma/construction-jigglypuff.jpg"
+      alt="Jigglypuff esperando nuevas funciones"
+      width="180"
+      height="180"
+      class="size-[180px] object-cover"
+    />
+    <h1 class="mt-5 text-balance text-[22px] font-semibold leading-7">¡Muy pronto disponible!</h1>
+    <p class="mt-3 max-w-[320px] text-pretty text-sm leading-6 text-muted-foreground">
+      Estamos trabajando para traerte esta sección. Vuelve más adelante para descubrir todas las
+      novedades.
+    </p>
   </section>
 </template>
