@@ -211,7 +211,9 @@ test.describe('Pokédex experience', () => {
       const catalog = await page.getByRole('region', { name: 'Catálogo Pokémon' }).boundingBox()
       expect(catalog?.width).toBe(420)
     }
-    await expect(page).toHaveScreenshot('detail.png', { fullPage: true })
+    await expect(page).toHaveScreenshot('detail.png', {
+      fullPage: !testInfo.project.name.startsWith('desktop-'),
+    })
 
     if (testInfo.project.name.startsWith('desktop-')) {
       await page.getByTestId('share-pokemon').click()
@@ -232,6 +234,52 @@ test.describe('Pokédex experience', () => {
     await page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true }).click()
     await expect(page).toHaveURL('/favorites/bulbasaur')
     await expect(page.getByTestId('pokemon-detail')).toBeVisible()
+  })
+
+  test('keeps catalog and detail as independent desktop scroll regions', async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== 'desktop-1440',
+      'One desktop viewport covers the split-scroll contract',
+    )
+    await startOnCatalog(page)
+    await page.goto('/pokedex/bulbasaur')
+    await expect(page.getByTestId('pokemon-detail')).toBeVisible()
+
+    const catalog = page.getByTestId('pokemon-list')
+    const detail = page.getByTestId('pokemon-detail-scroll-panel')
+    await expect
+      .poll(() => detail.evaluate((element) => getComputedStyle(element).transform))
+      .toBe('none')
+    const detailMetrics = await detail.evaluate((element) => ({
+      clientHeight: element.clientHeight,
+      scrollHeight: element.scrollHeight,
+    }))
+    expect(detailMetrics.scrollHeight).toBeGreaterThan(detailMetrics.clientHeight)
+
+    await detail.evaluate((element) => {
+      element.scrollTop = element.scrollHeight
+      element.dispatchEvent(new Event('scroll'))
+    })
+    const detailScrollTop = await detail.evaluate((element) => element.scrollTop)
+    expect(detailScrollTop).toBeGreaterThan(0)
+    expect(await catalog.evaluate((element) => element.scrollTop)).toBe(0)
+    expect(await page.evaluate(() => window.scrollY)).toBe(0)
+
+    await catalog.evaluate((element) => {
+      element.scrollTop = 300
+      element.dispatchEvent(new Event('scroll'))
+    })
+    expect(await catalog.evaluate((element) => element.scrollTop)).toBeGreaterThan(0)
+    const detailScrollTopAfterCatalogScroll = await detail.evaluate((element) => element.scrollTop)
+    expect(detailScrollTopAfterCatalogScroll).toBeGreaterThan(0)
+    expect(Math.abs(detailScrollTopAfterCatalogScroll - detailScrollTop)).toBeLessThanOrEqual(1)
+    expect(await page.evaluate(() => window.scrollY)).toBe(0)
+    expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBe(
+      page.viewportSize()!.height,
+    )
+    await expect(page).toHaveScreenshot('detail-independent-scroll.png')
   })
 
   test('favorites shares the catalog grid and caps the main panel width', async ({
