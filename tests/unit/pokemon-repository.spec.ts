@@ -134,4 +134,27 @@ describe('pokemon repository catalog', () => {
     })
     expect(summaries.map(({ name }) => name)).toEqual(['bulbasaur', 'charmander'])
   })
+
+  it('caps favorite hydration batches and skips the network for an empty list', async () => {
+    vi.mocked(fetch).mockResolvedValue(
+      response({
+        data: {
+          pokemon_aggregate: { aggregate: { count: 0 } },
+          pokemon: [],
+        },
+      }),
+    )
+
+    await expect(pokemonRepository.getSummaries([])).resolves.toEqual([])
+    expect(fetch).not.toHaveBeenCalled()
+
+    await pokemonRepository.getSummaries(
+      Array.from({ length: 101 }, (_, index) => `pokemon-${index + 1}`),
+    )
+    expect(fetch).toHaveBeenCalledTimes(2)
+    const batchSizes = vi
+      .mocked(fetch)
+      .mock.calls.map(([, init]) => JSON.parse(String(init?.body)).variables.where.name._in.length)
+    expect(batchSizes).toEqual([100, 1])
+  })
 })

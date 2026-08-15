@@ -1,6 +1,23 @@
 import AxeBuilder from '@axe-core/playwright'
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 import { mockPokeApi, startOnCatalog } from './fixtures/pokeapi'
+
+async function expectNoSeriousAccessibilityViolations(page: Page, excludeBadges = false) {
+  await page.evaluate(() =>
+    Promise.all(
+      document
+        .getAnimations()
+        .filter(({ playState }) => playState !== 'finished')
+        .map((animation) => animation.finished.catch(() => undefined)),
+    ),
+  )
+  let audit = new AxeBuilder({ page })
+  if (excludeBadges) audit = audit.exclude('[data-slot="badge"]')
+  const accessibility = await audit.analyze()
+  expect(
+    accessibility.violations.filter(({ impact }) => impact === 'critical' || impact === 'serious'),
+  ).toEqual([])
+}
 
 test.describe('Pokédex experience', () => {
   test.beforeEach(async ({ page }) => {
@@ -25,6 +42,7 @@ test.describe('Pokédex experience', () => {
     await expect(
       page.getByRole('heading', { name: 'Todos los Pokémon en un solo lugar' }),
     ).toBeVisible()
+    await expectNoSeriousAccessibilityViolations(page)
     await expect(page).toHaveScreenshot('onboarding-01.png')
     await page.getByRole('button', { name: 'Continuar' }).click()
     await expect(page.getByRole('heading', { name: 'Mantén tu Pokédex actualizada' })).toBeVisible()
@@ -134,6 +152,12 @@ test.describe('Pokédex experience', () => {
     ).toHaveCount(18)
     await page.getByRole('checkbox', { name: 'Fuego', exact: true }).click()
     if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('filter.png')
+    await page.getByRole('button', { name: 'Cancelar', exact: true }).click()
+    await expect(page).not.toHaveURL(/types=/)
+    await expect(page.getByRole('link', { name: 'Ver a Squirtle', exact: true })).toBeVisible()
+
+    await page.getByTestId('open-filters').click()
+    await page.getByRole('checkbox', { name: 'Fuego', exact: true }).click()
     await page.getByRole('button', { name: 'Aplicar', exact: true }).click()
     await expect(page).toHaveURL(/types=fire/)
     await expect(page.getByRole('link', { name: 'Ver a Charmander', exact: true })).toBeVisible()
@@ -141,12 +165,7 @@ test.describe('Pokédex experience', () => {
     await expect.poll(() => JSON.stringify(catalogRequests.at(-1)?.where)).toContain('fire')
     if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('filtered.png')
 
-    const accessibility = await new AxeBuilder({ page }).disableRules(['color-contrast']).analyze()
-    expect(
-      accessibility.violations.filter(
-        ({ impact }) => impact === 'critical' || impact === 'serious',
-      ),
-    ).toEqual([])
+    await expectNoSeriousAccessibilityViolations(page, true)
     expect(browserErrors).toEqual([])
   })
 
@@ -189,6 +208,27 @@ test.describe('Pokédex experience', () => {
     await expect(page.getByTestId('pokemon-list')).toHaveAttribute('aria-busy', 'false')
   })
 
+  test('restores URL filters and recovers from an empty remote search', async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile-360', 'One viewport covers URL state restoration')
+    await startOnCatalog(page)
+    await page.goto('/pokedex?q=pika&types=electric')
+
+    const search = page.getByPlaceholder('Buscar Pokémon...')
+    await expect(search).toHaveValue('pika')
+    await expect(page.getByRole('link', { name: 'Ver a Pikachu', exact: true })).toBeVisible()
+
+    await search.fill('missing')
+    await expect(page).toHaveURL(/q=missing/)
+    await expect(page.getByRole('heading', { name: 'No encontramos Pokémon' })).toBeVisible()
+    await expectNoSeriousAccessibilityViolations(page)
+
+    await page.getByRole('button', { name: 'Borrar filtros', exact: true }).click()
+    await expect(page).toHaveURL('/pokedex')
+    await expect(page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })).toBeVisible()
+  })
+
   test('detail copies all attributes and persists favorites', async ({ page }, testInfo) => {
     const detailRequests: string[] = []
     page.on('request', (request) => {
@@ -206,6 +246,7 @@ test.describe('Pokédex experience', () => {
     await expect(activeDetail.getByRole('heading', { name: 'Bulbasaur' })).toBeVisible()
     await expect(activeDetail.getByText('6,9 kg')).toBeVisible()
     await expect(activeDetail.getByText('Semilla', { exact: true })).toBeVisible()
+    await expectNoSeriousAccessibilityViolations(page, true)
     expect(detailRequests.some((path) => path.includes('/evolution-chain/'))).toBe(false)
     expect(detailRequests.some((path) => /\/pokemon\/(ivysaur|venusaur)\/?$/.test(path))).toBe(
       false,
@@ -290,6 +331,29 @@ test.describe('Pokédex experience', () => {
     await expect(page).toHaveURL('/pokedex')
   })
 
+  test('starts each desktop Pokémon detail at the top', async ({ page }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== 'desktop-1440',
+      'One desktop viewport covers detail navigation scroll restoration',
+    )
+    await page.setViewportSize({ width: 1440, height: 720 })
+    await startOnCatalog(page)
+    await page.goto('/pokedex/bulbasaur')
+
+    const detail = page.getByTestId('pokemon-detail-scroll-panel')
+    await expect(page.getByTestId('desktop-pokemon-detail')).toBeVisible()
+    await detail.evaluate((element) => {
+      element.scrollTop = element.scrollHeight
+      element.dispatchEvent(new Event('scroll'))
+    })
+    expect(await detail.evaluate((element) => element.scrollTop)).toBeGreaterThan(0)
+
+    await page.getByRole('link', { name: 'Ver a Charmander', exact: true }).click()
+    await expect(page).toHaveURL('/pokedex/charmander')
+    await expect(page.getByRole('heading', { name: 'Charmander' })).toBeVisible()
+    await expect.poll(() => detail.evaluate((element) => element.scrollTop)).toBe(0)
+  })
+
   test('favorites shares the catalog grid and caps the main panel width', async ({
     page,
   }, testInfo) => {
@@ -332,9 +396,23 @@ test.describe('Resilient states', () => {
     await page.goto('/')
     await expect(page.getByRole('heading', { name: 'Algo salió mal' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Reintentar' })).toBeVisible()
+    await expectNoSeriousAccessibilityViolations(page)
     await expect(page).toHaveScreenshot('error.png')
     await page.getByRole('button', { name: 'Reintentar' }).click()
     await expect(page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })).toBeVisible()
+  })
+
+  test('recovers when an individual Pokémon detail request fails', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile-360', 'One viewport covers detail recovery')
+    await startOnCatalog(page)
+    await mockPokeApi(page, { failDetailAttempts: 1 })
+    await page.goto('/pokedex/bulbasaur')
+
+    await expect(page.getByRole('heading', { name: 'No pudimos abrir esta ficha' })).toBeVisible()
+    await expect(page.getByText('PokeAPI no respondió correctamente.')).toBeVisible()
+    await page.getByRole('button', { name: 'Reintentar' }).click()
+    await expect(page.getByTestId('mobile-pokemon-detail')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Bulbasaur' })).toBeVisible()
   })
 
   test('shows favorite empty and construction states', async ({ page }, testInfo) => {
@@ -345,9 +423,11 @@ test.describe('Resilient states', () => {
     await expect(
       page.getByRole('heading', { name: 'No has marcado ningún Pokémon como favorito' }),
     ).toBeVisible()
+    await expectNoSeriousAccessibilityViolations(page)
     await expect(page).toHaveScreenshot('favorites-empty.png')
     await page.goto('/regions')
     await expect(page.getByRole('heading', { name: '¡Muy pronto disponible!' })).toBeVisible()
+    await expectNoSeriousAccessibilityViolations(page)
     await expect(page).toHaveScreenshot('construction.png')
   })
 

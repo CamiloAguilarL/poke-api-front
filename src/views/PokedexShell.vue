@@ -1,10 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import CatalogPanel from '@/components/catalog/CatalogPanel.vue'
 
 const route = useRoute()
 const hasDetail = computed(() => route.name === 'pokemon-detail')
+const detailPanel = ref<HTMLElement | null>(null)
+
+watch(
+  () => route.params.name,
+  async (name, previousName) => {
+    if (!name || name === previousName) return
+    await nextTick()
+    detailPanel.value?.scrollTo({ top: 0 })
+  },
+)
 </script>
 
 <template>
@@ -20,12 +30,13 @@ const hasDetail = computed(() => route.name === 'pokemon-detail')
     <Transition name="detail-panel">
       <div
         v-if="hasDetail"
+        ref="detailPanel"
         class="min-w-0 bg-background lg:h-dvh lg:overflow-y-auto lg:overscroll-contain"
         data-testid="pokemon-detail-scroll-panel"
       >
         <RouterView v-slot="{ Component, route: detailRoute }">
           <Transition name="detail-content" mode="out-in">
-            <component :is="Component" :key="detailRoute.fullPath" />
+            <component :is="Component" :key="String(detailRoute.params.name)" />
           </Transition>
         </RouterView>
       </div>

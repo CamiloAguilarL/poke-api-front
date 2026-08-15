@@ -91,11 +91,13 @@ export async function mockPokeApi(
     failListAttempts?: number
     listDelayMs?: number
     pageSizeCap?: number
+    failDetailAttempts?: number
   } = {},
 ) {
   const catalogRequests: Array<{ limit: number; offset: number; where: Record<string, any> }> = []
   const summaryBatchRequests: string[][] = []
   let listAttempts = 0
+  let detailAttempts = 0
 
   await page.route('https://graphql.pokeapi.co/v1beta2', async (route) => {
     if (options.listDelayMs)
@@ -198,6 +200,10 @@ export async function mockPokeApi(
     }
 
     if (path.startsWith('pokemon/')) {
+      detailAttempts += 1
+      if (detailAttempts <= (options.failDetailAttempts ?? 0)) {
+        return fulfillJson(route, { detail: 'unavailable' }, 503)
+      }
       const name = path.split('/')[1]
       const entry = pokemon.find((item) => item.name === name)
       return entry

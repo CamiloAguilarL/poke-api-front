@@ -90,6 +90,10 @@ async function continueFlow() {
       <div
         class="absolute left-1/2 top-[667px] flex -translate-x-1/2 items-center gap-2 lg:static lg:mt-7 lg:translate-x-0"
         aria-label="Paso del onboarding"
+        role="progressbar"
+        aria-valuemin="1"
+        aria-valuemax="2"
+        :aria-valuenow="step + 1"
       >
         <span
           :class="[
