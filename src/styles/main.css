@@ -236,9 +236,7 @@
 .search-icon-leave-active,
 .button-label-enter-active,
 .button-label-leave-active,
-.favorite-list-enter-active,
-.favorite-list-leave-active,
-.favorite-list-move {
+.favorite-list-leave-active {
   transition-duration: var(--motion-duration-base);
   transition-timing-function: var(--motion-ease-standard);
 }
@@ -306,12 +304,12 @@
 
 .onboarding-art-enter-from {
   opacity: 0;
-  transform: translateX(calc(-50% + 10px));
+  transform: translateX(10px);
 }
 
 .onboarding-art-leave-to {
   opacity: 0;
-  transform: translateX(calc(-50% - 10px));
+  transform: translateX(-10px);
 }
 
 .onboarding-copy-enter-from {
@@ -324,12 +322,10 @@
   transform: translateX(-10px);
 }
 
-.favorite-list-enter-active,
 .favorite-list-leave-active {
   transition-property: opacity, transform;
 }
 
-.favorite-list-enter-from,
 .favorite-list-leave-to {
   opacity: 0;
   transform: scale(0.97);
@@ -381,7 +377,7 @@
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
@@ -392,40 +388,40 @@
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: none;
   }
 }
 
 @keyframes detail-hero-enter {
   from {
     opacity: 0;
-    transform: translateX(-50%) scale(0.94);
+    transform: scale(0.94);
   }
   to {
     opacity: 1;
-    transform: translateX(-50%) scale(1);
+    transform: scale(1);
   }
 }
 
 @keyframes detail-emblem-enter {
   from {
     opacity: 0;
-    transform: translateX(-50%) rotate(-12deg) scale(0.9);
+    transform: scale(0.9);
   }
   to {
     opacity: 0.6;
-    transform: translateX(-50%) rotate(-12deg) scale(1);
+    transform: scale(1);
   }
 }
 
 @keyframes detail-sprite-enter {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(8px) scale(0.9);
+    transform: translateY(8px) scale(0.9);
   }
   to {
     opacity: 0.8;
-    transform: translateX(-50%) translateY(0) scale(1);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -504,35 +500,23 @@
   @keyframes sheet-desktop-in {
     from {
       opacity: 0;
-      transform: translate(-50%, -48%) scale(0.98);
+      transform: translateY(2%) scale(0.98);
     }
     to {
       opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
+      transform: translateY(0) scale(1);
     }
   }
 
   @keyframes sheet-desktop-out {
     from {
       opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
+      transform: translateY(0) scale(1);
     }
     to {
       opacity: 0;
-      transform: translate(-50%, -48%) scale(0.98);
+      transform: translateY(2%) scale(0.98);
     }
-  }
-}
-
-@media (min-width: 1024px) {
-  .onboarding-art-enter-from {
-    opacity: 0;
-    transform: translateX(10px);
-  }
-
-  .onboarding-art-leave-to {
-    opacity: 0;
-    transform: translateX(-10px);
   }
 }
 

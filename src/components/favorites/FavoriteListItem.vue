@@ -9,14 +9,20 @@ defineProps<{ pokemon: PokemonSummary }>()
 const emit = defineEmits<{ remove: [] }>()
 const offset = ref(0)
 let startX = 0
+let moved = false
 
 function pointerDown(event: PointerEvent) {
   startX = event.clientX
-  ;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
+  moved = false
 }
 
 function pointerMove(event: PointerEvent) {
   if (!startX) return
+  if (Math.abs(event.clientX - startX) > 4) moved = true
+  const target = event.currentTarget as HTMLElement
+  if (moved && !target.hasPointerCapture(event.pointerId)) {
+    target.setPointerCapture(event.pointerId)
+  }
   offset.value = Math.max(-84, Math.min(0, event.clientX - startX))
 }
 
@@ -24,6 +30,13 @@ function pointerUp() {
   offset.value = offset.value < -42 ? -76 : 0
   startX = 0
   window.getSelection()?.removeAllRanges()
+}
+
+function preventClickAfterSwipe(event: MouseEvent) {
+  if (!moved) return
+  event.preventDefault()
+  event.stopPropagation()
+  moved = false
 }
 </script>
 
@@ -45,7 +58,8 @@ function pointerUp() {
       class="favorite-gesture relative touch-pan-y select-none bg-background transition-transform"
       data-testid="favorite-card-gesture"
       :style="{ transform: `translateX(${offset}px)` }"
-      @pointerdown.prevent="pointerDown"
+      @click.capture="preventClickAfterSwipe"
+      @pointerdown="pointerDown"
       @pointermove.prevent="pointerMove"
       @pointerup="pointerUp"
       @pointercancel="pointerUp"

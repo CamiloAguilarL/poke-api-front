@@ -229,6 +229,9 @@ test.describe('Pokédex experience', () => {
     if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('favorites.png')
     await page.reload()
     await expect(page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })).toBeVisible()
+    await page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true }).click()
+    await expect(page).toHaveURL('/favorites/bulbasaur')
+    await expect(page.getByTestId('pokemon-detail')).toBeVisible()
   })
 
   test('favorites shares the catalog grid and caps the main panel width', async ({
@@ -293,6 +296,28 @@ test.describe('Resilient states', () => {
     await expect(page.getByRole('status', { name: 'Cargando Pokémon' })).toBeVisible()
     await expect(page).toHaveScreenshot('splash.png')
     await expect(page.getByTestId('pokemon-list')).toBeVisible()
+  })
+
+  test('honors reduced motion in animated loading states', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile-360', 'One viewport covers reduced motion')
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await startOnCatalog(page)
+    await mockPokeApi(page, { listDelayMs: 2_000 })
+    await page.goto('/')
+
+    const loader = page.locator('.pokeball')
+    await expect(loader).toBeVisible()
+    const motion = await loader.evaluate((element) => {
+      const styles = getComputedStyle(element)
+      const duration = styles.animationDuration
+      return {
+        durationMs: duration.endsWith('ms')
+          ? Number.parseFloat(duration)
+          : Number.parseFloat(duration) * 1_000,
+        iterations: styles.animationIterationCount,
+      }
+    })
+    expect(motion).toEqual({ durationMs: 0.01, iterations: '1' })
   })
 
   test('supports swipe deletion and undo without losing favorite order', async ({

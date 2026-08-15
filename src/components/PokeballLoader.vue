@@ -1,6 +1,6 @@
 <script setup lang="ts">
 withDefaults(defineProps<{ label?: string; fullscreen?: boolean }>(), {
-  label: 'Cargando Pokémon',
+  label: 'Cargando Pokémon…',
   fullscreen: false,
 })
 </script>

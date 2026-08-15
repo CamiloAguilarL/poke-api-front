@@ -75,8 +75,8 @@ watch(columns, () => void nextTick(maybeLoadMore))
     <div
       :key="resultVersion"
       :class="[
-        'motion-results-reveal relative w-full transition-opacity duration-200',
-        { 'opacity-60': refreshing },
+        'relative w-full transition-opacity duration-200',
+        { 'motion-results-reveal': resultVersion > 1, 'opacity-60': refreshing },
       ]"
       :style="{ height: `${totalSize}px` }"
     >

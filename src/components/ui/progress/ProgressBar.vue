@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<{ active?: boolean; label?: string; class
       v-if="active"
       :class="cn('h-0.5 w-full overflow-hidden bg-primary/10', props.class)"
       role="status"
+      :aria-label="label"
       aria-live="polite"
       data-slot="progress"
     >

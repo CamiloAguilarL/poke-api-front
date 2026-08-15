@@ -108,7 +108,7 @@ watch(() => props.name, load, { immediate: true })
       v-if="status === 'loading'"
       key="loading"
       fullscreen
-      label="Consultando la ficha Pokémon"
+      label="Consultando la ficha Pokémon…"
     />
     <ErrorState
       v-else-if="status === 'error'"

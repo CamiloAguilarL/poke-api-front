@@ -20,7 +20,7 @@ defineEmits<{ retry: [] }>()
       alt="Magikarp confundido"
       width="181"
       height="210"
-      class="motion-state-art h-[210px] w-auto object-contain"
+      class="h-[210px] w-auto object-contain"
     />
     <h1 class="mt-5 text-balance text-xl font-semibold">{{ title }}</h1>
     <p class="mt-2 max-w-[310px] text-pretty text-sm leading-6 text-muted-foreground">
