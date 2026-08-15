@@ -34,17 +34,29 @@ test.describe('Pokédex experience', () => {
     await expect(page.getByTestId('pokemon-list')).toBeVisible()
   })
 
-  test('onboarding fills wide desktop without scaling its source artwork', async ({
+  test('onboarding groups its desktop flow without scaling the source artwork', async ({
     page,
   }, testInfo) => {
-    test.skip(testInfo.project.name !== 'desktop-1920', 'The wide viewport owns this contract')
+    test.skip(!testInfo.project.name.startsWith('desktop-'), 'Desktop viewports own this contract')
     await page.goto('/')
     const main = await page.getByRole('main').boundingBox()
     const artwork = await page.getByAltText('Entrenadora Pokémon').boundingBox()
+    const action = await page.getByRole('button', { name: 'Continuar', exact: true }).boundingBox()
     expect(main?.x).toBe(0)
-    expect(main?.width).toBe(1920)
+    expect(main?.width).toBe(page.viewportSize()?.width)
     expect(artwork?.width).toBe(257)
+    expect(action!.y - (artwork!.y + artwork!.height)).toBeLessThan(280)
+    expect(action!.y + action!.height).toBeLessThan(page.viewportSize()!.height - 100)
     await expect(page).toHaveScreenshot('onboarding-desktop.png')
+
+    await page.getByRole('button', { name: 'Continuar', exact: true }).click()
+    await expect(page.getByRole('heading', { name: 'Mantén tu Pokédex actualizada' })).toBeVisible()
+    const secondArtwork = await page.getByAltText('Entrenadora lista para comenzar').boundingBox()
+    const secondAction = await page.getByRole('button', { name: 'Empecemos' }).boundingBox()
+    expect(secondArtwork!.y).toBeGreaterThan(100)
+    expect(secondAction!.y - (secondArtwork!.y + secondArtwork!.height)).toBeLessThan(300)
+    expect(secondAction!.y + secondAction!.height).toBeLessThan(page.viewportSize()!.height - 100)
+    await expect(page).toHaveScreenshot('onboarding-desktop-02.png')
   })
 
   test('catalog searches, filters and remains usable at the project viewport', async ({

@@ -22,14 +22,19 @@ async function continueFlow() {
 <template>
   <main
     id="main-content"
-    class="min-h-dvh w-full overflow-hidden bg-background lg:grid lg:grid-cols-[minmax(520px,1.1fr)_minmax(480px,0.9fr)]"
+    class="min-h-dvh w-full overflow-hidden bg-background lg:grid lg:grid-cols-2"
   >
     <section
-      class="relative mx-auto h-dvh min-h-[700px] w-full max-w-[520px] lg:max-w-none"
+      class="relative mx-auto h-dvh min-h-[700px] w-full max-w-[520px] lg:flex lg:min-h-0 lg:max-w-none lg:flex-col lg:items-center lg:justify-center lg:px-10 lg:py-10"
       aria-live="polite"
     >
-      <template v-if="firstStep">
-        <div class="absolute left-1/2 top-[207px] h-[257px] w-[360px] -translate-x-1/2">
+      <div
+        :class="[
+          'absolute left-1/2 w-[360px] -translate-x-1/2 lg:relative lg:left-auto lg:top-auto lg:shrink-0 lg:translate-x-0',
+          firstStep ? 'top-[207px] h-[257px]' : 'top-[181px] h-[240px]',
+        ]"
+      >
+        <template v-if="firstStep">
           <img
             src="/assets/figma/onboarding-trainer-small.png"
             alt="Entrenador Pokémon"
@@ -46,19 +51,19 @@ async function continueFlow() {
             fetchpriority="high"
             class="absolute left-[102px] top-0 size-[257px] object-contain"
           />
-        </div>
-      </template>
-      <img
-        v-else
-        src="/assets/figma/onboarding-hilda-cutout.png"
-        alt="Entrenadora lista para comenzar"
-        width="240"
-        height="240"
-        fetchpriority="high"
-        class="absolute left-1/2 top-[181px] size-[240px] -translate-x-1/2 object-contain [image-rendering:pixelated]"
-      />
+        </template>
+        <img
+          v-else
+          src="/assets/figma/onboarding-hilda-cutout.png"
+          alt="Entrenadora lista para comenzar"
+          width="240"
+          height="240"
+          fetchpriority="high"
+          class="absolute left-1/2 top-0 size-[240px] -translate-x-1/2 object-contain [image-rendering:pixelated]"
+        />
+      </div>
 
-      <div class="absolute inset-x-4 bottom-[168px] text-center">
+      <div class="absolute inset-x-4 bottom-[168px] text-center lg:static lg:mt-8 lg:w-full">
         <h1 class="mx-auto w-[321px] text-balance text-[26px] font-medium leading-[1.25]">
           {{ firstStep ? 'Todos los Pokémon en un solo lugar' : 'Mantén tu Pokédex actualizada' }}
         </h1>
@@ -72,7 +77,7 @@ async function continueFlow() {
       </div>
 
       <div
-        class="absolute left-1/2 bottom-[122px] flex -translate-x-1/2 items-center gap-2"
+        class="absolute left-1/2 bottom-[122px] flex -translate-x-1/2 items-center gap-2 lg:static lg:mt-7 lg:translate-x-0"
         aria-label="Paso del onboarding"
       >
         <span
@@ -89,15 +94,17 @@ async function continueFlow() {
         />
       </div>
       <Button
-        class="absolute bottom-10 left-1/2 h-[58px] w-[328px] -translate-x-1/2 rounded-full text-lg"
+        class="absolute bottom-10 left-1/2 h-[58px] w-[328px] -translate-x-1/2 rounded-full text-lg lg:static lg:mt-5 lg:translate-x-0"
         @click="continueFlow"
       >
         {{ firstStep ? 'Continuar' : 'Empecemos' }}
       </Button>
     </section>
 
-    <aside class="hidden items-center justify-center bg-[var(--surface-info)] px-12 lg:flex">
-      <div class="max-w-md">
+    <aside
+      class="hidden items-center justify-center bg-[var(--surface-info)] px-12 lg:flex xl:px-20"
+    >
+      <div class="max-w-[430px]">
         <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Pokédex</p>
         <h2 class="mt-4 text-balance text-4xl font-semibold leading-tight">
           Todo un mundo Pokémon, también en tu escritorio.

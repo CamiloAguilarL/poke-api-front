@@ -1,6 +1,6 @@
 # Checklist manual de calidad UI
 
-Revisión final realizada el 14 de agosto de 2026 sobre la aplicación real y los escenarios deterministas de Playwright. Esta lista complementa las aserciones automáticas: registra los microdetalles que también se inspeccionaron visualmente.
+Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y los escenarios deterministas de Playwright. Esta lista complementa las aserciones automáticas: registra los microdetalles que también se inspeccionaron visualmente.
 
 ## Geometría responsive
 
@@ -13,6 +13,7 @@ Revisión final realizada el 14 de agosto de 2026 sobre la aplicación real y lo
 - [x] Ningún viewport presenta overflow horizontal, gutter lateral artificial ni espacio fantasma inferior.
 - [x] La ruta de catálogo usa todo el ancho útil; la ruta de detalle conserva el listado de 420 px y bloques de lectura de máximo 896 px.
 - [x] La cabecera de búsqueda conserva un ancho cómodo en desktop y no estira el input hasta una longitud difícil de leer.
+- [x] El onboarding desktop agrupa artwork, copy, progreso y CTA como una sola unidad centrada; el botón conserva relación visual con la imagen en 1440 y 1920 px.
 - [x] La lista virtual mantiene altura de fila, gaps, padding y alineación constante mientras cambia el número de columnas.
 
 ## Fidelidad visual y sistema de diseño
@@ -54,7 +55,7 @@ Revisión final realizada el 14 de agosto de 2026 sobre la aplicación real y lo
 ## Evidencia automatizada
 
 - [x] 19 pruebas unitarias.
-- [x] Matriz Playwright de 36 entradas entre `360×800`, `768×1024`, `1440×900` y `1920×1080`: 15 escenarios ejecutados y 21 combinaciones no aplicables omitidas explícitamente.
+- [x] Matriz Playwright de 36 entradas entre `360×800`, `768×1024`, `1440×900` y `1920×1080`: 16 escenarios ejecutados y 20 combinaciones no aplicables omitidas explícitamente.
 - [x] Regresión visual de onboarding, catálogo, búsqueda, filtros, detalle, favoritos, swipe, loading, error, vacío y construcción.
 - [x] Aserciones geométricas bloquean regresiones del ancho/alto del documento, shell, catálogo y artwork.
 - [x] Cobertura actual: 100% statements, 100% functions, 100% lines y 92% branches sobre el alcance configurado.
