@@ -27,7 +27,7 @@ shadcn-style UI primitives + Tailwind semantic tokens
 
 El listado actual de PokeAPI supera los mil registros. El catálogo consulta GraphQL v1beta2 en páginas de 40 con `limit` y `offset`; el mismo `where` resuelve en servidor la búsqueda parcial por nombre, el ID exacto y la unión de tipos. Cada página devuelve únicamente ID, nombre y tipos. Las URLs oficiales de sprite y artwork se derivan del ID, por lo que una página completa requiere una sola solicitud y no un detalle REST por card.
 
-El infinite scroll pide la siguiente página cerca del final y la lista solo monta las filas visibles. Un cambio de búsqueda o filtros invalida resultados tardíos mediante una versión de solicitud. El repositorio deduplica solicitudes concurrentes y conserva cada combinación de consulta y variables durante 30 minutos. REST queda reservado para la ficha completa y la hidratación puntual de favoritos/evoluciones.
+El infinite scroll pide la siguiente página cerca del final y la lista solo monta las filas visibles. Un cambio de búsqueda o filtros invalida resultados tardíos mediante una versión de solicitud. El repositorio deduplica solicitudes concurrentes y conserva cada combinación de consulta y variables durante 30 minutos. REST queda reservado para la ficha completa y la hidratación puntual de favoritos.
 
 ## Responsive
 

@@ -52,7 +52,7 @@ function apply() {
     @update:open="emit('update:open', $event)"
   >
     <div class="flex h-full flex-col">
-      <header class="relative shrink-0 px-6 pt-9">
+      <header class="relative shrink-0 px-4 pt-[52px]">
         <Button
           variant="icon"
           size="icon-sm"
@@ -64,7 +64,7 @@ function apply() {
         </Button>
         <h2 class="text-center text-[20px] font-semibold leading-7">Filtra por tus preferencias</h2>
 
-        <div class="mt-16 flex h-12 items-center justify-between">
+        <div class="mt-12 flex h-12 items-center justify-between">
           <h3 class="text-base font-medium">Tipo</h3>
           <ChevronUp class="size-5" aria-hidden="true" />
         </div>
@@ -79,7 +79,7 @@ function apply() {
           v-for="type in filterTypes"
           :key="type"
           :for="`filter-${type}`"
-          class="flex h-[42px] cursor-pointer items-center justify-between px-6 text-sm font-normal"
+          class="flex h-[42px] cursor-pointer items-center justify-between pl-4 pr-6 text-sm font-normal"
         >
           <span>{{ TYPE_META[type].label }}</span>
           <Checkbox

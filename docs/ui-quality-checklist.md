@@ -46,7 +46,7 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 - [x] El primer foco por teclado expone “Saltar al contenido” y apunta a `#main-content`.
 - [x] El foco visible está definido para botones, links, inputs y contenido del diálogo.
 - [x] `prefers-reduced-motion` neutraliza animaciones y transiciones no esenciales.
-- [x] Axe no reporta violaciones críticas ni serias en el flujo principal filtrado.
+- [x] Axe no reporta violaciones críticas ni serias en el flujo principal filtrado, salvo la excepción documentada de contraste para chips fieles a Figma.
 - [x] Todas las imágenes inspeccionadas tienen texto alternativo y dimensiones explícitas; no hubo imágenes rotas.
 - [x] No se encontraron botones sin texto o `aria-label`, errores de consola ni excepciones de página durante el flujo principal.
 - [x] La app usa `dvh`, safe area inferior y `viewport-fit=cover` para responder a chrome móvil y dispositivos con inset.
@@ -59,4 +59,4 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 - [x] Matriz Playwright de 40 entradas entre `360×800`, `768×1024`, `1440×900` y `1920×1080`: 17 escenarios ejecutados y 23 combinaciones no aplicables omitidas explícitamente.
 - [x] Regresión visual de onboarding, catálogo, búsqueda, filtros, detalle, favoritos, swipe, loading, error, vacío y construcción.
 - [x] Aserciones geométricas bloquean regresiones del ancho/alto del documento, shell, catálogo y artwork.
-- [x] Cobertura actual: 100% statements, 100% functions, 100% lines y 92% branches sobre el alcance configurado.
+- [x] Cobertura actual: 99,38% statements, 100% functions, 100% lines y 92,59% branches sobre el alcance configurado.

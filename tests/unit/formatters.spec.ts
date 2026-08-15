@@ -27,10 +27,6 @@ const bulbasaur: PokemonDetail = {
     { type: 'fire', multiplier: 2 },
     { type: 'psychic', multiplier: 2 },
   ],
-  evolutions: [
-    { id: 1, name: 'bulbasaur', displayName: 'Bulbasaur', sprite: 'sprite.png' },
-    { id: 2, name: 'ivysaur', displayName: 'Ivysaur', sprite: 'sprite.png' },
-  ],
 }
 
 describe('pokemon formatters', () => {
@@ -46,22 +42,19 @@ describe('pokemon formatters', () => {
   it('copies every visible attribute as comma-separated segments', () => {
     const payload = formatSharePayload(bulbasaur)
 
-    expect(payload.split(', ')).toHaveLength(11)
+    expect(payload.split(', ')).toHaveLength(10)
     expect(payload).toContain('Nombre: Bulbasaur')
     expect(payload).toContain('Tipos: Planta / Veneno')
     expect(payload).toContain('Descripción: Una rara semilla; crece con este Pokémon.')
     expect(payload).toContain('Género: 87,5% masculino / 12,5% femenino')
-    expect(payload).toContain('Evoluciones: Bulbasaur / Ivysaur')
   })
 
-  it('handles genderless Pokémon and absent evolutions', () => {
+  it('handles genderless Pokémon', () => {
     const payload = formatSharePayload({
       ...bulbasaur,
       gender: { genderless: true, male: 0, female: 0 },
-      evolutions: [],
     })
 
     expect(payload).toContain('Género: Sin género')
-    expect(payload).not.toContain('Evoluciones:')
   })
 })

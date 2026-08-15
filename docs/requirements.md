@@ -62,5 +62,5 @@ La geometría y el sistema visual se reproducen desde el nuevo Figma. Los datos 
 - Los mockups asignan IDs o tipos incorrectos a Charmander/Charmeleon y muestran conteos que no coinciden con las cards. PokeAPI prevalece.
 - El placeholder mezcla portugués y español; la implementación usa “Buscar Pokémon...”.
 - Los componentes contienen residuos de Montserrat, pero las pantallas renderizadas usan Poppins. Se normaliza en Poppins.
-- El nuevo Figma no muestra Compartir; se añade junto al corazón porque el PDF lo exige.
+- El nuevo Figma mobile no muestra Compartir; se conserva exacto y la acción exigida por el PDF se expone junto al corazón en desktop.
 - El onboarding menciona registro, pero no existe flujo ni requisito de autenticación. Perfil conserva el estado en construcción.

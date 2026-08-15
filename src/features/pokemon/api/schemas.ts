@@ -94,10 +94,6 @@ export const typeSchema = z.object({
   pokemon: z.array(z.object({ pokemon: namedResourceSchema })),
 })
 
-export const evolutionChainSchema = z.object({
-  chain: z.unknown(),
-})
-
 export type PokemonDto = z.infer<typeof pokemonSchema>
 export type PokemonSpeciesDto = z.infer<typeof pokemonSpeciesSchema>
 export type PokemonTypeDto = z.infer<typeof typeSchema>

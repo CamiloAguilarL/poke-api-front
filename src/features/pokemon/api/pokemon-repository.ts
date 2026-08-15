@@ -1,7 +1,5 @@
 import type { z } from 'zod'
 import {
-  type CatalogEntry,
-  type EvolutionStage,
   type GenderBreakdown,
   isPokemonType,
   type PokemonCatalogQuery,
@@ -15,7 +13,6 @@ import {
 import { formatPokemonName } from '../domain/formatters'
 import {
   abilitySchema,
-  evolutionChainSchema,
   graphQlEnvelopeSchema,
   pokemonCatalogDataSchema,
   pokemonSchema,
@@ -187,11 +184,6 @@ function catalogSummary(
   }
 }
 
-function idFromUrl(url: string): number {
-  const match = url.match(/\/(\d+)\/?$/)
-  return match ? Number(match[1]) : 0
-}
-
 function localized(items: Array<{ name: string; language: { name: string } }>, fallback: string) {
   return items.find(({ language }) => language.name === 'es')?.name ?? fallback
 }
@@ -273,27 +265,6 @@ function calculateWeaknesses(types: PokemonTypeDto[]): Weakness[] {
     .sort((left, right) => right.multiplier - left.multiplier)
 }
 
-interface EvolutionNode {
-  species?: { name?: string; url?: string }
-  evolves_to?: unknown[]
-}
-
-function flattenEvolutionChain(value: unknown): CatalogEntry[] {
-  const result: CatalogEntry[] = []
-
-  function visit(node: unknown) {
-    if (!node || typeof node !== 'object') return
-    const current = node as EvolutionNode
-    if (current.species?.name && current.species.url) {
-      result.push({ name: current.species.name, id: idFromUrl(current.species.url) })
-    }
-    current.evolves_to?.forEach(visit)
-  }
-
-  visit(value)
-  return result
-}
-
 class PokeApiRepository implements PokemonRepository {
   async searchPage(query: PokemonCatalogQuery): Promise<PokemonSummaryPage> {
     const response = await graphQlRequest(
@@ -327,7 +298,7 @@ class PokeApiRepository implements PokemonRepository {
       request(`/pokemon-species/${encodeURIComponent(name)}`, pokemonSpeciesSchema, STATIC_TTL),
     ])
 
-    const [typeResources, abilityResources, evolution] = await Promise.all([
+    const [typeResources, abilityResources] = await Promise.all([
       Promise.all(
         pokemon.types.map(({ type }) => request(`/type/${type.name}`, typeSchema, STATIC_TTL)),
       ),
@@ -336,7 +307,6 @@ class PokeApiRepository implements PokemonRepository {
           request(`/ability/${ability.name}`, abilitySchema, STATIC_TTL),
         ),
       ),
-      request(species.evolution_chain.url, evolutionChainSchema, STATIC_TTL),
     ])
 
     const displayName = localized(species.names, formatPokemonName(pokemon.name))
@@ -347,14 +317,6 @@ class PokeApiRepository implements PokemonRepository {
       })),
       'Sin categoría',
     )
-    const evolutionEntries = flattenEvolutionChain(evolution.chain)
-    const evolutionPokemon = await Promise.all(
-      evolutionEntries.map(async (entry): Promise<EvolutionStage> => {
-        const summary = await this.getSummary(entry.name)
-        return { ...entry, displayName: summary.displayName, sprite: summary.sprite }
-      }),
-    )
-
     return {
       ...toSummary(pokemon, displayName),
       detailSprite: detailSprite(pokemon.sprites),
@@ -367,7 +329,6 @@ class PokeApiRepository implements PokemonRepository {
       ),
       gender: genderFromRate(species.gender_rate),
       weaknesses: calculateWeaknesses(typeResources),
-      evolutions: evolutionPokemon,
     }
   }
 

@@ -44,11 +44,6 @@ export interface Weakness {
   multiplier: number
 }
 
-export interface EvolutionStage extends CatalogEntry {
-  displayName: string
-  sprite: string | null
-}
-
 export interface PokemonDetail extends PokemonSummary {
   detailSprite: string | null
   description: string
@@ -58,7 +53,6 @@ export interface PokemonDetail extends PokemonSummary {
   abilities: string[]
   gender: GenderBreakdown
   weaknesses: Weakness[]
-  evolutions: EvolutionStage[]
 }
 
 export interface PokemonCatalogQuery {

@@ -108,12 +108,13 @@ test.describe('Pokédex experience', () => {
     }
 
     await page.getByRole('button', { name: 'Limpiar búsqueda' }).click()
+    await expect(page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })).toBeVisible()
     await page.getByTestId('open-filters').click()
     await expect(
       page.getByRole('group', { name: 'Tipos de Pokémon' }).getByRole('checkbox'),
     ).toHaveCount(18)
-    if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('filter.png')
     await page.getByRole('checkbox', { name: 'Fuego', exact: true }).click()
+    if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('filter.png')
     await page.getByRole('button', { name: 'Aplicar', exact: true }).click()
     await expect(page).toHaveURL(/types=fire/)
     await expect(page.getByRole('link', { name: 'Ver a Charmander', exact: true })).toBeVisible()
@@ -150,6 +151,12 @@ test.describe('Pokédex experience', () => {
   })
 
   test('detail copies all attributes and persists favorites', async ({ page }, testInfo) => {
+    const detailRequests: string[] = []
+    page.on('request', (request) => {
+      if (request.url().startsWith('https://pokeapi.co/api/v2/')) {
+        detailRequests.push(new URL(request.url()).pathname)
+      }
+    })
     await startOnCatalog(page)
     await page.goto('/pokedex/bulbasaur')
     await expect(
@@ -157,6 +164,10 @@ test.describe('Pokédex experience', () => {
     ).toBeVisible()
     await expect(page.getByText('6,9 kg')).toBeVisible()
     await expect(page.getByText('Semilla', { exact: true })).toBeVisible()
+    expect(detailRequests.some((path) => path.includes('/evolution-chain/'))).toBe(false)
+    expect(detailRequests.some((path) => /\/pokemon\/(ivysaur|venusaur)\/?$/.test(path))).toBe(
+      false,
+    )
     if (testInfo.project.name.startsWith('desktop-')) {
       const catalog = await page.getByRole('region', { name: 'Catálogo Pokémon' }).boundingBox()
       expect(catalog?.width).toBe(420)

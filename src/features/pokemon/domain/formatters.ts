@@ -51,11 +51,5 @@ export function formatSharePayload(pokemon: PokemonDetail): string {
     `Debilidades: ${pokemon.weaknesses.map(({ type, multiplier }) => `${TYPE_META[type].label} ×${multiplier}`).join(' / ')}`,
   ]
 
-  if (pokemon.evolutions.length > 0) {
-    segments.push(
-      `Evoluciones: ${pokemon.evolutions.map(({ displayName }) => displayName).join(' / ')}`,
-    )
-  }
-
   return segments.join(', ')
 }
