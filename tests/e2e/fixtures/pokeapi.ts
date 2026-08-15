@@ -71,8 +71,52 @@ async function fulfillJson(route: Route, json: unknown, status = 200) {
 
 export async function mockPokeApi(
   page: Page,
-  options: { failList?: boolean; listDelayMs?: number } = {},
+  options: { failList?: boolean; listDelayMs?: number; pageSizeCap?: number } = {},
 ) {
+  const catalogRequests: Array<{ limit: number; offset: number; where: Record<string, any> }> = []
+
+  await page.route('https://graphql.pokeapi.co/v1beta2', async (route) => {
+    if (options.listDelayMs)
+      await new Promise((resolve) => setTimeout(resolve, options.listDelayMs))
+    if (options.failList) return fulfillJson(route, { errors: [{ message: 'unavailable' }] }, 503)
+
+    const body = route.request().postDataJSON() as {
+      variables: { limit: number; offset: number; where: Record<string, any> }
+    }
+    const { where, offset } = body.variables
+    const limit = options.pageSizeCap
+      ? Math.min(body.variables.limit, options.pageSizeCap)
+      : body.variables.limit
+    catalogRequests.push({ limit: body.variables.limit, offset, where })
+
+    const clauses = Array.isArray(where._and) ? where._and : []
+    const searchClause = clauses.find(
+      (clause: Record<string, any>) => clause.name?._ilike || clause._or,
+    )
+    const namePattern = searchClause?.name?._ilike ?? searchClause?._or?.[0]?.name?._ilike ?? ''
+    const query = String(namePattern).replaceAll('%', '').replaceAll('\\', '')
+    const id = searchClause?._or?.[1]?.id?._eq
+    const typeClause = clauses.find((clause: Record<string, any>) => clause.pokemontypes)
+    const types: string[] = typeClause?.pokemontypes?.type?.name?._in ?? []
+    const filtered = pokemon.filter(
+      (entry) =>
+        (!query || entry.name.includes(query) || entry.id === id) &&
+        (!types.length || entry.types.some((type) => types.includes(type))),
+    )
+    const pageEntries = filtered.slice(offset, offset + limit)
+
+    return fulfillJson(route, {
+      data: {
+        pokemon_aggregate: { aggregate: { count: filtered.length } },
+        pokemon: pageEntries.map((entry) => ({
+          id: entry.id,
+          name: entry.name,
+          pokemontypes: entry.types.map((type) => ({ type: { name: type } })),
+        })),
+      },
+    })
+  })
+
   await page.route('https://pokeapi.co/api/v2/**', async (route) => {
     const url = new URL(route.request().url())
     const path = url.pathname.replace('/api/v2/', '').replace(/\/$/, '')
@@ -154,6 +198,8 @@ export async function mockPokeApi(
     }
     return fulfillJson(route, { detail: 'not mocked' }, 404)
   })
+
+  return { catalogRequests }
 }
 
 export async function startOnCatalog(page: Page, favoriteNames: string[] = []) {

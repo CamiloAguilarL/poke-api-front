@@ -60,9 +60,17 @@ export interface PokemonDetail extends PokemonSummary {
   evolutions: EvolutionStage[]
 }
 
-export interface PokemonListPage {
+export interface PokemonCatalogQuery {
+  query: string
+  types: PokemonTypeName[]
+  limit: number
+  offset: number
+}
+
+export interface PokemonSummaryPage {
   count: number
-  entries: CatalogEntry[]
+  summaries: PokemonSummary[]
+  nextOffset: number | null
 }
 
 export function isPokemonType(value: string): value is PokemonTypeName {

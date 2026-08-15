@@ -4,9 +4,10 @@ import {
   type EvolutionStage,
   type GenderBreakdown,
   isPokemonType,
+  type PokemonCatalogQuery,
   type PokemonDetail,
-  type PokemonListPage,
   type PokemonSummary,
+  type PokemonSummaryPage,
   POKEMON_TYPES,
   type PokemonTypeName,
   type Weakness,
@@ -15,7 +16,8 @@ import { formatPokemonName } from '../domain/formatters'
 import {
   abilitySchema,
   evolutionChainSchema,
-  pokemonListSchema,
+  graphQlEnvelopeSchema,
+  pokemonCatalogDataSchema,
   pokemonSchema,
   pokemonSpeciesSchema,
   type PokemonDto,
@@ -25,8 +27,25 @@ import {
 } from './schemas'
 
 const API_URL = 'https://pokeapi.co/api/v2'
+const GRAPHQL_URL = 'https://graphql.pokeapi.co/v1beta2'
+const SPRITES_URL = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon'
 const DEFAULT_TTL = 30 * 60 * 1000
 const STATIC_TTL = 24 * 60 * 60 * 1000
+
+const CATALOG_QUERY = `
+  query Catalog($limit: Int!, $offset: Int!, $where: pokemon_bool_exp!) {
+    pokemon_aggregate(where: $where) {
+      aggregate { count }
+    }
+    pokemon(limit: $limit, offset: $offset, order_by: { id: asc }, where: $where) {
+      id
+      name
+      pokemontypes(order_by: { slot: asc }) {
+        type { name }
+      }
+    }
+  }
+`
 
 interface CacheEntry {
   expiresAt: number
@@ -44,10 +63,9 @@ export class PokeApiError extends Error {
 }
 
 export interface PokemonRepository {
-  listAll(): Promise<PokemonListPage>
+  searchPage(query: PokemonCatalogQuery): Promise<PokemonSummaryPage>
   getSummary(name: string): Promise<PokemonSummary>
   getDetail(name: string): Promise<PokemonDetail>
-  getNamesForTypes(types: PokemonTypeName[]): Promise<Set<string>>
   clearCache(): void
 }
 
@@ -86,6 +104,87 @@ async function request<T>(pathOrUrl: string, schema: z.ZodType<T>, ttl = DEFAULT
 
   inFlight.set(url, promise)
   return promise
+}
+
+async function graphQlRequest<T>(
+  operation: string,
+  variables: Record<string, unknown>,
+  schema: z.ZodType<T>,
+): Promise<T> {
+  const cacheKey = `graphql:${JSON.stringify({ operation, variables })}`
+  const cached = cache.get(cacheKey)
+  if (cached && cached.expiresAt > Date.now()) return cached.value as T
+
+  const pending = inFlight.get(cacheKey)
+  if (pending) return pending as Promise<T>
+
+  const promise = fetch(GRAPHQL_URL, {
+    method: 'POST',
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: operation, variables }),
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new PokeApiError('PokeAPI no respondió correctamente.', response.status)
+      }
+      return response.json()
+    })
+    .then((data) => {
+      const envelope = graphQlEnvelopeSchema.safeParse(data)
+      if (!envelope.success) {
+        throw new PokeApiError('PokeAPI devolvió información con un formato inesperado.')
+      }
+      if (envelope.data.errors?.length) {
+        throw new PokeApiError(envelope.data.errors.map(({ message }) => message).join('. '))
+      }
+      const parsed = schema.safeParse(envelope.data.data)
+      if (!parsed.success) {
+        throw new PokeApiError('PokeAPI devolvió información con un formato inesperado.')
+      }
+      cache.set(cacheKey, { expiresAt: Date.now() + DEFAULT_TTL, value: parsed.data })
+      return parsed.data
+    })
+    .finally(() => inFlight.delete(cacheKey))
+
+  inFlight.set(cacheKey, promise)
+  return promise
+}
+
+function catalogWhere(query: string, types: PokemonTypeName[]): Record<string, unknown> {
+  const clauses: Record<string, unknown>[] = []
+  const normalizedQuery = query.trim().toLocaleLowerCase('es')
+
+  if (normalizedQuery) {
+    const escapedQuery = normalizedQuery.replace(/[\\%_]/g, '\\$&')
+    const nameFilter = { name: { _ilike: `%${escapedQuery}%` } }
+    if (/^\d+$/.test(normalizedQuery)) {
+      clauses.push({ _or: [nameFilter, { id: { _eq: Number(normalizedQuery) } }] })
+    } else {
+      clauses.push(nameFilter)
+    }
+  }
+
+  if (types.length) {
+    clauses.push({ pokemontypes: { type: { name: { _in: types } } } })
+  }
+
+  return {
+    is_default: { _eq: true },
+    ...(clauses.length ? { _and: clauses } : {}),
+  }
+}
+
+function catalogSummary(
+  pokemon: z.infer<typeof pokemonCatalogDataSchema>['pokemon'][number],
+): PokemonSummary {
+  return {
+    id: pokemon.id,
+    name: pokemon.name,
+    displayName: formatPokemonName(pokemon.name),
+    sprite: `${SPRITES_URL}/${pokemon.id}.png`,
+    artwork: `${SPRITES_URL}/other/official-artwork/${pokemon.id}.png`,
+    types: pokemon.pokemontypes.map(({ type }) => type.name).filter(isPokemonType),
+  }
 }
 
 function idFromUrl(url: string): number {
@@ -191,28 +290,30 @@ function flattenEvolutionChain(value: unknown): CatalogEntry[] {
 }
 
 class PokeApiRepository implements PokemonRepository {
-  async listAll(): Promise<PokemonListPage> {
-    const response = await request('/pokemon?limit=100000&offset=0', pokemonListSchema, STATIC_TTL)
+  async searchPage(query: PokemonCatalogQuery): Promise<PokemonSummaryPage> {
+    const response = await graphQlRequest(
+      CATALOG_QUERY,
+      {
+        limit: query.limit,
+        offset: query.offset,
+        where: catalogWhere(query.query, query.types),
+      },
+      pokemonCatalogDataSchema,
+    )
+    const summaries = response.pokemon.map(catalogSummary)
+    const count = response.pokemon_aggregate.aggregate.count
+    const nextOffset = query.offset + summaries.length
+
     return {
-      count: response.count,
-      entries: response.results
-        .map(({ name, url }) => ({ name, id: idFromUrl(url) }))
-        .filter(({ id }) => id > 0)
-        .sort((left, right) => left.id - right.id),
+      count,
+      summaries,
+      nextOffset: nextOffset < count ? nextOffset : null,
     }
   }
 
   async getSummary(name: string): Promise<PokemonSummary> {
     const pokemon = await request(`/pokemon/${encodeURIComponent(name)}`, pokemonSchema)
     return toSummary(pokemon)
-  }
-
-  async getNamesForTypes(types: PokemonTypeName[]): Promise<Set<string>> {
-    if (types.length === 0) return new Set()
-    const resources = await Promise.all(
-      types.map((type) => request(`/type/${type}`, typeSchema, STATIC_TTL)),
-    )
-    return new Set(resources.flatMap(({ pokemon }) => pokemon.map((entry) => entry.pokemon.name)))
   }
 
   async getDetail(name: string): Promise<PokemonDetail> {

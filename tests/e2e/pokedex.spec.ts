@@ -62,6 +62,7 @@ test.describe('Pokédex experience', () => {
   test('catalog searches, filters and remains usable at the project viewport', async ({
     page,
   }, testInfo) => {
+    const { catalogRequests } = await mockPokeApi(page)
     const browserErrors: string[] = []
     page.on('pageerror', (error) => browserErrors.push(error.message))
     page.on('console', (message) => {
@@ -98,6 +99,7 @@ test.describe('Pokédex experience', () => {
 
     await page.getByPlaceholder('Buscar Pokémon...').fill('pika')
     await expect(page.getByRole('link', { name: 'Ver a Pikachu', exact: true })).toBeVisible()
+    await expect.poll(() => JSON.stringify(catalogRequests.at(-1)?.where)).toContain('pika')
     await expect(page.getByRole('button', { name: 'Limpiar búsqueda' })).toHaveCount(1)
     if (testInfo.project.name === 'mobile-360') {
       await expect(page).toHaveScreenshot('search-filled.png')
@@ -114,6 +116,7 @@ test.describe('Pokédex experience', () => {
     await expect(page).toHaveURL(/types=fire/)
     await expect(page.getByRole('link', { name: 'Ver a Charmander', exact: true })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Ver a Squirtle', exact: true })).toHaveCount(0)
+    await expect.poll(() => JSON.stringify(catalogRequests.at(-1)?.where)).toContain('fire')
     if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('filtered.png')
 
     const accessibility = await new AxeBuilder({ page }).analyze()
@@ -123,6 +126,25 @@ test.describe('Pokédex experience', () => {
       ),
     ).toEqual([])
     expect(browserErrors).toEqual([])
+  })
+
+  test('loads additional API pages only when the catalog approaches its end', async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile-360', 'One viewport covers infinite scrolling')
+    const { catalogRequests } = await mockPokeApi(page, { pageSizeCap: 10 })
+    await startOnCatalog(page)
+    await page.goto('/')
+    await expect(page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })).toBeVisible()
+    expect(catalogRequests.map(({ offset }) => offset)).toEqual([0])
+
+    await page.getByTestId('pokemon-list').evaluate((element) => {
+      element.scrollTop = element.scrollHeight
+      element.dispatchEvent(new Event('scroll'))
+    })
+
+    await expect(page.getByRole('link', { name: 'Ver a Jigglypuff', exact: true })).toBeVisible()
+    expect(catalogRequests.map(({ offset }) => offset)).toEqual([0, 10])
   })
 
   test('detail copies all attributes and persists favorites', async ({ page }, testInfo) => {

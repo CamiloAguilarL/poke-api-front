@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Search, SlidersHorizontal } from '@lucide/vue'
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from '@/components/ui/sonner'
 import { Button } from '@/components/ui/button'
@@ -23,14 +23,20 @@ const {
   selectedTypes,
   status,
   filterStatus,
+  nextPageStatus,
   errorMessage,
-  filteredEntries,
+  entries,
+  totalCount,
+  resultVersion,
   hasActiveFilters,
+  hasNextPage,
 } = storeToRefs(store)
 const filterOpen = ref(false)
+const catalogReady = ref(false)
+const suppressSearch = ref(false)
 
 const resultLabel = computed(() => {
-  const count = filteredEntries.value.length
+  const count = totalCount.value
   if (!hasActiveFilters.value) return `${count.toLocaleString('es-CO')} Pokémon`
   return `${count.toLocaleString('es-CO')} resultado${count === 1 ? '' : 's'}`
 })
@@ -53,8 +59,11 @@ async function updateRoute() {
 
 let searchTimer: ReturnType<typeof setTimeout> | undefined
 watch(query, () => {
+  if (!catalogReady.value || suppressSearch.value) return
   clearTimeout(searchTimer)
-  searchTimer = setTimeout(() => void updateRoute(), 200)
+  searchTimer = setTimeout(() => {
+    void Promise.all([updateRoute(), store.reload()])
+  }, 350)
 })
 
 async function applyTypes(types: PokemonTypeName[]) {
@@ -68,8 +77,11 @@ async function applyTypes(types: PokemonTypeName[]) {
 }
 
 async function clearFilters() {
-  store.clearFilters()
+  suppressSearch.value = true
+  await store.clearFilters()
   await updateRoute()
+  await nextTick()
+  suppressSearch.value = false
 }
 
 async function retry() {
@@ -79,16 +91,12 @@ async function retry() {
 onMounted(async () => {
   const routeQuery = typeof route.query.q === 'string' ? route.query.q : ''
   store.setQuery(routeQuery)
+  store.setSelectedTypes(typesFromRoute())
   await store.initialize()
-  const types = typesFromRoute()
-  if (types.length > 0) {
-    try {
-      await store.applyTypes(types)
-    } catch {
-      toast.error('El catálogo cargó, pero no pudimos recuperar los filtros.')
-    }
-  }
+  catalogReady.value = true
 })
+
+onBeforeUnmount(() => clearTimeout(searchTimer))
 </script>
 
 <template>
@@ -153,7 +161,7 @@ onMounted(async () => {
       @retry="retry"
     />
     <div
-      v-else-if="filteredEntries.length === 0"
+      v-else-if="entries.length === 0"
       class="flex flex-1 flex-col items-center justify-center px-8 text-center"
     >
       <div class="flex size-20 items-center justify-center rounded-full bg-[var(--surface-info)]">
@@ -167,9 +175,13 @@ onMounted(async () => {
     </div>
     <div v-else class="min-h-0 flex-1 px-4 lg:px-6">
       <PokemonVirtualList
-        :entries="filteredEntries"
+        :entries="entries"
         :summaries="summaries"
-        @visible="store.ensureSummaries"
+        :has-more="hasNextPage"
+        :loading-more="nextPageStatus === 'loading'"
+        :load-more-error="nextPageStatus === 'error'"
+        :result-version="resultVersion"
+        @load-more="store.loadNextPage"
       />
     </div>
 

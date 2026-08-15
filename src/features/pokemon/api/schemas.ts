@@ -10,6 +10,28 @@ export const pokemonListSchema = z.object({
   results: z.array(namedResourceSchema),
 })
 
+export const graphQlEnvelopeSchema = z.object({
+  data: z.unknown().optional(),
+  errors: z.array(z.object({ message: z.string() })).optional(),
+})
+
+export const pokemonCatalogDataSchema = z.object({
+  pokemon_aggregate: z.object({
+    aggregate: z.object({ count: z.number() }),
+  }),
+  pokemon: z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+      pokemontypes: z.array(
+        z.object({
+          type: z.object({ name: z.string() }),
+        }),
+      ),
+    }),
+  ),
+})
+
 const pokemonTypeSlotSchema = z.object({
   slot: z.number(),
   type: namedResourceSchema,

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useVirtualizer } from '@tanstack/vue-virtual'
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { LoaderCircle, RefreshCw } from '@lucide/vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { Button } from '@/components/ui/button'
 import type { CatalogEntry, PokemonSummary } from '@/features/pokemon/domain/models'
 import PokemonCard from './PokemonCard.vue'
 import PokemonCardSkeleton from './PokemonCardSkeleton.vue'
@@ -10,10 +12,20 @@ const props = withDefaults(
     entries: CatalogEntry[]
     summaries: Record<string, PokemonSummary>
     routePrefix?: '/pokedex' | '/favorites'
+    hasMore?: boolean
+    loadingMore?: boolean
+    loadMoreError?: boolean
+    resultVersion?: number
   }>(),
-  { routePrefix: '/pokedex' },
+  {
+    routePrefix: '/pokedex',
+    hasMore: false,
+    loadingMore: false,
+    loadMoreError: false,
+    resultVersion: 0,
+  },
 )
-const emit = defineEmits<{ visible: [names: string[]] }>()
+const emit = defineEmits<{ loadMore: [] }>()
 const scrollElement = ref<HTMLElement | null>(null)
 const containerWidth = ref(0)
 const columns = computed(() => {
@@ -33,27 +45,32 @@ const virtualizer = useVirtualizer(options)
 const rows = computed(() => virtualizer.value.getVirtualItems())
 const totalSize = computed(() => virtualizer.value.getTotalSize())
 
+function maybeLoadMore() {
+  const element = scrollElement.value
+  if (!element || !props.hasMore || props.loadingMore || props.loadMoreError) return
+  if (element.scrollHeight - element.scrollTop - element.clientHeight <= 320) emit('loadMore')
+}
+
 watch(
-  rows,
-  (visibleRows) => {
-    emit(
-      'visible',
-      visibleRows.flatMap((row) =>
-        Array.from(
-          { length: columns.value },
-          (_, column) => props.entries[row.index * columns.value + column]?.name,
-        ).filter((name): name is string => Boolean(name)),
-      ),
-    )
+  () => props.entries.length,
+  () => void nextTick(maybeLoadMore),
+)
+
+watch(
+  () => props.resultVersion,
+  () => {
+    if (scrollElement.value) scrollElement.value.scrollTop = 0
   },
-  { immediate: true },
 )
 
 onMounted(() => {
   if (!scrollElement.value) return
   containerWidth.value = scrollElement.value.clientWidth
   resizeObserver = new ResizeObserver(([entry]) => {
-    if (entry) containerWidth.value = entry.contentRect.width
+    if (entry) {
+      containerWidth.value = entry.contentRect.width
+      void nextTick(maybeLoadMore)
+    }
   })
   resizeObserver.observe(scrollElement.value)
 })
@@ -62,7 +79,12 @@ onBeforeUnmount(() => resizeObserver?.disconnect())
 </script>
 
 <template>
-  <div ref="scrollElement" class="scrollbar-none h-full overflow-y-auto" data-testid="pokemon-list">
+  <div
+    ref="scrollElement"
+    class="scrollbar-none h-full overflow-y-auto"
+    data-testid="pokemon-list"
+    @scroll.passive="maybeLoadMore"
+  >
     <div class="relative w-full" :style="{ height: `${totalSize}px` }">
       <div
         v-for="row in rows"
@@ -86,6 +108,25 @@ onBeforeUnmount(() => resizeObserver?.disconnect())
           <PokemonCardSkeleton v-else-if="entries[row.index * columns + column - 1]" />
         </template>
       </div>
+    </div>
+    <div
+      v-if="loadingMore"
+      class="flex h-16 items-center justify-center gap-2 text-xs font-medium text-muted-foreground"
+      role="status"
+    >
+      <LoaderCircle class="size-4 animate-spin" />
+      Cargando más Pokémon…
+    </div>
+    <div
+      v-else-if="loadMoreError"
+      class="flex min-h-20 flex-col items-center justify-center gap-2 pb-4 text-center"
+      role="alert"
+    >
+      <p class="text-xs text-muted-foreground">No pudimos cargar más Pokémon.</p>
+      <Button variant="secondary" size="sm" @click="emit('loadMore')">
+        <RefreshCw class="size-4" />
+        Reintentar
+      </Button>
     </div>
   </div>
 </template>
