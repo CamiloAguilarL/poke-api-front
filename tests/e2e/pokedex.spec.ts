@@ -225,11 +225,13 @@ test.describe('Resilient states', () => {
   test('offers retry when PokeAPI fails', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== 'mobile-360', 'One viewport covers the state contract')
     await startOnCatalog(page)
-    await mockPokeApi(page, { failList: true })
+    await mockPokeApi(page, { failListAttempts: 1 })
     await page.goto('/')
     await expect(page.getByRole('heading', { name: 'Algo salió mal' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Reintentar' })).toBeVisible()
     await expect(page).toHaveScreenshot('error.png')
+    await page.getByRole('button', { name: 'Reintentar' }).click()
+    await expect(page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })).toBeVisible()
   })
 
   test('shows favorite empty and construction states', async ({ page }, testInfo) => {

@@ -86,14 +86,23 @@ async function fulfillJson(route: Route, json: unknown, status = 200) {
 
 export async function mockPokeApi(
   page: Page,
-  options: { failList?: boolean; listDelayMs?: number; pageSizeCap?: number } = {},
+  options: {
+    failList?: boolean
+    failListAttempts?: number
+    listDelayMs?: number
+    pageSizeCap?: number
+  } = {},
 ) {
   const catalogRequests: Array<{ limit: number; offset: number; where: Record<string, any> }> = []
+  let listAttempts = 0
 
   await page.route('https://graphql.pokeapi.co/v1beta2', async (route) => {
     if (options.listDelayMs)
       await new Promise((resolve) => setTimeout(resolve, options.listDelayMs))
-    if (options.failList) return fulfillJson(route, { errors: [{ message: 'unavailable' }] }, 503)
+    listAttempts += 1
+    if (options.failList || listAttempts <= (options.failListAttempts ?? 0)) {
+      return fulfillJson(route, { errors: [{ message: 'unavailable' }] }, 503)
+    }
 
     const body = route.request().postDataJSON() as {
       variables: { limit: number; offset: number; where: Record<string, any> }
