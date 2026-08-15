@@ -255,10 +255,24 @@ test.describe('Pokédex experience', () => {
       const catalog = await page.getByRole('region', { name: 'Catálogo Pokémon' }).boundingBox()
       expect(catalog?.width).toBe(420)
       await expect(page.getByTestId('desktop-detail-back')).toBeVisible()
+    } else {
+      const navigation = page.getByRole('navigation', { name: 'Navegación principal' })
+      await expect(navigation).toHaveCSS('position', 'fixed')
+      const navigationBox = await navigation.boundingBox()
+      expect(navigationBox!.y + navigationBox!.height).toBe(page.viewportSize()!.height)
     }
-    await expect(page).toHaveScreenshot('detail.png', {
-      fullPage: !testInfo.project.name.startsWith('desktop-'),
-    })
+    await expect(page).toHaveScreenshot('detail.png')
+
+    if (testInfo.project.name === 'mobile-360') {
+      const navigation = page.getByRole('navigation', { name: 'Navegación principal' })
+      const beforeScroll = await navigation.boundingBox()
+      await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight }))
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+      const afterScroll = await navigation.boundingBox()
+      expect(afterScroll?.y).toBeCloseTo(beforeScroll!.y, 0)
+      await expect(navigation).toHaveScreenshot('detail-footer-scrolled.png')
+      await page.evaluate(() => window.scrollTo({ top: 0 }))
+    }
 
     if (testInfo.project.name.startsWith('desktop-')) {
       await page.getByTestId('share-pokemon').click()

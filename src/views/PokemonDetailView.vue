@@ -297,8 +297,8 @@ watch(() => props.name, load, { immediate: true })
           </section>
         </div>
 
-        <div class="h-[53px]" aria-hidden="true" />
-        <AppNavigation class="!static !inset-auto !z-auto" />
+        <div class="h-[77px]" aria-hidden="true" />
+        <AppNavigation />
       </div>
 
       <div class="hidden min-h-dvh lg:block" data-testid="desktop-pokemon-detail">

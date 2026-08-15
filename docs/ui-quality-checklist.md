@@ -37,6 +37,7 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 - [x] Overlay de sheet al 76%, elevación del diálogo, sombras de hover, sprite y loader usan tokens semánticos; ningún borde corta la sombra de las cards extremas.
 - [x] Todos los botones solo-icono inspeccionados tienen nombre accesible y los toggles exponen su estado.
 - [x] Botones, links y toggles centralizados usan `touch-action: manipulation`; el swipe conserva desplazamiento vertical.
+- [x] La navegación inferior mobile permanece fija al viewport en catálogo, detalle, favoritos y estados; el contenido reserva 77 px para que el último bloque nunca quede oculto.
 - [x] Favorito funciona desde card y detalle; eliminación por swipe dispone de botón equivalente y undo.
 - [x] Compartir copia nombre y todos los atributos visibles; el toast confirma la operación.
 - [x] Loading, error/retry, búsqueda sin resultados, favoritos vacíos, favoritos hidratando y secciones futuras tienen representación explícita.
