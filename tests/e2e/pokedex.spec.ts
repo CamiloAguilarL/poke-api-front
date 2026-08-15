@@ -198,11 +198,14 @@ test.describe('Pokédex experience', () => {
     })
     await startOnCatalog(page)
     await page.goto('/pokedex/bulbasaur')
-    await expect(
-      page.getByTestId('pokemon-detail').getByRole('heading', { name: 'Bulbasaur' }),
-    ).toBeVisible()
-    await expect(page.getByText('6,9 kg')).toBeVisible()
-    await expect(page.getByText('Semilla', { exact: true })).toBeVisible()
+    const activeDetail = page.getByTestId(
+      testInfo.project.name.startsWith('desktop-')
+        ? 'desktop-pokemon-detail'
+        : 'mobile-pokemon-detail',
+    )
+    await expect(activeDetail.getByRole('heading', { name: 'Bulbasaur' })).toBeVisible()
+    await expect(activeDetail.getByText('6,9 kg')).toBeVisible()
+    await expect(activeDetail.getByText('Semilla', { exact: true })).toBeVisible()
     expect(detailRequests.some((path) => path.includes('/evolution-chain/'))).toBe(false)
     expect(detailRequests.some((path) => /\/pokemon\/(ivysaur|venusaur)\/?$/.test(path))).toBe(
       false,
@@ -210,6 +213,7 @@ test.describe('Pokédex experience', () => {
     if (testInfo.project.name.startsWith('desktop-')) {
       const catalog = await page.getByRole('region', { name: 'Catálogo Pokémon' }).boundingBox()
       expect(catalog?.width).toBe(420)
+      await expect(page.getByTestId('desktop-detail-back')).toBeVisible()
     }
     await expect(page).toHaveScreenshot('detail.png', {
       fullPage: !testInfo.project.name.startsWith('desktop-'),
@@ -225,7 +229,7 @@ test.describe('Pokédex experience', () => {
       await expect(page.getByTestId('share-pokemon')).toBeHidden()
     }
 
-    await page.getByTestId('favorite-detail').click()
+    await page.getByRole('button', { name: 'Agregar a favoritos', exact: true }).click()
     await page.goto('/favorites')
     await expect(page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })).toBeVisible()
     if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('favorites.png')
@@ -243,6 +247,7 @@ test.describe('Pokédex experience', () => {
       testInfo.project.name !== 'desktop-1440',
       'One desktop viewport covers the split-scroll contract',
     )
+    await page.setViewportSize({ width: 1440, height: 720 })
     await startOnCatalog(page)
     await page.goto('/pokedex/bulbasaur')
     await expect(page.getByTestId('pokemon-detail')).toBeVisible()
@@ -280,6 +285,9 @@ test.describe('Pokédex experience', () => {
       page.viewportSize()!.height,
     )
     await expect(page).toHaveScreenshot('detail-independent-scroll.png')
+
+    await page.getByTestId('desktop-detail-back').click()
+    await expect(page).toHaveURL('/pokedex')
   })
 
   test('favorites shares the catalog grid and caps the main panel width', async ({
