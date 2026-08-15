@@ -65,7 +65,7 @@ watch(columns, () => void nextTick(maybeLoadMore))
 <template>
   <div
     ref="scrollElement"
-    class="scrollbar-none h-full overflow-y-auto"
+    class="scrollbar-none -mx-4 -mt-4 h-[calc(100%+16px)] overflow-y-auto px-4 pt-4"
     data-testid="pokemon-list"
     @scroll.passive="maybeLoadMore"
   >

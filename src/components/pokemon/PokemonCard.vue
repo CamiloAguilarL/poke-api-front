@@ -31,7 +31,7 @@ function toggleFavorite() {
 <template>
   <Card
     as="article"
-    class="group relative flex h-[102px] overflow-hidden border-transparent shadow-none"
+    class="group relative flex h-[102px] overflow-hidden border-transparent shadow-none transition-[border-color,box-shadow] duration-200 hover:border-[var(--border-card-hover)] hover:shadow-[var(--shadow-card-hover)]"
     :style="{ backgroundColor: cardSurface }"
   >
     <Link

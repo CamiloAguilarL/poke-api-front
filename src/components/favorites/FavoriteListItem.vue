@@ -28,7 +28,10 @@ function pointerUp() {
 </script>
 
 <template>
-  <div class="relative overflow-hidden rounded-2xl bg-destructive" data-testid="favorite-list-item">
+  <div
+    class="relative overflow-hidden rounded-2xl bg-destructive shadow-none transition-[box-shadow] duration-200 hover:shadow-[var(--shadow-card-hover)]"
+    data-testid="favorite-list-item"
+  >
     <Button
       variant="danger"
       size="icon"

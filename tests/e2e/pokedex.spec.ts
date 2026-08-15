@@ -101,6 +101,21 @@ test.describe('Pokédex experience', () => {
         ),
       )
       expect(firstRowCards.every((box) => box?.y === firstRowCards[0]?.y)).toBe(true)
+
+      const list = await page.getByTestId('pokemon-list').boundingBox()
+      const firstCard = await page
+        .locator('article')
+        .filter({ has: page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true }) })
+        .boundingBox()
+      const lastCard = await page
+        .locator('article')
+        .filter({ has: page.getByRole('link', { name: 'Ver a Charmeleon', exact: true }) })
+        .boundingBox()
+      expect(firstCard!.x - list!.x).toBe(16)
+      expect(list!.x + list!.width - (lastCard!.x + lastCard!.width)).toBe(16)
+
+      await page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true }).hover()
+      await expect(page).toHaveScreenshot('catalog-edge-hover.png')
     }
 
     await page.getByPlaceholder('Buscar Pokémon...').fill('pika')
