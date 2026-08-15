@@ -34,7 +34,7 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 - [x] El campo de búsqueda tiene label asociado, `name`, autocomplete, teclado de búsqueda, enter key hint y spellcheck adecuados.
 - [x] El control nativo de limpieza del input está suprimido; con texto existe exactamente una acción “Limpiar búsqueda”.
 - [x] El filtro contiene 18 checkboxes accesibles, selección múltiple, scroll interno, cancelar y aplicar; las primeras seis opciones y su orden coinciden con Figma.
-- [x] El sheet contiene su propio scroll y evita propagar overscroll al documento.
+- [x] El sheet contiene su propio scroll, mantiene las acciones ancladas al borde inferior, respeta el safe area, entra/sale verticalmente en mobile y evita propagar overscroll al documento.
 - [x] Overlay de sheet al 76%, elevación del diálogo, sombras de hover, sprite y loader usan tokens semánticos; ningún borde corta la sombra de las cards extremas.
 - [x] Todos los botones solo-icono inspeccionados tienen nombre accesible y los toggles exponen su estado.
 - [x] Cards y detalles mobile/desktop reutilizan el mismo `FavoriteButton`: círculo translúcido con borde blanco y corazón activo rojo mediante `--favorite`.

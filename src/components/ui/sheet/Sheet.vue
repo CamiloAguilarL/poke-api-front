@@ -28,7 +28,7 @@ function preventAutoFocus(event: Event) {
         data-slot="sheet-overlay"
       />
       <DialogContent
-        class="fixed inset-x-0 bottom-0 top-[153px] z-50 overscroll-contain overflow-hidden rounded-t-[24px] bg-background shadow-[var(--shadow-sheet)] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/35 md:inset-x-auto md:bottom-auto md:left-1/2 md:top-1/2 md:h-[614px] md:w-[520px] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[24px]"
+        class="fixed inset-x-0 bottom-0 z-50 h-[calc(100dvh-153px)] max-h-[calc(100dvh-24px)] overscroll-contain overflow-hidden rounded-t-[24px] bg-background shadow-[var(--shadow-sheet)] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/35 md:inset-x-auto md:bottom-auto md:left-1/2 md:top-1/2 md:h-[614px] md:max-h-[calc(100dvh-48px)] md:w-[520px] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[24px]"
         data-slot="sheet-content"
         @open-auto-focus="preventAutoFocus"
       >

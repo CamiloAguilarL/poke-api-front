@@ -71,7 +71,7 @@ function apply() {
       </header>
 
       <div
-        class="scrollbar-none h-[252px] shrink-0 overflow-y-auto border-y border-[var(--border-default)]"
+        class="scrollbar-none min-h-0 flex-1 overflow-y-auto border-y border-[var(--border-default)]"
         role="group"
         aria-label="Tipos de Pokémon"
       >
@@ -90,7 +90,9 @@ function apply() {
         </Label>
       </div>
 
-      <footer class="shrink-0 space-y-4 px-4 pb-4 pt-[25px]">
+      <footer
+        class="shrink-0 space-y-4 bg-background px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-[25px]"
+      >
         <Button class="w-full rounded-full" :loading="loading" @click="apply">Aplicar</Button>
         <Button variant="secondary" class="w-full rounded-full" @click="emit('update:open', false)">
           Cancelar

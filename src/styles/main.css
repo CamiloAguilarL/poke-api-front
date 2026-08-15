@@ -365,10 +365,14 @@
 
 [data-slot='sheet-content'][data-state='open'] {
   animation: sheet-mobile-in var(--motion-duration-slow) var(--motion-ease-emphasized) both;
+  transform-origin: center bottom;
+  will-change: transform;
 }
 
 [data-slot='sheet-content'][data-state='closed'] {
   animation: sheet-mobile-out var(--motion-duration-base) var(--motion-ease-standard) both;
+  transform-origin: center bottom;
+  will-change: transform;
 }
 
 @keyframes results-reveal {
@@ -469,23 +473,19 @@
 
 @keyframes sheet-mobile-in {
   from {
-    opacity: 0;
-    transform: translateY(24px);
+    transform: translate3d(0, 100%, 0);
   }
   to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes sheet-mobile-out {
   from {
-    opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    opacity: 0;
-    transform: translateY(16px);
+    transform: translate3d(0, 100%, 0);
   }
 }
 
@@ -501,22 +501,22 @@
   @keyframes sheet-desktop-in {
     from {
       opacity: 0;
-      transform: translateY(2%) scale(0.98);
+      transform: translate(-50%, -48%) scale(0.98);
     }
     to {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translate(-50%, -50%) scale(1);
     }
   }
 
   @keyframes sheet-desktop-out {
     from {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translate(-50%, -50%) scale(1);
     }
     to {
       opacity: 0;
-      transform: translateY(2%) scale(0.98);
+      transform: translate(-50%, -48%) scale(0.98);
     }
   }
 }

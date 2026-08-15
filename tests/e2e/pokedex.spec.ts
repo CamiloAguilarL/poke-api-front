@@ -151,9 +151,21 @@ test.describe('Pokédex experience', () => {
     await expect(
       page.getByRole('group', { name: 'Tipos de Pokémon' }).getByRole('checkbox'),
     ).toHaveCount(18)
+    const filterSheet = page.locator('[data-slot="sheet-content"]')
+    await expect(filterSheet).toHaveAttribute('data-state', 'open')
+    if (testInfo.project.name === 'mobile-360') {
+      await expect
+        .poll(() =>
+          filterSheet.evaluate((element) =>
+            element.getAnimations().map((animation) => (animation as CSSAnimation).animationName),
+          ),
+        )
+        .toContain('sheet-mobile-in')
+    }
     await page.getByRole('checkbox', { name: 'Fuego', exact: true }).click()
     if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('filter.png')
     await page.getByRole('button', { name: 'Cancelar', exact: true }).click()
+    await expect(filterSheet).toBeHidden()
     await expect(page).not.toHaveURL(/types=/)
     await expect(page.getByRole('link', { name: 'Ver a Squirtle', exact: true })).toBeVisible()
 
