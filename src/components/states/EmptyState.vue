@@ -14,7 +14,7 @@ withDefaults(defineProps<{ title?: string; description?: string }>(), {
       alt="Magikarp sin favoritos"
       width="181"
       height="210"
-      class="h-[210px] w-auto object-contain"
+      class="motion-state-art h-[210px] w-auto object-contain"
     />
     <h1 class="mt-5 max-w-[270px] text-balance text-xl font-semibold leading-7">{{ title }}</h1>
     <p class="mt-2 max-w-[300px] text-pretty text-xs leading-[18px] text-muted-foreground">

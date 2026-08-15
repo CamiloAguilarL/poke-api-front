@@ -15,7 +15,11 @@ const hideMobileNavigation = computed(() => Boolean(route.meta.hideMobileNav))
   >
     <AppNavigation :class="{ 'max-lg:hidden': hideMobileNavigation }" />
     <main id="main-content" class="min-h-dvh min-w-0">
-      <RouterView />
+      <RouterView v-slot="{ Component, route: currentRoute }">
+        <Transition name="page-view" mode="out-in">
+          <component :is="Component" :key="currentRoute.matched[1]?.path ?? currentRoute.path" />
+        </Transition>
+      </RouterView>
     </main>
   </div>
 </template>

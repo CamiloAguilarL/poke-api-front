@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { Search } from '@lucide/vue'
 import { storeToRefs } from 'pinia'
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from '@/components/ui/sonner'
 import ContentContainer from '@/components/layout/ContentContainer.vue'
 import { Button } from '@/components/ui/button'
 import { SearchField } from '@/components/ui/search-field'
+import { ProgressBar } from '@/components/ui/progress'
 import ErrorState from '@/components/states/ErrorState.vue'
 import PokeballLoader from '@/components/PokeballLoader.vue'
 import PokemonVirtualList from '@/components/pokemon/PokemonVirtualList.vue'
@@ -34,6 +35,10 @@ const {
 const filterOpen = ref(false)
 const catalogReady = ref(false)
 const suppressSearch = ref(false)
+const initialLoading = computed(
+  () => status.value === 'idle' || (status.value === 'loading' && entries.value.length === 0),
+)
+const refreshing = computed(() => status.value === 'loading' && entries.value.length > 0)
 
 function typesFromRoute(): PokemonTypeName[] {
   const value = typeof route.query.types === 'string' ? route.query.types.split(',') : []
@@ -102,7 +107,10 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
       v-if="status !== 'error'"
       as="header"
       data-testid="catalog-header-container"
-      :class="['shrink-0 px-4 pt-11 lg:px-6 lg:pt-7', hasActiveFilters ? 'pb-[10px]' : 'pb-4']"
+      :class="[
+        'relative shrink-0 px-4 pt-11 lg:px-6 lg:pt-7',
+        hasActiveFilters ? 'pb-[10px]' : 'pb-4',
+      ]"
     >
       <div :class="['flex items-center gap-4', { 'lg:max-w-2xl': props.expanded }]">
         <SearchField
@@ -111,6 +119,7 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
           placeholder="Buscar Pokémon..."
           name="pokemon-search"
           test-id="pokemon-search"
+          :loading="refreshing"
           class="min-w-0 flex-1"
           @update:model-value="store.setQuery"
         />
@@ -141,48 +150,62 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
           Borrar filtro
         </Button>
       </div>
-    </ContentContainer>
-
-    <PokeballLoader
-      v-if="status === 'loading' || status === 'idle'"
-      fullscreen
-      class="fixed inset-0 z-50"
-    />
-    <ErrorState
-      v-else-if="status === 'error'"
-      class="flex-1"
-      title="Algo salió mal…"
-      description="No pudimos cargar la información en este momento. Verifica tu conexión o intenta nuevamente más tarde."
-      @retry="retry"
-    />
-    <div
-      v-else-if="entries.length === 0"
-      class="flex flex-1 flex-col items-center justify-center px-8 text-center"
-    >
-      <div class="flex size-20 items-center justify-center rounded-full bg-[var(--surface-info)]">
-        <Search class="size-9 text-primary" />
-      </div>
-      <h2 class="mt-5 text-balance text-lg font-semibold">No encontramos Pokémon</h2>
-      <p class="mt-2 text-pretty text-sm leading-6 text-muted-foreground">
-        Prueba con otro nombre, número o combinación de tipos.
-      </p>
-      <Button class="mt-5" variant="secondary" @click="clearFilters">Borrar filtros</Button>
-    </div>
-    <ContentContainer
-      v-else
-      class="min-h-0 flex-1 px-4 lg:px-6"
-      data-testid="catalog-grid-container"
-    >
-      <PokemonVirtualList
-        :entries="entries"
-        :summaries="summaries"
-        :has-more="hasNextPage"
-        :loading-more="nextPageStatus === 'loading'"
-        :load-more-error="nextPageStatus === 'error'"
-        :result-version="resultVersion"
-        @load-more="store.loadNextPage"
+      <ProgressBar
+        :active="refreshing"
+        label="Buscando Pokémon…"
+        class="absolute inset-x-4 bottom-0 lg:inset-x-6"
       />
     </ContentContainer>
+
+    <Transition name="state-fade" mode="out-in">
+      <PokeballLoader
+        v-if="initialLoading"
+        key="initial-loading"
+        fullscreen
+        class="fixed inset-0 z-50"
+      />
+      <ErrorState
+        v-else-if="status === 'error'"
+        key="error"
+        class="flex-1"
+        title="Algo salió mal…"
+        description="No pudimos cargar la información en este momento. Verifica tu conexión o intenta nuevamente más tarde."
+        @retry="retry"
+      />
+      <div
+        v-else-if="entries.length === 0"
+        key="empty"
+        class="flex flex-1 flex-col items-center justify-center px-8 text-center"
+      >
+        <div
+          class="motion-state-art flex size-20 items-center justify-center rounded-full bg-[var(--surface-info)]"
+        >
+          <Search class="size-9 text-primary" />
+        </div>
+        <h2 class="mt-5 text-balance text-lg font-semibold">No encontramos Pokémon</h2>
+        <p class="mt-2 text-pretty text-sm leading-6 text-muted-foreground">
+          Prueba con otro nombre, número o combinación de tipos.
+        </p>
+        <Button class="mt-5" variant="secondary" @click="clearFilters">Borrar filtros</Button>
+      </div>
+      <ContentContainer
+        v-else
+        key="results"
+        class="min-h-0 flex-1 px-4 lg:px-6"
+        data-testid="catalog-grid-container"
+      >
+        <PokemonVirtualList
+          :entries="entries"
+          :summaries="summaries"
+          :has-more="hasNextPage"
+          :loading-more="nextPageStatus === 'loading'"
+          :load-more-error="nextPageStatus === 'error'"
+          :refreshing="refreshing"
+          :result-version="resultVersion"
+          @load-more="store.loadNextPage"
+        />
+      </ContentContainer>
+    </Transition>
 
     <FilterSheet
       v-model:open="filterOpen"

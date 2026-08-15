@@ -169,6 +169,26 @@ test.describe('Pokédex experience', () => {
     expect(catalogRequests.map(({ offset }) => offset)).toEqual([0, 10])
   })
 
+  test('keeps current results available while a remote search is loading', async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile-360', 'One viewport covers async search feedback')
+    await startOnCatalog(page)
+    await mockPokeApi(page, { listDelayMs: 900 })
+    await page.goto('/')
+    const currentResult = page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })
+    await expect(currentResult).toBeVisible()
+
+    await page.getByPlaceholder('Buscar Pokémon...').fill('pika')
+    await expect(page.getByRole('status', { name: 'Buscando Pokémon…' })).toBeVisible()
+    await expect(page.getByTestId('pokemon-list')).toHaveAttribute('aria-busy', 'true')
+    await expect(currentResult).toBeVisible()
+
+    await expect(page.getByRole('link', { name: 'Ver a Pikachu', exact: true })).toBeVisible()
+    await expect(page.getByRole('status', { name: 'Buscando Pokémon…' })).toHaveCount(0)
+    await expect(page.getByTestId('pokemon-list')).toHaveAttribute('aria-busy', 'false')
+  })
+
   test('detail copies all attributes and persists favorites', async ({ page }, testInfo) => {
     const detailRequests: string[] = []
     page.on('request', (request) => {

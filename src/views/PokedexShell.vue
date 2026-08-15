@@ -17,8 +17,14 @@ const hasDetail = computed(() => route.name === 'pokemon-detail')
     "
   >
     <CatalogPanel :expanded="!hasDetail" :class="{ 'max-lg:hidden': hasDetail }" />
-    <div v-if="hasDetail" class="min-w-0 bg-background">
-      <RouterView />
-    </div>
+    <Transition name="detail-panel">
+      <div v-if="hasDetail" class="min-w-0 bg-background">
+        <RouterView v-slot="{ Component, route: detailRoute }">
+          <Transition name="detail-content" mode="out-in">
+            <component :is="Component" :key="detailRoute.fullPath" />
+          </Transition>
+        </RouterView>
+      </div>
+    </Transition>
   </div>
 </template>

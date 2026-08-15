@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Search, X } from '@lucide/vue'
+import { LoaderCircle, Search, X } from '@lucide/vue'
 import { useId } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,12 +13,14 @@ withDefaults(
     autocomplete?: string
     name?: string
     testId?: string
+    loading?: boolean
   }>(),
   {
     label: 'Buscar',
     placeholder: 'Buscar...',
     autocomplete: 'off',
     name: 'search',
+    loading: false,
   },
 )
 
@@ -27,12 +29,22 @@ const inputId = `search-${useId()}`
 </script>
 
 <template>
-  <div class="relative min-w-0" data-slot="search-field">
+  <div class="relative min-w-0" :aria-busy="loading" data-slot="search-field">
     <Label :for="inputId" class="sr-only">{{ label }}</Label>
-    <Search
-      class="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-[var(--text-tertiary)]"
-      aria-hidden="true"
-    />
+    <Transition name="search-icon" mode="out-in">
+      <LoaderCircle
+        v-if="loading"
+        key="loading"
+        class="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 animate-spin text-primary"
+        aria-hidden="true"
+      />
+      <Search
+        v-else
+        key="search"
+        class="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-[var(--text-tertiary)]"
+        aria-hidden="true"
+      />
+    </Transition>
     <Input
       :id="inputId"
       :model-value="modelValue"

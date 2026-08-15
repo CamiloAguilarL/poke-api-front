@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router'
 import { toast } from '@/components/ui/sonner'
 import ContentContainer from '@/components/layout/ContentContainer.vue'
 import FavoriteListItem from '@/components/favorites/FavoriteListItem.vue'
+import PokemonCardSkeleton from '@/components/pokemon/PokemonCardSkeleton.vue'
 import EmptyState from '@/components/states/EmptyState.vue'
 import { Button } from '@/components/ui/button'
 import { useCatalogStore } from '@/stores/catalog'
@@ -60,36 +61,37 @@ onMounted(hydrate)
       </p>
     </ContentContainer>
 
-    <EmptyState v-if="favorites.count === 0" />
-    <ContentContainer v-else class="px-4 pb-8 lg:px-6">
-      <div
-        ref="gridElement"
-        class="grid gap-3"
-        data-testid="favorites-grid"
-        :style="{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }"
-      >
-        <div v-for="name in favorites.names" :key="name">
-          <FavoriteListItem
-            v-if="summaries[name]"
-            :pokemon="summaries[name]!"
-            @remove="remove(name)"
-          />
-          <div
-            v-else
-            class="flex h-[102px] animate-pulse items-center rounded-2xl bg-[var(--surface-skeleton-soft)] px-4"
+    <Transition name="state-fade" mode="out-in">
+      <EmptyState v-if="favorites.count === 0" key="empty" />
+      <ContentContainer v-else key="favorites" class="px-4 pb-8 lg:px-6">
+        <div ref="gridElement">
+          <TransitionGroup
+            name="favorite-list"
+            tag="div"
+            class="relative grid gap-3"
+            data-testid="favorites-grid"
+            :style="{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }"
           >
-            <span class="text-xs text-muted-foreground">Cargando {{ name }}...</span>
-          </div>
+            <div v-for="name in favorites.names" :key="name">
+              <FavoriteListItem
+                v-if="summaries[name]"
+                :pokemon="summaries[name]!"
+                @remove="remove(name)"
+              />
+              <PokemonCardSkeleton v-else role="status" :aria-label="`Cargando ${name}…`" />
+            </div>
+            <Button
+              v-if="favorites.lastRemoved"
+              key="undo-action"
+              variant="tertiary"
+              class="col-span-full mx-auto"
+              @click="favorites.undoRemove()"
+            >
+              <RotateCcw class="size-4" /> Deshacer última eliminación
+            </Button>
+          </TransitionGroup>
         </div>
-        <Button
-          v-if="favorites.lastRemoved"
-          variant="tertiary"
-          class="col-span-full mx-auto"
-          @click="favorites.undoRemove()"
-        >
-          <RotateCcw class="size-4" /> Deshacer última eliminación
-        </Button>
-      </div>
-    </ContentContainer>
+      </ContentContainer>
+    </Transition>
   </section>
 </template>

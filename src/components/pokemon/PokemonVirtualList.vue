@@ -16,6 +16,7 @@ const props = withDefaults(
     hasMore?: boolean
     loadingMore?: boolean
     loadMoreError?: boolean
+    refreshing?: boolean
     resultVersion?: number
   }>(),
   {
@@ -23,6 +24,7 @@ const props = withDefaults(
     hasMore: false,
     loadingMore: false,
     loadMoreError: false,
+    refreshing: false,
     resultVersion: 0,
   },
 )
@@ -67,9 +69,17 @@ watch(columns, () => void nextTick(maybeLoadMore))
     ref="scrollElement"
     class="scrollbar-none -mx-4 -mt-4 h-[calc(100%+16px)] overflow-y-auto px-4 pt-4"
     data-testid="pokemon-list"
+    :aria-busy="refreshing || loadingMore"
     @scroll.passive="maybeLoadMore"
   >
-    <div class="relative w-full" :style="{ height: `${totalSize}px` }">
+    <div
+      :key="resultVersion"
+      :class="[
+        'motion-results-reveal relative w-full transition-opacity duration-200',
+        { 'opacity-60': refreshing },
+      ]"
+      :style="{ height: `${totalSize}px` }"
+    >
       <div
         v-for="row in rows"
         :key="String(row.key)"

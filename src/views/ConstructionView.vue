@@ -12,7 +12,7 @@ defineProps<{ section: string }>()
       alt="Jigglypuff esperando nuevas funciones"
       width="180"
       height="180"
-      class="size-[180px] object-cover"
+      class="motion-state-art size-[180px] object-cover"
     />
     <h1 class="mt-10 text-balance text-[22px] font-semibold leading-7">¡Muy pronto disponible!</h1>
     <p class="mt-3 max-w-[320px] text-pretty text-sm leading-6 text-muted-foreground">

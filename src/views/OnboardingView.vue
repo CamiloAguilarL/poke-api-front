@@ -28,58 +28,64 @@ async function continueFlow() {
       class="relative mx-auto h-dvh min-h-[700px] w-full max-w-[520px] lg:flex lg:min-h-0 lg:max-w-none lg:flex-col lg:items-center lg:justify-center lg:px-10 lg:py-10"
       aria-live="polite"
     >
-      <div
-        :class="[
-          'absolute left-1/2 w-[360px] -translate-x-1/2 lg:relative lg:left-auto lg:top-auto lg:shrink-0 lg:translate-x-0',
-          firstStep ? 'top-[207px] h-[257px]' : 'top-[181px] h-[240px]',
-        ]"
-      >
-        <template v-if="firstStep">
+      <Transition name="onboarding-art" mode="out-in">
+        <div
+          :key="step"
+          :class="[
+            'absolute left-1/2 w-[360px] -translate-x-1/2 lg:relative lg:left-auto lg:top-auto lg:shrink-0 lg:translate-x-0',
+            firstStep ? 'top-[207px] h-[257px]' : 'top-[181px] h-[240px]',
+          ]"
+        >
+          <template v-if="firstStep">
+            <img
+              src="/assets/figma/onboarding-trainer-small.png"
+              alt="Entrenador Pokémon"
+              width="231"
+              height="231"
+              fetchpriority="high"
+              class="absolute left-[17px] top-[26px] size-[231px] object-contain"
+            />
+            <img
+              src="/assets/figma/onboarding-trainer-large.png"
+              alt="Entrenadora Pokémon"
+              width="257"
+              height="257"
+              fetchpriority="high"
+              class="absolute left-[102px] top-0 size-[257px] object-contain"
+            />
+          </template>
           <img
-            src="/assets/figma/onboarding-trainer-small.png"
-            alt="Entrenador Pokémon"
-            width="231"
-            height="231"
+            v-else
+            src="/assets/figma/onboarding-hilda-cutout.png"
+            alt="Entrenadora lista para comenzar"
+            width="240"
+            height="240"
             fetchpriority="high"
-            class="absolute left-[17px] top-[26px] size-[231px] object-contain"
+            class="absolute left-1/2 top-0 size-[240px] -translate-x-1/2 object-contain [image-rendering:pixelated]"
           />
-          <img
-            src="/assets/figma/onboarding-trainer-large.png"
-            alt="Entrenadora Pokémon"
-            width="257"
-            height="257"
-            fetchpriority="high"
-            class="absolute left-[102px] top-0 size-[257px] object-contain"
-          />
-        </template>
-        <img
-          v-else
-          src="/assets/figma/onboarding-hilda-cutout.png"
-          alt="Entrenadora lista para comenzar"
-          width="240"
-          height="240"
-          fetchpriority="high"
-          class="absolute left-1/2 top-0 size-[240px] -translate-x-1/2 object-contain [image-rendering:pixelated]"
-        />
-      </div>
+        </div>
+      </Transition>
 
-      <div
-        :class="[
-          'absolute inset-x-4 text-center lg:static lg:mt-8 lg:w-full',
-          firstStep ? 'top-[496px]' : 'top-[482px]',
-        ]"
-      >
-        <h1 class="mx-auto w-[321px] text-balance text-[26px] font-medium leading-[1.25]">
-          {{ firstStep ? 'Todos los Pokémon en un solo lugar' : 'Mantén tu Pokédex actualizada' }}
-        </h1>
-        <p class="mx-auto mt-4 w-[320px] text-pretty text-sm leading-6 text-muted-foreground">
-          {{
-            firstStep
-              ? 'Accede a una amplia lista de Pokémon de todas las generaciones creadas por Nintendo'
-              : 'Regístrate y guarda tu perfil, Pokémon favoritos, configuraciones y mucho más en la aplicación'
-          }}
-        </p>
-      </div>
+      <Transition name="onboarding-copy" mode="out-in">
+        <div
+          :key="step"
+          :class="[
+            'absolute inset-x-4 text-center lg:static lg:mt-8 lg:w-full',
+            firstStep ? 'top-[496px]' : 'top-[482px]',
+          ]"
+        >
+          <h1 class="mx-auto w-[321px] text-balance text-[26px] font-medium leading-[1.25]">
+            {{ firstStep ? 'Todos los Pokémon en un solo lugar' : 'Mantén tu Pokédex actualizada' }}
+          </h1>
+          <p class="mx-auto mt-4 w-[320px] text-pretty text-sm leading-6 text-muted-foreground">
+            {{
+              firstStep
+                ? 'Accede a una amplia lista de Pokémon de todas las generaciones creadas por Nintendo'
+                : 'Regístrate y guarda tu perfil, Pokémon favoritos, configuraciones y mucho más en la aplicación'
+            }}
+          </p>
+        </div>
+      </Transition>
 
       <div
         class="absolute left-1/2 top-[667px] flex -translate-x-1/2 items-center gap-2 lg:static lg:mt-7 lg:translate-x-0"
@@ -102,7 +108,9 @@ async function continueFlow() {
         class="absolute left-1/2 top-[700px] h-[58px] w-[328px] -translate-x-1/2 rounded-full text-lg lg:static lg:mt-5 lg:translate-x-0"
         @click="continueFlow"
       >
-        {{ firstStep ? 'Continuar' : 'Empecemos' }}
+        <Transition name="button-label" mode="out-in">
+          <span :key="step">{{ firstStep ? 'Continuar' : 'Empecemos' }}</span>
+        </Transition>
       </Button>
     </section>
 

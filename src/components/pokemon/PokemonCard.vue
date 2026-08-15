@@ -86,10 +86,13 @@ function toggleFavorite() {
       :aria-pressed="favorite"
       @click="toggleFavorite"
     >
-      <Heart
-        class="size-6"
-        :class="favorite ? 'fill-[var(--favorite)] text-[var(--favorite)]' : 'text-white'"
-      />
+      <Transition name="heart-pop" mode="out-in">
+        <Heart
+          :key="favorite ? 'favorite' : 'available'"
+          class="size-6"
+          :class="favorite ? 'fill-[var(--favorite)] text-[var(--favorite)]' : 'text-white'"
+        />
+      </Transition>
     </Button>
   </Card>
 </template>

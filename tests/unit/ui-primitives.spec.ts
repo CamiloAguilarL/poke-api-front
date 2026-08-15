@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import { SearchField } from '@/components/ui/search-field'
+import { ProgressBar } from '@/components/ui/progress'
 import { SkipLink } from '@/components/ui/skip-link'
 import { Toggle } from '@/components/ui/toggle'
 import TypeBadge from '@/components/pokemon/TypeBadge.vue'
@@ -12,6 +13,7 @@ describe('design system primitives', () => {
         modelValue: 'bulb',
         label: 'Buscar Pokémon',
         placeholder: 'Buscar Pokémon...',
+        loading: true,
       },
     })
 
@@ -25,12 +27,26 @@ describe('design system primitives', () => {
       spellcheck: 'false',
     })
     expect(wrapper.findAll('button[aria-label="Limpiar búsqueda"]')).toHaveLength(1)
+    expect(wrapper.get('[data-slot="search-field"]').attributes('aria-busy')).toBe('true')
+    expect(wrapper.find('.animate-spin').exists()).toBe(true)
 
     await input.setValue('pikachu')
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['pikachu'])
 
     await wrapper.get('button[aria-label="Limpiar búsqueda"]').trigger('click')
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([''])
+  })
+
+  it('announces remote progress only while an async operation is active', async () => {
+    const wrapper = mount(ProgressBar, {
+      props: { active: true, label: 'Buscando Pokémon…' },
+    })
+
+    expect(wrapper.get('[role="status"]').text()).toContain('Buscando Pokémon…')
+    expect(wrapper.get('[data-slot="progress"]').attributes('aria-live')).toBe('polite')
+
+    await wrapper.setProps({ active: false })
+    expect(wrapper.find('[role="status"]').exists()).toBe(false)
   })
 
   it('exposes the accessible pressed state through the toggle primitive', async () => {
