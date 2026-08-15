@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Heart, ImageOff } from '@lucide/vue'
+import { ImageOff } from '@lucide/vue'
 import { computed } from 'vue'
-import { Button } from '@/components/ui/button'
+import FavoriteButton from '@/components/favorites/FavoriteButton.vue'
 import { Card } from '@/components/ui/card'
 import { Link } from '@/components/ui/link'
 import { formatPokemonNumber } from '@/features/pokemon/domain/formatters'
@@ -74,25 +74,11 @@ function toggleFavorite() {
         />
       </div>
     </Link>
-    <Button
-      variant="icon"
-      size="icon-sm"
-      class="absolute right-2 top-2 z-10 size-9 rounded-full border-2 border-white bg-black/15 text-white hover:bg-black/25"
-      :aria-label="
-        favorite
-          ? `Quitar a ${pokemon.displayName} de favoritos`
-          : `Agregar a ${pokemon.displayName} a favoritos`
-      "
-      :aria-pressed="favorite"
-      @click="toggleFavorite"
-    >
-      <Transition name="heart-pop" mode="out-in">
-        <Heart
-          :key="favorite ? 'favorite' : 'available'"
-          class="size-6"
-          :class="favorite ? 'fill-[var(--favorite)] text-[var(--favorite)]' : 'text-white'"
-        />
-      </Transition>
-    </Button>
+    <FavoriteButton
+      :favorite="favorite"
+      :subject="pokemon.displayName"
+      class="absolute right-2 top-2 z-10"
+      @toggle="toggleFavorite"
+    />
   </Card>
 </template>

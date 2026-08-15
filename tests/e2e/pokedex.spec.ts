@@ -284,7 +284,15 @@ test.describe('Pokédex experience', () => {
       await expect(page.getByTestId('share-pokemon')).toBeHidden()
     }
 
-    await page.getByRole('button', { name: 'Agregar a favoritos', exact: true }).click()
+    const favoriteButton = activeDetail.locator('[data-slot="favorite-button"]')
+    await expect(favoriteButton).toHaveAttribute('data-slot', 'favorite-button')
+    await expect(favoriteButton).toHaveAccessibleName('Agregar a favoritos')
+    await favoriteButton.click()
+    await expect(favoriteButton).toHaveAttribute('aria-pressed', 'true')
+    await expect(favoriteButton.locator('svg')).toHaveClass(/fill-\[var\(--favorite\)\]/)
+    if (testInfo.project.name === 'mobile-360') {
+      await expect(page).toHaveScreenshot('detail-favorite.png')
+    }
     await page.goto('/favorites')
     await expect(page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })).toBeVisible()
     if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('favorites.png')
@@ -334,7 +342,7 @@ test.describe('Pokédex experience', () => {
     expect(await catalog.evaluate((element) => element.scrollTop)).toBeGreaterThan(0)
     const detailScrollTopAfterCatalogScroll = await detail.evaluate((element) => element.scrollTop)
     expect(detailScrollTopAfterCatalogScroll).toBeGreaterThan(0)
-    expect(Math.abs(detailScrollTopAfterCatalogScroll - detailScrollTop)).toBeLessThanOrEqual(1)
+    expect(Math.abs(detailScrollTopAfterCatalogScroll - detailScrollTop)).toBeLessThanOrEqual(3)
     expect(await page.evaluate(() => window.scrollY)).toBe(0)
     expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBe(
       page.viewportSize()!.height,

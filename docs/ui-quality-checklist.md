@@ -36,6 +36,7 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 - [x] El sheet contiene su propio scroll y evita propagar overscroll al documento.
 - [x] Overlay de sheet al 76%, elevación del diálogo, sombras de hover, sprite y loader usan tokens semánticos; ningún borde corta la sombra de las cards extremas.
 - [x] Todos los botones solo-icono inspeccionados tienen nombre accesible y los toggles exponen su estado.
+- [x] Cards y detalles mobile/desktop reutilizan el mismo `FavoriteButton`: círculo translúcido con borde blanco y corazón activo rojo mediante `--favorite`.
 - [x] Botones, links y toggles centralizados usan `touch-action: manipulation`; el swipe conserva desplazamiento vertical.
 - [x] La navegación inferior mobile permanece fija al viewport en catálogo, detalle, favoritos y estados; el contenido reserva 77 px para que el último bloque nunca quede oculto.
 - [x] Favorito funciona desde card y detalle; eliminación por swipe dispone de botón equivalente y undo.
@@ -58,7 +59,7 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 
 ## Evidencia automatizada
 
-- [x] 52 pruebas unitarias.
+- [x] 53 pruebas unitarias.
 - [x] Matriz Playwright de 68 entradas entre `360×800`, `768×1024`, `1440×900` y `1920×1080`: 24 escenarios aplicables y 44 combinaciones no aplicables omitidas explícitamente.
 - [x] Regresión visual de onboarding, catálogo, búsqueda, filtros, detalle, favoritos, swipe, loading, error, vacío y construcción.
 - [x] Aserciones geométricas bloquean regresiones del ancho/alto del documento, shell, catálogo y artwork.

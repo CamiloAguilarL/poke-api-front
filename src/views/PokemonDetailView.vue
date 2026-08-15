@@ -1,18 +1,9 @@
 <script setup lang="ts">
-import {
-  ChevronLeft,
-  CircleDot,
-  Grid2X2,
-  Heart,
-  Mars,
-  Ruler,
-  Share2,
-  Venus,
-  Weight,
-} from '@lucide/vue'
+import { ChevronLeft, CircleDot, Grid2X2, Mars, Ruler, Share2, Venus, Weight } from '@lucide/vue'
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AppNavigation from '@/components/AppNavigation.vue'
+import FavoriteButton from '@/components/favorites/FavoriteButton.vue'
 import TypeBadge from '@/components/pokemon/TypeBadge.vue'
 import TypeIcon from '@/components/pokemon/TypeIcon.vue'
 import ErrorState from '@/components/states/ErrorState.vue'
@@ -151,23 +142,12 @@ watch(() => props.name, load, { immediate: true })
           >
             <ChevronLeft class="size-7" :stroke-width="2.25" />
           </Button>
-          <Button
-            variant="icon"
-            size="icon"
-            class="absolute right-4 top-3 z-20 text-white hover:bg-white/10"
-            :aria-label="favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'"
-            :aria-pressed="favorite"
+          <FavoriteButton
+            :favorite="favorite"
+            class="absolute right-4 top-3 z-20"
             data-testid="favorite-detail-mobile"
-            @click="toggleFavorite"
-          >
-            <Transition name="heart-pop" mode="out-in">
-              <Heart
-                :key="favorite ? 'favorite' : 'available'"
-                :class="['size-7', { 'fill-white': favorite }]"
-                :stroke-width="2.1"
-              />
-            </Transition>
-          </Button>
+            @toggle="toggleFavorite"
+          />
 
           <img
             v-if="pokemon.detailSprite"
@@ -333,27 +313,11 @@ watch(() => props.name, load, { immediate: true })
                 <Share2 class="size-4" aria-hidden="true" />
                 Copiar
               </Button>
-              <Button
-                variant="icon"
-                size="icon"
-                class="size-10 rounded-full border border-[var(--border-default)] bg-card"
-                :aria-label="favorite ? 'Quitar de favoritos' : 'Agregar a favoritos'"
-                :aria-pressed="favorite"
+              <FavoriteButton
+                :favorite="favorite"
                 data-testid="favorite-detail"
-                @click="toggleFavorite"
-              >
-                <Transition name="heart-pop" mode="out-in">
-                  <Heart
-                    :key="favorite ? 'favorite' : 'available'"
-                    :class="[
-                      'size-5',
-                      favorite
-                        ? 'fill-[var(--favorite)] text-[var(--favorite)]'
-                        : 'text-[var(--text-icon)]',
-                    ]"
-                  />
-                </Transition>
-              </Button>
+                @toggle="toggleFavorite"
+              />
             </div>
           </div>
         </header>

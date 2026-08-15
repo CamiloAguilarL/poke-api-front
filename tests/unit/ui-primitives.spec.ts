@@ -5,6 +5,7 @@ import { ProgressBar } from '@/components/ui/progress'
 import { SkipLink } from '@/components/ui/skip-link'
 import { Toggle } from '@/components/ui/toggle'
 import TypeBadge from '@/components/pokemon/TypeBadge.vue'
+import FavoriteButton from '@/components/favorites/FavoriteButton.vue'
 
 describe('design system primitives', () => {
   it('owns the complete search interaction and renders a single clear action', async () => {
@@ -81,5 +82,20 @@ describe('design system primitives', () => {
     expect(link.text()).toBe('Saltar al contenido')
     expect(link.attributes('href')).toBe('#main-content')
     expect(link.attributes('data-slot')).toBe('skip-link')
+  })
+
+  it('centralizes the favorite visual and accessible states', async () => {
+    const wrapper = mount(FavoriteButton, { props: { favorite: true, subject: 'Bulbasaur' } })
+    const button = wrapper.get('button')
+
+    expect(button.attributes()).toMatchObject({
+      'aria-label': 'Quitar a Bulbasaur de favoritos',
+      'aria-pressed': 'true',
+      'data-slot': 'favorite-button',
+    })
+    expect(wrapper.get('svg').classes()).toContain('fill-[var(--favorite)]')
+
+    await button.trigger('click')
+    expect(wrapper.emitted('toggle')).toEqual([[]])
   })
 })
