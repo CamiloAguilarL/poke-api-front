@@ -61,10 +61,10 @@ function toggleFavorite() {
           v-if="pokemon.sprite"
           :src="pokemon.sprite"
           :alt="pokemon.displayName"
-          width="92"
-          height="92"
+          width="116"
+          height="116"
           draggable="false"
-          class="relative size-[92px] object-contain [image-rendering:pixelated] transition-transform group-hover:scale-105"
+          class="relative size-[116px] max-w-none object-contain [image-rendering:pixelated] transition-transform group-hover:scale-105"
           loading="lazy"
         />
         <ImageOff

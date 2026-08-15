@@ -173,10 +173,10 @@ watch(() => props.name, load, { immediate: true })
             v-if="pokemon.detailSprite"
             :src="pokemon.detailSprite"
             :alt="pokemon.displayName"
-            width="175"
-            height="175"
+            width="200"
+            height="200"
             fetchpriority="high"
-            class="motion-detail-sprite absolute left-1/2 top-[136px] z-10 size-[175px] -translate-x-1/2 object-contain opacity-80 mix-blend-multiply [image-rendering:pixelated]"
+            class="motion-detail-sprite absolute left-1/2 top-[124px] z-10 size-[200px] -translate-x-1/2 object-contain opacity-80 mix-blend-multiply [image-rendering:pixelated]"
           />
         </header>
 
@@ -391,7 +391,7 @@ watch(() => props.name, load, { immediate: true })
               width="420"
               height="420"
               fetchpriority="high"
-              class="desktop-pokemon-artwork absolute left-1/2 top-1/2 z-10 h-auto w-3/4 max-w-[420px] -translate-x-1/2 -translate-y-[47%] object-contain"
+              class="desktop-pokemon-artwork absolute left-1/2 top-1/2 z-10 h-auto w-[88%] max-w-[440px] -translate-x-1/2 -translate-y-[47%] object-contain"
             />
 
             <div class="absolute inset-x-8 bottom-8 z-10">
