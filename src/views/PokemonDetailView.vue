@@ -407,7 +407,7 @@ watch(() => props.name, load, { immediate: true })
           <div class="motion-detail-body min-w-0 pb-14">
             <section aria-labelledby="pokemon-name">
               <p
-                class="tabular-nums text-xs font-semibold uppercase tracking-[0.14em] text-primary"
+                class="tabular-nums text-xs font-semibold uppercase tracking-[0.14em] text-[var(--navigation-active)]"
               >
                 {{ formatPokemonNumber(pokemon.id) }}
               </p>
