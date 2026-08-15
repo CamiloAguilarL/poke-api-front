@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useVirtualizer } from '@tanstack/vue-virtual'
 import { LoaderCircle, RefreshCw } from '@lucide/vue'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { Button } from '@/components/ui/button'
+import { usePokemonGridColumns } from '@/composables/usePokemonGridColumns'
 import type { CatalogEntry, PokemonSummary } from '@/features/pokemon/domain/models'
 import PokemonCard from './PokemonCard.vue'
 import PokemonCardSkeleton from './PokemonCardSkeleton.vue'
@@ -27,12 +28,7 @@ const props = withDefaults(
 )
 const emit = defineEmits<{ loadMore: [] }>()
 const scrollElement = ref<HTMLElement | null>(null)
-const containerWidth = ref(0)
-const columns = computed(() => {
-  if (!containerWidth.value) return 1
-  return Math.min(5, Math.max(1, Math.floor((containerWidth.value + 12) / 292)))
-})
-let resizeObserver: ResizeObserver | undefined
+const columns = usePokemonGridColumns(scrollElement)
 
 const options = computed(() => ({
   count: Math.ceil(props.entries.length / columns.value),
@@ -63,19 +59,7 @@ watch(
   },
 )
 
-onMounted(() => {
-  if (!scrollElement.value) return
-  containerWidth.value = scrollElement.value.clientWidth
-  resizeObserver = new ResizeObserver(([entry]) => {
-    if (entry) {
-      containerWidth.value = entry.contentRect.width
-      void nextTick(maybeLoadMore)
-    }
-  })
-  resizeObserver.observe(scrollElement.value)
-})
-
-onBeforeUnmount(() => resizeObserver?.disconnect())
+watch(columns, () => void nextTick(maybeLoadMore))
 </script>
 
 <template>

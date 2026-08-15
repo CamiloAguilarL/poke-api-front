@@ -12,8 +12,11 @@ Los valores se extrajeron del draft editable de Figma. `src/styles/main.css` pub
 | Estado       | `--navigation-active`, `--favorite`, `--danger`, `--gender-*`              |
 | Tipo Pokémon | `--type-normal` … `--type-fairy`                                           |
 | Forma/sombra | radios Tailwind `sm/md/lg/xl`; `--shadow-card`, `--shadow-sprite`          |
+| Layout       | `--layout-content-max` limita y centra el panel principal tras el sidebar  |
 
 La tipografía renderizada en los frames es Poppins. Los residuos de Montserrat presentes en algunos styles internos de Figma no se propagan a producción.
+
+El contenedor principal usa un máximo de `99rem` (1584 px): conserva cinco tarjetas de al menos 280 px con gaps de 12 px, pero evita que catálogo y favoritos pierdan relación visual en monitores ultrawide. El ancho se calcula únicamente dentro del panel principal, sin incluir la navegación lateral.
 
 ## Primitives
 

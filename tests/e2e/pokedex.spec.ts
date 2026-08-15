@@ -91,6 +91,10 @@ test.describe('Pokédex experience', () => {
       expect(catalog?.width).toBe(1816)
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(1920)
 
+      const gridContainer = await page.getByTestId('catalog-grid-container').boundingBox()
+      expect(gridContainer?.x).toBe(220)
+      expect(gridContainer?.width).toBe(1584)
+
       const firstRowCards = await Promise.all(
         ['Bulbasaur', 'Ivysaur', 'Venusaur', 'Charmander', 'Charmeleon'].map((name) =>
           page.getByRole('link', { name: `Ver a ${name}`, exact: true }).boundingBox(),
@@ -190,6 +194,30 @@ test.describe('Pokédex experience', () => {
     if (testInfo.project.name === 'mobile-360') await expect(page).toHaveScreenshot('favorites.png')
     await page.reload()
     await expect(page.getByRole('link', { name: 'Ver a Bulbasaur', exact: true })).toBeVisible()
+  })
+
+  test('favorites shares the catalog grid and caps the main panel width', async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop-1920', 'The ultrawide viewport owns this contract')
+    await startOnCatalog(page, ['bulbasaur', 'ivysaur', 'charmander', 'blastoise'])
+    await page.goto('/favorites')
+
+    const cards = await Promise.all(
+      ['Bulbasaur', 'Ivysaur', 'Charmander', 'Blastoise'].map(async (name) => {
+        const card = page.getByRole('link', { name: `Ver a ${name}`, exact: true })
+        await expect(card).toBeVisible()
+        return card.boundingBox()
+      }),
+    )
+    const grid = await page.getByTestId('favorites-grid').boundingBox()
+    const firstItem = await page.getByTestId('favorite-list-item').first().boundingBox()
+
+    expect(grid?.x).toBe(244)
+    expect(grid?.width).toBe(1536)
+    expect(cards.every((box) => box?.y === cards[0]?.y)).toBe(true)
+    expect(firstItem?.width).toBeCloseTo(297.6, 0)
+    await expect(page).toHaveScreenshot('favorites-desktop.png')
   })
 })
 

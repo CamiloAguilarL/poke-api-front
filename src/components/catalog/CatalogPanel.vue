@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from '@/components/ui/sonner'
+import ContentContainer from '@/components/layout/ContentContainer.vue'
 import { Button } from '@/components/ui/button'
 import { SearchField } from '@/components/ui/search-field'
 import ErrorState from '@/components/states/ErrorState.vue'
@@ -97,8 +98,10 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
     class="flex h-[calc(100dvh-77px)] min-h-[560px] flex-col bg-background lg:h-dvh"
     aria-label="Catálogo Pokémon"
   >
-    <header
+    <ContentContainer
       v-if="status !== 'error'"
+      as="header"
+      data-testid="catalog-header-container"
       :class="['shrink-0 px-4 pt-11 lg:px-6 lg:pt-7', hasActiveFilters ? 'pb-[10px]' : 'pb-4']"
     >
       <div :class="['flex items-center gap-4', { 'lg:max-w-2xl': props.expanded }]">
@@ -138,7 +141,7 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
           Borrar filtro
         </Button>
       </div>
-    </header>
+    </ContentContainer>
 
     <PokeballLoader
       v-if="status === 'loading' || status === 'idle'"
@@ -165,7 +168,11 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
       </p>
       <Button class="mt-5" variant="secondary" @click="clearFilters">Borrar filtros</Button>
     </div>
-    <div v-else class="min-h-0 flex-1 px-4 lg:px-6">
+    <ContentContainer
+      v-else
+      class="min-h-0 flex-1 px-4 lg:px-6"
+      data-testid="catalog-grid-container"
+    >
       <PokemonVirtualList
         :entries="entries"
         :summaries="summaries"
@@ -175,7 +182,7 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
         :result-version="resultVersion"
         @load-more="store.loadNextPage"
       />
-    </div>
+    </ContentContainer>
 
     <FilterSheet
       v-model:open="filterOpen"
