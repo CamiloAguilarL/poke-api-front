@@ -11,7 +11,7 @@
 
 Algunas cards de Figma asignan IDs o tipos incorrectos a especies concretas. La interfaz conserva el layout, pero nombre, ID, sprites, tipos, descripción, medidas, categoría, habilidades, género, debilidades y evoluciones proceden de PokeAPI.
 
-El PDF cita únicamente `/pokemon` y `/pokemon/{name}`. El detalle diseñado necesita información que esos recursos no contienen, por lo que se agregaron `/pokemon-species`, `/ability`, `/type` y `/evolution-chain`. No se inventan fallbacks de negocio; cuando la API falla aparece el estado de error y reintento.
+El PDF cita únicamente `/pokemon` y `/pokemon/{name}`. Para no descargar el índice completo ni filtrar en memoria, el catálogo usa el endpoint GraphQL oficial v1beta2 con búsqueda, tipos, `limit` y `offset` en servidor. El detalle diseñado necesita información adicional, por lo que REST agrega `/pokemon-species`, `/ability`, `/type` y `/evolution-chain`. No se inventan fallbacks de negocio; cuando la API falla aparece el estado de error y reintento.
 
 ## Compartir
 

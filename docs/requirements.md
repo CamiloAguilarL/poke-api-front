@@ -25,19 +25,19 @@ La geometría y el sistema visual se reproducen desde el nuevo Figma. Los datos 
 
 ## PDF de la prueba
 
-| ID     | Requisito                                               | Evidencia de aceptación                                                         |
-| ------ | ------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| PDF-01 | Aplicación creada con Vue.js.                           | Vue 3 + TypeScript + Vite.                                                      |
-| PDF-02 | Datos desde PokeAPI; catálogo y detalle son el núcleo.  | `pokemon` y `pokemon/{name}` en el repositorio API.                             |
-| PDF-03 | Loading con efecto CSS sobre Pokébola.                  | Splash y loader reducido por preferencia de movimiento.                         |
-| PDF-04 | Compartir copia nombre y atributos separados por comas. | Test de Clipboard API y payload determinista.                                   |
-| PDF-05 | Sin backend ni base de datos; favoritos en store.       | Pinia + persistencia versionada local.                                          |
-| PDF-06 | Repositorio compartible en GitHub.                      | Historial Git y workflow de CI.                                                 |
-| PDF-07 | UI visual y técnicamente bien implementada.             | Sistema de diseño, accesibilidad y visual tests.                                |
-| PDF-08 | Buena arquitectura, KISS, DRY y SOLID.                  | Dominio normalizado y capas con responsabilidades concretas.                    |
-| PDF-09 | Unit tests como punto extra.                            | Vitest con cobertura.                                                           |
-| PDF-10 | README con tecnologías y decisiones.                    | README orientado al reclutador.                                                 |
-| PDF-11 | Pensar en gran volumen de datos.                        | Carga incremental, virtualización, caché, deduplicación y concurrencia acotada. |
+| ID     | Requisito                                               | Evidencia de aceptación                                                        |
+| ------ | ------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| PDF-01 | Aplicación creada con Vue.js.                           | Vue 3 + TypeScript + Vite.                                                     |
+| PDF-02 | Datos desde PokeAPI; catálogo y detalle son el núcleo.  | GraphQL oficial para catálogo paginado y REST `pokemon/{name}` para detalle.   |
+| PDF-03 | Loading con efecto CSS sobre Pokébola.                  | Splash y loader reducido por preferencia de movimiento.                        |
+| PDF-04 | Compartir copia nombre y atributos separados por comas. | Test de Clipboard API y payload determinista.                                  |
+| PDF-05 | Sin backend ni base de datos; favoritos en store.       | Pinia + persistencia versionada local.                                         |
+| PDF-06 | Repositorio compartible en GitHub.                      | Historial Git y workflow de CI.                                                |
+| PDF-07 | UI visual y técnicamente bien implementada.             | Sistema de diseño, accesibilidad y visual tests.                               |
+| PDF-08 | Buena arquitectura, KISS, DRY y SOLID.                  | Dominio normalizado y capas con responsabilidades concretas.                   |
+| PDF-09 | Unit tests como punto extra.                            | Vitest con cobertura.                                                          |
+| PDF-10 | README con tecnologías y decisiones.                    | README orientado al reclutador.                                                |
+| PDF-11 | Pensar en gran volumen de datos.                        | Páginas remotas de 40, infinite scroll, virtualización, caché y deduplicación. |
 
 ## Flujo extraído del nuevo Figma
 

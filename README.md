@@ -26,8 +26,8 @@ La misma suite congela catálogo y detalle en `768×1024`, `1440×900` y `1920×
 ## Qué está implementado
 
 - Onboarding de dos pasos y splash Pokébola animado con CSS.
-- Catálogo completo de PokeAPI, búsqueda por nombre/ID y filtro multi-tipo.
-- Virtualización, hidratación visible, concurrencia acotada, caché TTL y deduplicación.
+- Catálogo paginado desde PokeAPI GraphQL, búsqueda parcial por nombre/ID y filtro multi-tipo ejecutados en servidor.
+- Infinite scroll, virtualización, caché TTL y deduplicación; ninguna descarga masiva ni N+1 de detalles para las cards.
 - Detalle localizado: descripción, tipos, medidas, categoría, habilidades, género, debilidades y evoluciones.
 - Clipboard con nombre y todos los atributos visibles separados por comas.
 - Favoritos Pinia persistidos, swipe-to-delete, botón accesible y undo.
@@ -43,7 +43,7 @@ La [matriz de requisitos](docs/requirements.md) enlaza cada condición del corre
 - Pinia con persistencia local versionada.
 - Tailwind CSS v4 y tokens semánticos derivados de Figma.
 - Primitives shadcn-vue centralizados (`Button`, `Input/SearchField`, `Toggle`, `Link`, `Sheet`, `Card`, `Badge`, `Skeleton`, `SkipLink` y `Sonner`), CVA, Reka UI y Lucide.
-- Zod en el borde de PokeAPI.
+- Zod en los bordes REST y GraphQL de PokeAPI.
 - TanStack Vue Virtual para el catálogo.
 - Vitest, Vue Test Utils, Playwright y axe-core.
 

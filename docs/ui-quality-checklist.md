@@ -50,7 +50,8 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 - [x] Todas las imágenes inspeccionadas tienen texto alternativo y dimensiones explícitas; no hubo imágenes rotas.
 - [x] No se encontraron botones sin texto o `aria-label`, errores de consola ni excepciones de página durante el flujo principal.
 - [x] La app usa `dvh`, safe area inferior y `viewport-fit=cover` para responder a chrome móvil y dispositivos con inset.
-- [x] La lista de más de mil registros se virtualiza y solo hidrata summaries visibles, evitando una página DOM desproporcionada.
+- [x] La lista pide páginas remotas de 40 con infinite scroll, virtualiza filas y no descarga el índice completo ni ejecuta N+1 de detalles.
+- [x] Búsqueda parcial, ID y tipos viajan a GraphQL; ningún resultado se filtra localmente.
 
 ## Evidencia automatizada
 

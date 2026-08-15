@@ -5,11 +5,6 @@ export const namedResourceSchema = z.object({
   url: z.string(),
 })
 
-export const pokemonListSchema = z.object({
-  count: z.number(),
-  results: z.array(namedResourceSchema),
-})
-
 export const graphQlEnvelopeSchema = z.object({
   data: z.unknown().optional(),
   errors: z.array(z.object({ message: z.string() })).optional(),

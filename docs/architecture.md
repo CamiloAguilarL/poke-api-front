@@ -3,7 +3,7 @@
 La aplicación separa integración, dominio, estado y presentación para que PokeAPI pueda evolucionar sin filtrar su contrato HTTP hacia las vistas.
 
 ```text
-PokeAPI
+PokeAPI GraphQL (catálogo) + REST (detalle)
   ↓ validación Zod + caché + deduplicación
 PokemonRepository
   ↓ modelos normalizados y localizados
@@ -18,16 +18,16 @@ shadcn-style UI primitives + Tailwind semantic tokens
 
 - `src/features/pokemon/api`: schemas de borde, errores de red, caché TTL, peticiones en vuelo y composición de endpoints.
 - `src/features/pokemon/domain`: tipos independientes de Vue, metadatos visuales y formatters deterministas.
-- `src/stores`: búsqueda/filtro, favoritos con undo y preferencias persistidas.
+- `src/stores`: páginas remotas de catálogo, favoritos con undo y preferencias persistidas.
 - `src/components/ui`: primitives centralizados siguiendo la convención shadcn-vue; CVA define variants y todos consumen tokens.
 - `src/components/{catalog,pokemon,favorites,states}`: componentes de feature sin conocimiento del formato crudo de PokeAPI.
 - `src/views`: composición de rutas y adaptación responsive.
 
 ## Estrategia para gran volumen
 
-El listado actual de PokeAPI supera los mil registros. El cliente obtiene primero solo `name/url`, calcula el ID desde la URL y virtualiza las filas. Únicamente hidrata los summaries visibles, con seis workers como máximo. El repositorio deduplica solicitudes concurrentes, mantiene caché con TTL y comparte respuestas entre catálogo, detalle, favoritos y evoluciones.
+El listado actual de PokeAPI supera los mil registros. El catálogo consulta GraphQL v1beta2 en páginas de 40 con `limit` y `offset`; el mismo `where` resuelve en servidor la búsqueda parcial por nombre, el ID exacto y la unión de tipos. Cada página devuelve únicamente ID, nombre y tipos. Las URLs oficiales de sprite y artwork se derivan del ID, por lo que una página completa requiere una sola solicitud y no un detalle REST por card.
 
-Los filtros por tipo se resuelven en paralelo con `/type/{type}` y combinan una unión de nombres; la búsqueda local se aplica encima. Así se evita descargar el detalle completo de toda la Pokédex.
+El infinite scroll pide la siguiente página cerca del final y la lista solo monta las filas visibles. Un cambio de búsqueda o filtros invalida resultados tardíos mediante una versión de solicitud. El repositorio deduplica solicitudes concurrentes y conserva cada combinación de consulta y variables durante 30 minutos. REST queda reservado para la ficha completa y la hidratación puntual de favoritos/evoluciones.
 
 ## Responsive
 

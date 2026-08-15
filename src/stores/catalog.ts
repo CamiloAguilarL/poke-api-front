@@ -137,9 +137,9 @@ export const useCatalogStore = defineStore('catalog', () => {
     let cursor = 0
     const workers = Array.from({ length: Math.min(concurrency, queue.length) }, async () => {
       while (cursor < queue.length) {
-        const name = queue[cursor]
+        const name = queue[cursor]!
         cursor += 1
-        if (name) await ensureSummary(name)
+        await ensureSummary(name)
       }
     })
     await Promise.all(workers)

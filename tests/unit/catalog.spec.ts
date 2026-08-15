@@ -138,4 +138,50 @@ describe('catalog store', () => {
     await store.loadNextPage()
     expect(store.nextPageStatus).toBe('error')
   })
+
+  it('ignores stale first and next-page responses after a newer search', async () => {
+    let resolveInitial!: (value: unknown) => void
+    let resolveNext!: (value: unknown) => void
+    repositoryMock.searchPage
+      .mockImplementationOnce(() => new Promise((resolve) => (resolveInitial = resolve)))
+      .mockResolvedValueOnce({ count: 2, summaries: [charmander], nextOffset: 1 })
+      .mockImplementationOnce(() => new Promise((resolve) => (resolveNext = resolve)))
+      .mockResolvedValueOnce({ count: 1, summaries: [pikachu], nextOffset: null })
+
+    const store = useCatalogStore()
+    const initialRequest = store.initialize()
+    store.setQuery('char')
+    await store.reload()
+    resolveInitial({ count: 1, summaries: [bulbasaur], nextOffset: null })
+    await initialRequest
+    expect(store.entries).toEqual([{ id: 4, name: 'charmander' }])
+
+    const nextRequest = store.loadNextPage()
+    store.setQuery('pika')
+    await store.reload()
+    resolveNext({ count: 2, summaries: [bulbasaur], nextOffset: null })
+    await nextRequest
+    expect(store.entries).toEqual([{ id: 25, name: 'pikachu' }])
+  })
+
+  it('guards duplicate page requests and uses a safe fallback for unknown errors', async () => {
+    const store = useCatalogStore()
+    await store.loadNextPage()
+    expect(repositoryMock.searchPage).not.toHaveBeenCalled()
+
+    repositoryMock.searchPage.mockRejectedValueOnce('offline')
+    await store.initialize()
+    expect(store.errorMessage).toBe('No pudimos cargar la Pokédex.')
+
+    let resolvePage!: (value: unknown) => void
+    repositoryMock.searchPage
+      .mockResolvedValueOnce({ count: 2, summaries: [bulbasaur], nextOffset: 1 })
+      .mockImplementationOnce(() => new Promise((resolve) => (resolvePage = resolve)))
+    await store.initialize(true)
+    const pendingPage = store.loadNextPage()
+    await store.loadNextPage()
+    expect(repositoryMock.searchPage).toHaveBeenCalledTimes(3)
+    resolvePage({ count: 2, summaries: [pikachu], nextOffset: null })
+    await pendingPage
+  })
 })
