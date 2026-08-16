@@ -21,7 +21,7 @@ La geometría y el sistema visual se reproducen desde el nuevo Figma. Los datos 
 | USER-03 | Implementación pixel perfect.                                                  | Regresión visual en viewports Figma y revisión manual.                                                                                  |
 | USER-04 | Todos los datos visibles deben venir de PokeAPI; no inventar valores.          | Adaptadores API y fallbacks explícitos, sin fixtures productivas.                                                                       |
 | USER-05 | Documentar inconsistencias y decisiones.                                       | README y `docs/decisions.md`.                                                                                                           |
-| USER-06 | Entrega en GitHub, sin despliegue, con README que muestre todas las pantallas. | Repositorio, CI y galería de screenshots versionada.                                                                                    |
+| USER-06 | Entrega en GitHub, sin despliegue, con README y evidencia visual.              | Repositorio, CI, galería representativa y screenshots completos versionados en Playwright.                                              |
 
 ## PDF de la prueba
 

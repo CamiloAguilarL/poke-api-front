@@ -31,7 +31,7 @@ El onboarding conserva sin cambios las coordenadas del frame mobile. En desktop,
 
 ## Sprites diferenciados por contexto
 
-Las tarjetas usan el sprite frontal liviano que puede derivarse directamente del ID entregado por GraphQL, evitando solicitudes REST N+1. La ficha usa, cuando existe, la variante `generation-ii/crystal` incluida en la respuesta REST de PokeAPI porque es la pose pixel art del frame de Figma; mantiene fallback al sprite frontal para Pokémon sin esa generación.
+Las tarjetas usan el sprite frontal liviano que puede derivarse directamente del ID entregado por GraphQL, evitando solicitudes REST N+1. La ficha mobile usa, cuando existe, la variante animada `generation-v/black-white` incluida en la respuesta REST de PokeAPI porque es el pixel art identificado en el frame de Figma; mantiene fallback al sprite frontal. Desktop prioriza `official-artwork`, cuya resolución sostiene la escala de la composición web sin pixelación.
 
 ## Contraste de los chips de tipo
 

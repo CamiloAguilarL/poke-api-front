@@ -1,57 +1,24 @@
 # Pokédex · Prueba Front End
 
-Una implementación Vue 3 de la prueba técnica, construida desde el draft móvil de Figma y adaptada a un catálogo expandido y una experiencia master-detail para desktop. La prioridad fue entregar producto, no solo pantallas: PokeAPI real, arquitectura tipada, favoritos persistentes, accesibilidad, pruebas y evidencia visual reproducible.
+Pokédex construida con Vue 3 a partir del diseño mobile de Figma y adaptada a una experiencia web completa. La solución prioriza datos reales, rendimiento con más de mil registros, consistencia visual, accesibilidad y una arquitectura fácil de mantener.
 
-[Figma editable](https://www.figma.com/design/4Uh3KoeuzsYusZ90pa4l1M/Pok%C3%A9dex--Copy-?node-id=0-1&p=f) · [Trazabilidad completa](docs/requirements.md) · [Decisiones](docs/decisions.md) · [Checklist UI](docs/ui-quality-checklist.md)
+[Figma editable](https://www.figma.com/design/4Uh3KoeuzsYusZ90pa4l1M/Pok%C3%A9dex--Copy-?node-id=0-1&p=f) · [Requisitos](docs/requirements.md) · [Arquitectura](docs/architecture.md) · [Decisiones](docs/decisions.md)
 
-## Recorrido visual
+## Evidencia visual
 
-| Onboarding                                                                                          | Catálogo                                                                                                                         | Filtros                                                                                                 |
-| --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| <img src="tests/e2e/__screenshots__/mobile-360/onboarding-01.png" width="220" alt="Onboarding 1" /> | <img src="tests/e2e/__screenshots__/mobile-360/catalog.png" width="220" alt="Catálogo mobile" />                                 | <img src="tests/e2e/__screenshots__/mobile-360/filter.png" width="220" alt="Bottom sheet de filtros" /> |
-| <img src="tests/e2e/__screenshots__/mobile-360/onboarding-02.png" width="220" alt="Onboarding 2" /> | <img src="tests/e2e/__screenshots__/mobile-360/filtered.png" width="220" alt="Catálogo filtrado" />                              | <img src="tests/e2e/__screenshots__/mobile-360/splash.png" width="220" alt="Splash con Pokébola CSS" /> |
-|                                                                                                     | <img src="tests/e2e/__screenshots__/mobile-360/search-filled.png" width="220" alt="Búsqueda con una única acción de limpieza" /> |                                                                                                         |
+Las imágenes son goldens reales de Playwright y forman parte de la regresión visual del proyecto.
 
-| Detalle                                                                                                              | Favoritos                                                                                                 | Estados                                                                                                       |
-| -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| <img src="tests/e2e/__screenshots__/mobile-360/detail.png" width="220" alt="Detalle de Bulbasaur" />                 | <img src="tests/e2e/__screenshots__/mobile-360/favorites.png" width="220" alt="Favoritos" />              | <img src="tests/e2e/__screenshots__/mobile-360/error.png" width="220" alt="Error y reintento" />              |
-| <img src="tests/e2e/__screenshots__/mobile-360/favorite-swipe.png" width="220" alt="Swipe para eliminar favorito" /> | <img src="tests/e2e/__screenshots__/mobile-360/favorites-empty.png" width="220" alt="Favoritos vacíos" /> | <img src="tests/e2e/__screenshots__/mobile-360/construction.png" width="220" alt="Sección en construcción" /> |
+| Onboarding                                                                                        | Catálogo                                                                                         | Filtros                                                                                        | Detalle                                                                                        |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| <img src="tests/e2e/__screenshots__/mobile-360/onboarding-01.png" width="185" alt="Onboarding" /> | <img src="tests/e2e/__screenshots__/mobile-360/catalog.png" width="185" alt="Catálogo mobile" /> | <img src="tests/e2e/__screenshots__/mobile-360/filter.png" width="185" alt="Filtros mobile" /> | <img src="tests/e2e/__screenshots__/mobile-360/detail.png" width="185" alt="Detalle mobile" /> |
 
-### Adaptación web
+<img src="tests/e2e/__screenshots__/desktop-1920/detail.png" width="960" alt="Experiencia master-detail en desktop" />
 
-<img src="tests/e2e/__screenshots__/desktop-1920/detail.png" width="920" alt="Pokédex master-detail en desktop de 1920 px" />
+En mobile se conserva el lenguaje y la geometría del Figma. En desktop, el catálogo usa el ancho disponible sin escalar indefinidamente y el detalle adopta un patrón master-detail con listado y ficha de scroll independiente.
 
-La misma suite congela catálogo y detalle en `768×1024`, `1440×900` y `1920×1080`. En pantallas amplias el catálogo distribuye sus cards en hasta cinco columnas y ocupa todo el espacio útil. Al abrir una ficha conserva un listado de 420 px y una columna de lectura controlada, sin escalar desproporcionadamente el contenido.
+## Ejecutar rápidamente
 
-## Qué está implementado
-
-- Onboarding de dos pasos y splash Pokébola animado con CSS.
-- Catálogo paginado desde PokeAPI GraphQL, búsqueda parcial por nombre/ID y filtro multi-tipo ejecutados en servidor.
-- Infinite scroll, virtualización, caché TTL y deduplicación; ninguna descarga masiva ni N+1 de detalles para cards o favoritos persistidos.
-- Detalle localizado: descripción, tipos, medidas, categoría, habilidades, género y debilidades.
-- Clipboard con nombre y todos los atributos visibles separados por comas.
-- Favoritos Pinia persistidos, swipe-to-delete, botón accesible y undo.
-- Error/retry, búsqueda vacía, favoritos vacíos y secciones “muy pronto”.
-- Mobile pixel-matched, tablet en dos columnas, catálogo desktop expandido y detalle master-detail.
-- Reducción de movimiento, navegación semántica y auditoría axe.
-
-La [matriz de requisitos](docs/requirements.md) enlaza cada condición del correo, PDF y Figma con su evidencia de aceptación.
-
-## Stack
-
-- Vue 3, TypeScript estricto, Vite y Vue Router.
-- Pinia con persistencia local versionada.
-- Tailwind CSS v4 y tokens semánticos derivados de Figma.
-- Primitives shadcn-vue centralizados (`Button`, `Input/SearchField`, `Checkbox`, `Toggle`, `Link`, `Sheet`, `Card`, `Badge`, `Skeleton`, `SkipLink` y `Sonner`), CVA, Reka UI y Lucide.
-- Zod en los bordes REST y GraphQL de PokeAPI.
-- TanStack Vue Virtual para el catálogo.
-- Vitest, Vue Test Utils, Playwright y axe-core.
-
-Más detalle en [arquitectura](docs/architecture.md) y [sistema de diseño](docs/design-system.md).
-
-## Ejecutar localmente
-
-Requisitos: Node.js 22+ (CI usa 24) y pnpm 10+.
+Requisitos: Node.js 22+ y pnpm 10+.
 
 ```bash
 corepack enable
@@ -59,40 +26,63 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-La app queda disponible en `http://localhost:5173`.
+Abrir `http://localhost:5173`.
 
-## Calidad
+## Tecnologías utilizadas
 
-```bash
-pnpm check            # formato, lint, tipos, cobertura y build
-pnpm test:e2e         # 360×800, 768×1024, 1440×900 y 1920×1080
-pnpm test:e2e:update  # actualiza goldens solo ante un cambio visual intencional
-```
+| Tecnología                               | Elección                                                                                       |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Vue 3, TypeScript, Vite y Vue Router     | Componentes reactivos, contratos estrictos, build rápido y navegación con guard de onboarding. |
+| Pinia                                    | Estado de catálogo, favoritos y preferencias; persistencia local versionada sin backend.       |
+| Tailwind CSS v4 + shadcn-vue             | Tokens semánticos y primitives propios; CVA y Reka UI modelan variantes y estados.             |
+| PokeAPI GraphQL + REST + Zod             | Consultas remotas eficientes, detalle completo y validación de toda respuesta externa.         |
+| TanStack Vue Virtual                     | Solo monta las filas visibles del catálogo.                                                    |
+| Vitest, Vue Test Utils, Playwright y axe | Unit tests, flujos E2E, accesibilidad y regresión visual en cuatro viewports.                  |
+| GitHub Actions                           | Formato, lint, tipos, cobertura, build y E2E como quality gate reproducible.                   |
 
-La cobertura mínima exigida en CI es 80% de líneas/funciones/statements y 75% de ramas sobre dominio y stores. La ejecución actual alcanza 100% de líneas/funciones y 92,45% de ramas. Playwright valida flujos con un contrato PokeAPI determinista; la app productiva nunca usa esos fixtures.
+## Decisiones técnicas y de producto
 
-El workflow de GitHub Actions ejecuta formato, ESLint sin warnings, `vue-tsc`, cobertura, build, E2E, axe y comparación de screenshots.
+### Datos preparados para escala
 
-La regresión visual es exacta en el entorno local que genera los goldens. CI admite hasta 4% de diferencia por la rasterización de Chromium entre macOS y Linux; medidas estructurales críticas como el ancho de shell, catálogo y artwork se validan además con aserciones geométricas exactas.
+El endpoint REST de listado no permite búsqueda parcial ni filtro por tipo en servidor. Descargar el índice completo y filtrarlo en el navegador habría funcionado para una demo, pero no para el criterio del PDF sobre gran cantidad de datos. Por eso:
 
-## Estructura
+- GraphQL consulta páginas de 40 con `limit`, `offset`, búsqueda por nombre/ID y tipos directamente en PokeAPI.
+- Infinite scroll solicita la siguiente página cerca del final y TanStack Virtual renderiza solo las filas visibles.
+- Los sprites de las cards se derivan del ID recibido; no se hace una petición de detalle por tarjeta.
+- REST se reserva para la ficha abierta. Los favoritos se rehidratan por GraphQL en lotes de hasta 100, evitando N+1.
+- Caché TTL de 30 minutos, deduplicación de solicitudes en vuelo y versionado de búsquedas evitan trabajo repetido y respuestas obsoletas.
+
+### Fronteras claras
+
+`PokemonRepository` encapsula GraphQL/REST, caché y composición de endpoints. Zod valida las respuestas antes de convertirlas en modelos de dominio normalizados; las vistas nunca dependen del JSON crudo de PokeAPI. Pinia coordina estado e interacción, pero no contiene lógica HTTP. Esto aplica responsabilidad única y DRY sin añadir una capa genérica de casos de uso que, para este alcance, violaría KISS.
 
 ```text
-src/
-├── components/          # UI primitives shadcn y componentes de feature
-├── features/pokemon/    # API, schemas Zod, dominio y formatters
-├── layouts/             # shell responsive
-├── router/              # rutas y guards de onboarding
-├── stores/              # Pinia: catálogo, favoritos y preferencias
-├── styles/              # tokens Figma + Tailwind
-└── views/               # pantallas y composición responsive
-tests/
-├── unit/                # dominio, filtros, stores y persistencia
-└── e2e/                 # flujos, accesibilidad y regresión visual
+PokeAPI → Zod + Repository → Pinia → Views → primitives shadcn + tokens Tailwind
 ```
 
-## Notas de entrega
+### Sistema de diseño antes que estilos aislados
 
-- No hay backend ni base de datos.
-- No hay despliegue por decisión de alcance; el repositorio y CI son la entrega solicitada.
-- Pokémon y sprites pertenecen a sus respectivos propietarios. PokeAPI y sus assets se consumen únicamente para esta prueba técnica.
+Figma define composición, tipografía, colores y estados; PokeAPI prevalece cuando el contenido de muestra contradice datos reales. Los tokens viven en `src/styles/main.css` y se exponen a Tailwind. Todo control interactivo atraviesa componentes propios basados en shadcn-vue (`Button`, `SearchField`, `Checkbox`, `Sheet`, `Card`, `Badge`, `Link`, `Sonner`); ESLint impide introducir controles nativos fuera de esa capa.
+
+La adaptación web no estira el frame mobile: el catálogo llega hasta cinco columnas dentro de un máximo de lectura, mientras el detalle desktop mantiene un listado de 420 px y una composición centrada. Mobile conserva navegación fija, sheets táctiles y el sprite animado Black/White de Figma; desktop usa official artwork para aprovechar su escala.
+
+### Funcionalidad sin ampliar el alcance artificialmente
+
+- Favoritos y onboarding se persisten en `localStorage` mediante stores versionados; no se añadió backend ni base de datos porque el PDF los excluye.
+- Compartir usa Clipboard API y copia nombre y atributos separados por comas. Se ubica en desktop para respetar el frame mobile.
+- La Pokébola de carga es CSS y responde a `prefers-reduced-motion`.
+- Error/reintento, resultados vacíos, favoritos vacíos, undo y rutas protegidas tienen estados explícitos.
+- No se inventó autenticación, dark mode o contenido para Regiones/Perfil sin respaldo en los requisitos.
+
+## Calidad y documentación
+
+```bash
+pnpm check      # formato, ESLint, tipos, 63 unit tests, cobertura y build
+pnpm test:e2e   # flujos, axe y screenshots en 360, 768, 1440 y 1920 px
+```
+
+La cobertura actual alcanza 100% de líneas/funciones y 92,45% de ramas en dominio y stores. Playwright usa fixtures deterministas únicamente en tests; producción siempre consume PokeAPI real.
+
+Documentación ampliada: [arquitectura](docs/architecture.md), [decisiones e inconsistencias](docs/decisions.md), [sistema de diseño](docs/design-system.md), [trazabilidad](docs/requirements.md) y [checklist UI](docs/ui-quality-checklist.md).
+
+Pokémon, PokeAPI y sus assets pertenecen a sus respectivos propietarios y se utilizan únicamente para esta prueba técnica.
