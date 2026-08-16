@@ -2,8 +2,6 @@
 
 Pokédex construida con Vue 3 a partir de un sistema visual diseñado para mobile y adaptado a una experiencia web completa. La solución prioriza datos reales, rendimiento con más de mil registros, consistencia visual, accesibilidad y una arquitectura fácil de mantener.
 
-[Figma editable](https://www.figma.com/design/4Uh3KoeuzsYusZ90pa4l1M/Pok%C3%A9dex--Copy-?node-id=0-1&p=f)
-
 ## Evidencia visual
 
 Las imágenes son goldens reales de Playwright y forman parte de la regresión visual del proyecto.
