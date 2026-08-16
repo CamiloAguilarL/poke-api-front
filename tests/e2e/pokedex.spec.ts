@@ -312,6 +312,34 @@ test.describe('Pokédex experience', () => {
         : 'mobile-pokemon-detail',
     )
     await expect(activeDetail.getByRole('heading', { name: 'Bulbasaur' })).toBeVisible()
+    const detailArtwork = activeDetail.getByRole('img', { name: 'Bulbasaur', exact: true }).first()
+    await expect(detailArtwork).toHaveAttribute(
+      'src',
+      testInfo.project.name.startsWith('desktop-')
+        ? /\/other\/official-artwork\/1\.png$/
+        : /\/generation-v\/black-white\/animated\/1\.gif$/,
+    )
+    await expect
+      .poll(() =>
+        detailArtwork.evaluate(
+          (image: HTMLImageElement) => image.complete && image.naturalWidth > 0,
+        ),
+      )
+      .toBe(true)
+    if (!testInfo.project.name.startsWith('desktop-')) {
+      await detailArtwork.evaluate(async (image: HTMLImageElement) => {
+        const canvas = document.createElement('canvas')
+        canvas.width = image.naturalWidth
+        canvas.height = image.naturalHeight
+        const context = canvas.getContext('2d')
+        if (!context)
+          throw new Error('No pudimos fijar el frame del sprite para la captura visual.')
+        context.imageSmoothingEnabled = false
+        context.drawImage(image, 0, 0)
+        image.src = canvas.toDataURL('image/png')
+        await image.decode()
+      })
+    }
     await expect(activeDetail.getByText('6,9 kg')).toBeVisible()
     await expect(activeDetail.getByText('Semilla', { exact: true })).toBeVisible()
     await expectNoSeriousAccessibilityViolations(page, true)
@@ -324,6 +352,18 @@ test.describe('Pokédex experience', () => {
       expect(catalog?.width).toBe(420)
       await expect(page.getByTestId('desktop-detail-back')).toBeVisible()
     } else {
+      await expect
+        .poll(() =>
+          detailArtwork.evaluate((image) => {
+            const styles = getComputedStyle(image)
+            return {
+              imageRendering: styles.imageRendering,
+              mixBlendMode: styles.mixBlendMode,
+              opacity: styles.opacity,
+            }
+          }),
+        )
+        .toEqual({ imageRendering: 'pixelated', mixBlendMode: 'normal', opacity: '1' })
       const navigation = page.getByRole('navigation', { name: 'Navegación principal' })
       await expect(navigation).toHaveCSS('position', 'fixed')
       const navigationBox = await navigation.boundingBox()

@@ -33,6 +33,12 @@ const errorMessage = ref('')
 const favorite = computed(() => (pokemon.value ? favorites.has(pokemon.value.name) : false))
 const primaryType = computed(() => pokemon.value?.types[0] ?? 'normal')
 const heroColor = computed(() => TYPE_META[primaryType.value].color)
+const mobileDetailImage = computed(
+  () => pokemon.value?.animatedSprite ?? pokemon.value?.sprite ?? pokemon.value?.artwork ?? null,
+)
+const desktopDetailImage = computed(
+  () => pokemon.value?.artwork ?? pokemon.value?.sprite ?? pokemon.value?.animatedSprite ?? null,
+)
 const weaknessPriority = ['fire', 'psychic', 'ice', 'flying']
 const sortedWeaknesses = computed(() =>
   [...(pokemon.value?.weaknesses ?? [])].sort((left, right) => {
@@ -150,13 +156,14 @@ watch(() => props.name, load, { immediate: true })
           />
 
           <img
-            v-if="pokemon.detailSprite"
-            :src="pokemon.detailSprite"
+            v-if="mobileDetailImage"
+            :src="mobileDetailImage"
             :alt="pokemon.displayName"
-            width="200"
-            height="200"
+            width="128"
+            height="132"
+            crossorigin="anonymous"
             fetchpriority="high"
-            class="motion-detail-sprite absolute left-1/2 top-[124px] z-10 size-[200px] -translate-x-1/2 object-contain opacity-80 mix-blend-multiply [image-rendering:pixelated]"
+            class="motion-detail-sprite absolute left-1/2 top-[112px] z-10 h-[132px] w-32 -translate-x-1/2 object-contain [image-rendering:pixelated] sm:top-[100px] sm:h-[156px] sm:w-[152px]"
           />
         </header>
 
@@ -349,8 +356,8 @@ watch(() => props.name, load, { immediate: true })
             </div>
 
             <img
-              v-if="pokemon.artwork || pokemon.detailSprite"
-              :src="pokemon.artwork ?? pokemon.detailSprite ?? undefined"
+              v-if="desktopDetailImage"
+              :src="desktopDetailImage"
               :alt="pokemon.displayName"
               width="420"
               height="420"

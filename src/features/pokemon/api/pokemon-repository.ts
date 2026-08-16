@@ -208,16 +208,19 @@ function localized(items: Array<{ name: string; language: { name: string } }>, f
 function preferredSprite(sprites: PokemonDto['sprites']): string | null {
   const source = sprites as Record<string, any>
   return (
-    source.versions?.['generation-v']?.['black-white']?.front_default ??
     source.front_default ??
+    source.versions?.['generation-v']?.['black-white']?.front_default ??
     source.other?.['official-artwork']?.front_default ??
     null
   )
 }
 
-function detailSprite(sprites: PokemonDto['sprites']): string | null {
+function animatedSprite(sprites: PokemonDto['sprites']): string | null {
   const source = sprites as Record<string, any>
-  return source.versions?.['generation-ii']?.crystal?.front_default ?? preferredSprite(sprites)
+  return (
+    source.versions?.['generation-v']?.['black-white']?.animated?.front_default ??
+    preferredSprite(sprites)
+  )
 }
 
 function officialArtwork(sprites: PokemonDto['sprites']): string | null {
@@ -357,7 +360,7 @@ class PokeApiRepository implements PokemonRepository {
     )
     return {
       ...toSummary(pokemon, displayName),
-      detailSprite: detailSprite(pokemon.sprites),
+      animatedSprite: animatedSprite(pokemon.sprites),
       description: descriptionFromSpecies(species),
       weightHectograms: pokemon.weight,
       heightDecimeters: pokemon.height,

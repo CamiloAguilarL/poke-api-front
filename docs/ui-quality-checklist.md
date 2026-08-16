@@ -25,6 +25,7 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 - [x] Los iconos de tipos se verificaron en cards, hero, debilidades y detalle; el filtro conserva los checkboxes sin icono definidos por Figma.
 - [x] Los chips preservan contraste de texto e icono tanto en fondos claros como oscuros.
 - [x] Sprites, artwork, anillos, favoritos y controles del hero conservan tamaño, centro y jerarquía visual.
+- [x] El detalle mobile usa el sprite animado Black/White definido por Figma, escalado con nearest-neighbor y sin mezcla/opacidad; desktop usa `official-artwork` para sostener su escala, ambos con fallback al sprite frontal estándar y nunca al sprite legacy de Crystal.
 - [x] Nombres largos se truncan en cards; descripciones y títulos usan wrapping intencional sin desbordar.
 - [x] Valores numéricos —IDs, resultados, medidas, porcentajes y multiplicadores— usan cifras tabulares.
 

@@ -31,6 +31,7 @@ const named = (name: string, resource: string) => ({
 function pokemonResponse(entry: PokemonFixture) {
   const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${entry.id}.png`
   const crystalSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/${entry.id}.png`
+  const animatedSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${entry.id}.gif`
   const artwork = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${entry.id}.png`
   return {
     id: entry.id,
@@ -46,7 +47,9 @@ function pokemonResponse(entry: PokemonFixture) {
       front_default: sprite,
       versions: {
         'generation-ii': { crystal: { front_default: crystalSprite } },
-        'generation-v': { 'black-white': { front_default: sprite } },
+        'generation-v': {
+          'black-white': { front_default: sprite, animated: { front_default: animatedSprite } },
+        },
       },
       other: { 'official-artwork': { front_default: artwork } },
     },

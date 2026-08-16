@@ -45,7 +45,7 @@ export interface Weakness {
 }
 
 export interface PokemonDetail extends PokemonSummary {
-  detailSprite: string | null
+  animatedSprite: string | null
   description: string
   weightHectograms: number
   heightDecimeters: number
