@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { Button } from '@/components/ui/button'
+import { resolveOnboardingDestination } from '@/router/onboarding'
 import { usePreferencesStore } from '@/stores/preferences'
 
 const step = ref<0 | 1>(0)
+const route = useRoute()
 const router = useRouter()
 const preferences = usePreferencesStore()
 const firstStep = computed(() => step.value === 0)
+const destination = computed(() => resolveOnboardingDestination(route.query.redirect))
 
 async function continueFlow() {
   if (firstStep.value) {
@@ -15,7 +18,7 @@ async function continueFlow() {
     return
   }
   preferences.completeOnboarding()
-  await router.replace('/pokedex')
+  await router.replace(destination.value)
 }
 </script>
 

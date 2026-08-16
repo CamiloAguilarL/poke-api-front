@@ -43,6 +43,7 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 - [x] Favorito funciona desde card y detalle; eliminación por swipe dispone de botón equivalente y undo.
 - [x] Compartir copia nombre y todos los atributos visibles; el toast confirma la operación.
 - [x] Loading, error/retry, búsqueda sin resultados, favoritos vacíos, favoritos hidratando y secciones futuras tienen representación explícita.
+- [x] Antes de completar el onboarding, todas las rutas funcionales redirigen a `/welcome` y conservan un destino interno seguro para restaurarlo al finalizar; el flujo completado no puede reabrirse desde `/welcome`.
 - [x] Back, compartir, favorito desde detalle y persistencia después de recargar se revisaron dentro de los flujos E2E.
 - [x] En master-detail, catálogo y ficha conservan scroll independiente; cambiar de Pokémon reinicia solo el panel derecho arriba y cambiar query no desmonta la ficha.
 
@@ -60,8 +61,8 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 
 ## Evidencia automatizada
 
-- [x] 53 pruebas unitarias.
-- [x] Matriz Playwright de 68 entradas entre `360×800`, `768×1024`, `1440×900` y `1920×1080`: 24 escenarios aplicables y 44 combinaciones no aplicables omitidas explícitamente.
+- [x] 62 pruebas unitarias.
+- [x] Matriz Playwright de 72 entradas entre `360×800`, `768×1024`, `1440×900` y `1920×1080`: 25 escenarios aplicables y 47 combinaciones no aplicables omitidas explícitamente.
 - [x] Regresión visual de onboarding, catálogo, búsqueda, filtros, detalle, favoritos, swipe, loading, error, vacío y construcción.
 - [x] Aserciones geométricas bloquean regresiones del ancho/alto del documento, shell, catálogo y artwork.
 - [x] Cobertura actual: 99,39% statements, 100% functions, 100% lines y 92,45% branches sobre el alcance configurado.

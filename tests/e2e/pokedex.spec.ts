@@ -52,6 +52,44 @@ test.describe('Pokédex experience', () => {
     await expect(page.getByTestId('pokemon-list')).toBeVisible()
   })
 
+  test('protects application routes and restores the requested destination', async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile-360', 'One viewport covers the routing contract')
+
+    const protectedPaths = [
+      '/pokedex',
+      '/pokedex/bulbasaur',
+      '/favorites',
+      '/favorites/bulbasaur',
+      '/regions',
+      '/profile',
+    ]
+
+    for (const path of protectedPaths) {
+      await page.goto(path)
+      await expect
+        .poll(() => {
+          const currentUrl = new URL(page.url())
+          return {
+            pathname: currentUrl.pathname,
+            redirect: currentUrl.searchParams.get('redirect'),
+          }
+        })
+        .toEqual({ pathname: '/welcome', redirect: path })
+    }
+
+    const requestedDestination = '/favorites/bulbasaur?source=direct'
+    await page.goto(requestedDestination)
+    await page.getByRole('button', { name: 'Continuar', exact: true }).click()
+    await page.getByRole('button', { name: 'Empecemos', exact: true }).click()
+    await expect(page).toHaveURL(requestedDestination)
+    await expect(page.getByTestId('pokemon-detail')).toBeVisible()
+
+    await page.goto('/welcome')
+    await expect(page).toHaveURL('/pokedex')
+  })
+
   test('onboarding groups its desktop flow without scaling the source artwork', async ({
     page,
   }, testInfo) => {
