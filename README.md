@@ -150,6 +150,31 @@ La firma visual es la card bicolor por tipo: contenido sobre una superficie tint
 
 El diseño desktop no escala una pantalla mobile para llenar el monitor. Reorganiza la misma jerarquía en un patrón web reconocible y mantiene tokens, radios, densidad, controles y estados.
 
+## Uso de IA en el desarrollo
+
+El proyecto se desarrolló con asistencia de **Codex usando GPT-5.6 Sol**, ajustando el nivel de esfuerzo de razonamiento según la complejidad de cada tarea. La IA se utilizó como herramienta de ingeniería para acelerar análisis, implementación, pruebas y documentación; la definición del producto, los recursos disponibles, las restricciones y la aceptación final permanecieron bajo criterio humano.
+
+### Flujo de trabajo
+
+1. **Especificación humana:** se proporcionaron los requerimientos funcionales, el diseño, la documentación de la prueba, el stack obligatorio y los criterios de calidad esperados.
+2. **Plan mode:** al inicio se usó este modo para extraer y organizar requerimientos, detectar inconsistencias, definir tecnologías, establecer la arquitectura y dividir la implementación en entregables verificables.
+3. **Goal mode:** una vez definido un criterio de éxito claro, se utilizó un objetivo persistente para mantener la ejecución orientada al resultado completo y no únicamente a tareas aisladas.
+4. **Implementación asistida:** Codex inspeccionó el repositorio, modificó componentes, ejecutó herramientas, añadió pruebas, comparó capturas y creó commits trazables. El nivel de esfuerzo se aumentó para decisiones de arquitectura, integración de datos y revisiones visuales, y se redujo para cambios mecánicos o validaciones directas.
+5. **Revisión iterativa:** cada incremento pasó por revisión humana, validación automática y una nueva inspección con IA. Los hallazgos se incorporaron al siguiente ciclo hasta cumplir los criterios funcionales, visuales y técnicos.
+
+### Iteraciones relevantes
+
+El primer resultado no se consideró la entrega final. La revisión conjunta permitió encontrar y corregir, entre otros, los siguientes puntos:
+
+- La paginación y búsqueda inicialmente necesitaban una estrategia realmente remota; se reemplazó el filtrado local por consultas GraphQL paginadas, infinite scroll y virtualización.
+- La obtención de sprites se optimizó para evitar solicitudes de detalle por cada card y se diferenciaron los assets apropiados para mobile y desktop.
+- Se ajustaron tamaños de imágenes, iconos de tipos, contraste de badges, tipografía, radios, sombras, transparencias y espaciados pequeños.
+- Se corrigieron el ancho útil en desktop, el máximo de lectura, la grilla de favoritos y el scroll independiente del catálogo y el detalle.
+- Se unificaron controles mediante primitives shadcn, incluyendo favorito, búsqueda, filtros, sheets, botones y estados de loading.
+- Se añadieron navegación fija mobile, animaciones, error/reintento, guard de onboarding, accesibilidad y pruebas de regresión para impedir que los ajustes se perdieran.
+
+Este proceso combinó dos responsabilidades complementarias: la persona definió qué debía construirse, aportó los recursos, revisó el comportamiento real y señaló desviaciones; la IA aceleró la exploración técnica, la implementación y la verificación repetible. El resultado surgió de un ciclo continuo de **especificación humana → desarrollo asistido → pruebas → revisión humana y con IA → corrección**, manteniendo la decisión final y la responsabilidad sobre la entrega en el lado humano.
+
 ## Calidad, accesibilidad y pruebas
 
 ```bash
