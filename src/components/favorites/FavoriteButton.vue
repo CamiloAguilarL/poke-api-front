@@ -3,11 +3,23 @@ import { Heart } from '@lucide/vue'
 import { computed } from 'vue'
 import { Button } from '@/components/ui/button'
 
-const props = defineProps<{
-  favorite: boolean
-  subject?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    favorite: boolean
+    subject?: string
+    appearance?: 'card' | 'hero' | 'toolbar'
+  }>(),
+  { appearance: 'card' },
+)
 defineEmits<{ toggle: [] }>()
+
+const appearanceClasses = {
+  card: 'size-9 rounded-full border-2 border-white bg-black/15 text-white hover:bg-black/25',
+  hero: 'size-10 rounded-full border-0 !bg-transparent p-0 text-white shadow-none hover:!bg-transparent active:!bg-transparent',
+  toolbar:
+    'size-10 rounded-full border border-[var(--border-default)] bg-card text-[var(--text-icon)] shadow-sm hover:bg-muted',
+} as const
+const buttonClasses = computed(() => appearanceClasses[props.appearance])
 
 const actionLabel = computed(() => {
   const action = props.favorite ? 'Quitar' : 'Agregar'
@@ -21,7 +33,7 @@ const actionLabel = computed(() => {
   <Button
     variant="icon"
     size="icon-sm"
-    class="size-9 rounded-full border-2 border-white bg-black/15 text-white hover:bg-black/25"
+    :class="buttonClasses"
     :aria-label="actionLabel"
     :aria-pressed="favorite"
     data-slot="favorite-button"
@@ -31,7 +43,13 @@ const actionLabel = computed(() => {
       <Heart
         :key="favorite ? 'favorite' : 'available'"
         class="size-6"
-        :class="favorite ? 'fill-[var(--favorite)] text-[var(--favorite)]' : 'text-white'"
+        :class="
+          favorite
+            ? 'fill-[var(--favorite)] text-[var(--favorite)]'
+            : appearance === 'toolbar'
+              ? 'text-[var(--text-icon)]'
+              : 'text-white'
+        "
         aria-hidden="true"
       />
     </Transition>

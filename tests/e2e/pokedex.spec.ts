@@ -364,6 +364,52 @@ test.describe('Pokédex experience', () => {
           }),
         )
         .toEqual({ imageRendering: 'pixelated', mixBlendMode: 'normal', opacity: '1' })
+      const detailVisualContract = await activeDetail.evaluate((root) => {
+        const style = (selector: string) => {
+          const element = root.querySelector<HTMLElement>(selector)
+          if (!element) throw new Error(`No se encontró ${selector} en el detalle móvil.`)
+          return getComputedStyle(element)
+        }
+        const content = root.querySelector<HTMLElement>('[data-testid="mobile-detail-content"]')
+        const favorite = root.querySelector<HTMLElement>('[data-slot="favorite-button"]')
+        const weaknessSection = root.querySelector<HTMLElement>(
+          '#weakness-heading-mobile',
+        )?.parentElement
+        if (!content || !favorite || !weaknessSection)
+          throw new Error('Falta la estructura visual del detalle móvil.')
+
+        const contentBox = content.getBoundingClientRect()
+        return {
+          contentWidth: contentBox.width,
+          contentX: contentBox.x,
+          name: style('#pokemon-name-mobile').fontSize,
+          number: style('#pokemon-name-mobile + p').fontSize,
+          description: style('[data-testid="mobile-detail-content"] > p').fontSize,
+          attributeLabel: style('dt').fontSize,
+          attributeValue: style('dd').fontSize,
+          attributeRadius: style('dd').borderRadius,
+          gender: style('#gender-heading-mobile').fontSize,
+          weakness: style('#weakness-heading-mobile').fontSize,
+          weaknessPaddingBottom: getComputedStyle(weaknessSection).paddingBottom,
+          favoriteBorderWidth: getComputedStyle(favorite).borderTopWidth,
+        }
+      })
+      expect(detailVisualContract).toMatchObject({
+        name: '32px',
+        number: '16px',
+        description: '14px',
+        attributeLabel: '12px',
+        attributeValue: '16px',
+        attributeRadius: '12px',
+        gender: '12px',
+        weakness: '18px',
+        weaknessPaddingBottom: '16px',
+        favoriteBorderWidth: '0px',
+      })
+      if (testInfo.project.name === 'mobile-360') {
+        expect(detailVisualContract.contentX).toBe(0)
+        expect(detailVisualContract.contentWidth).toBe(360)
+      }
       const navigation = page.getByRole('navigation', { name: 'Navegación principal' })
       await expect(navigation).toHaveCSS('position', 'fixed')
       const navigationBox = await navigation.boundingBox()
@@ -399,6 +445,7 @@ test.describe('Pokédex experience', () => {
     await expect(favoriteButton).toHaveAttribute('aria-pressed', 'true')
     await expect(favoriteButton.locator('svg')).toHaveClass(/fill-\[var\(--favorite\)\]/)
     if (testInfo.project.name === 'mobile-360') {
+      await expect(favoriteButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
       await expect(page).toHaveScreenshot('detail-favorite.png')
     }
     await page.goto('/favorites')

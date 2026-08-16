@@ -12,6 +12,7 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 - [x] `1920×1080`: app de `1920×1080`, catálogo de 1816 px y cinco columnas.
 - [x] Ningún viewport presenta overflow horizontal, gutter lateral artificial ni espacio fantasma inferior.
 - [x] La ruta de catálogo usa todo el ancho útil; la ruta de detalle conserva el listado de 420 px y centra la composición visual/lectura en un máximo de 1120 px.
+- [x] El detalle usa gutters fluidos de 12 px en teléfonos —sin el antiguo tope de 337 px que desperdiciaba ancho— y limita la línea de lectura a 560 px desde tablet.
 - [x] La cabecera de búsqueda conserva un ancho cómodo en desktop y no estira el input hasta una longitud difícil de leer.
 - [x] El onboarding desktop agrupa artwork, copy, progreso y CTA como una sola unidad centrada; el botón conserva relación visual con la imagen en 1440 y 1920 px.
 - [x] La lista virtual mantiene altura de fila, gaps, padding y alineación constante mientras cambia el número de columnas.
@@ -28,6 +29,7 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 - [x] El detalle mobile usa el sprite animado Black/White definido por Figma, escalado con nearest-neighbor y sin mezcla/opacidad; desktop usa `official-artwork` para sostener su escala, ambos con fallback al sprite frontal estándar y nunca al sprite legacy de Crystal.
 - [x] Nombres largos se truncan en cards; descripciones y títulos usan wrapping intencional sin desbordar.
 - [x] Valores numéricos —IDs, resultados, medidas, porcentajes y multiplicadores— usan cifras tabulares.
+- [x] La jerarquía del detalle queda bloqueada en 32 px para nombre, 16 px para ID/valores, 14 px para descripción y 12 px para labels/género; “Debilidades” usa 18 px y las cápsulas de atributos radio de 12 px.
 
 ## Interacción y estados
 
@@ -38,9 +40,9 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 - [x] El sheet contiene su propio scroll, mantiene las acciones ancladas al borde inferior, respeta el safe area, entra/sale verticalmente en mobile y evita propagar overscroll al documento; en desktop presenta los 18 tipos en dos columnas y las acciones en una fila, sin controles decorativos que aparenten interacción.
 - [x] Overlay de sheet al 76%, elevación del diálogo, sombras de hover, sprite y loader usan tokens semánticos; ningún borde corta la sombra de las cards extremas.
 - [x] Todos los botones solo-icono inspeccionados tienen nombre accesible y los toggles exponen su estado.
-- [x] Cards y detalles mobile/desktop reutilizan el mismo `FavoriteButton`: círculo translúcido con borde blanco y corazón activo rojo mediante `--favorite`.
+- [x] Cards y detalles mobile/desktop reutilizan el mismo `FavoriteButton`: las cards conservan el círculo con borde, el hero usa el corazón sin aro de Figma, el toolbar usa superficie neutra y todos comparten el estado activo rojo mediante `--favorite`.
 - [x] Botones, links y toggles centralizados usan `touch-action: manipulation`; el swipe conserva desplazamiento vertical.
-- [x] La navegación inferior mobile permanece fija al viewport en catálogo, detalle, favoritos y estados; el contenido reserva 77 px para que el último bloque nunca quede oculto.
+- [x] La navegación inferior mobile permanece fija al viewport en catálogo, detalle, favoritos y estados; el contenido reserva 77 px y 16 px después de las debilidades para que el último bloque nunca quede oculto.
 - [x] Favorito funciona desde card y detalle; eliminación por swipe dispone de botón equivalente y undo.
 - [x] Compartir copia nombre y todos los atributos visibles; el toast confirma la operación.
 - [x] Loading, error/retry, búsqueda sin resultados, favoritos vacíos, favoritos hidratando y secciones futuras tienen representación explícita.
@@ -62,7 +64,7 @@ Revisión final actualizada el 15 de agosto de 2026 sobre la aplicación real y 
 
 ## Evidencia automatizada
 
-- [x] 62 pruebas unitarias.
+- [x] 63 pruebas unitarias.
 - [x] Matriz Playwright de 72 entradas entre `360×800`, `768×1024`, `1440×900` y `1920×1080`: 25 escenarios aplicables y 47 combinaciones no aplicables omitidas explícitamente.
 - [x] Regresión visual de onboarding, catálogo, búsqueda, filtros, detalle, favoritos, swipe, loading, error, vacío y construcción.
 - [x] Aserciones geométricas bloquean regresiones del ancho/alto del documento, shell, catálogo y artwork.

@@ -98,4 +98,21 @@ describe('design system primitives', () => {
     await button.trigger('click')
     expect(wrapper.emitted('toggle')).toEqual([[]])
   })
+
+  it('adapts the centralized favorite control to card, hero, and toolbar surfaces', () => {
+    const card = mount(FavoriteButton, { props: { favorite: false } })
+    const hero = mount(FavoriteButton, {
+      props: { favorite: false, appearance: 'hero' },
+    })
+    const toolbar = mount(FavoriteButton, {
+      props: { favorite: false, appearance: 'toolbar' },
+    })
+
+    expect(card.get('button').classes()).toContain('border-2')
+    expect(hero.get('button').classes()).toContain('border-0')
+    expect(hero.get('button').classes()).toContain('!bg-transparent')
+    expect(hero.get('button').classes()).toContain('hover:!bg-transparent')
+    expect(toolbar.get('button').classes()).toContain('border-[var(--border-default)]')
+    expect(toolbar.get('svg').classes()).toContain('text-[var(--text-icon)]')
+  })
 })

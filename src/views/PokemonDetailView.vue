@@ -150,6 +150,7 @@ watch(() => props.name, load, { immediate: true })
           </Button>
           <FavoriteButton
             :favorite="favorite"
+            appearance="hero"
             class="absolute right-4 top-3 z-20"
             data-testid="favorite-detail-mobile"
             @toggle="toggleFavorite"
@@ -167,70 +168,73 @@ watch(() => props.name, load, { immediate: true })
           />
         </header>
 
-        <div class="motion-detail-body mx-auto min-h-[586px] w-[calc(100%-24px)] max-w-[337px]">
+        <div
+          class="motion-detail-body mx-auto w-full px-3 pb-5 sm:max-w-[560px] sm:px-5"
+          data-testid="mobile-detail-content"
+        >
           <section aria-labelledby="pokemon-name-mobile">
-            <h1 id="pokemon-name-mobile" class="text-[26px] font-medium leading-10">
+            <h1 id="pokemon-name-mobile" class="text-[32px] font-medium leading-10">
               {{ pokemon.displayName }}
             </h1>
-            <p class="mt-1 tabular-nums text-xs text-[var(--text-secondary)]">
+            <p class="mt-1 tabular-nums text-base leading-6 text-[var(--text-secondary)]">
               {{ formatPokemonNumber(pokemon.id) }}
             </p>
           </section>
 
-          <div class="mt-8 flex flex-wrap gap-1.5">
+          <div class="mt-5 flex flex-wrap gap-1.5">
             <TypeBadge v-for="type in pokemon.types" :key="type" :type="type" compact />
           </div>
 
-          <p class="mt-6 text-pretty text-xs leading-[18px] text-[var(--text-secondary)]">
+          <p class="mt-6 text-pretty text-sm leading-5 text-[var(--text-secondary)]">
             {{ pokemon.description }}
           </p>
 
-          <div class="mt-5 border-t border-[var(--border-default)] pt-5">
-            <dl class="grid grid-cols-2 gap-x-4 gap-y-4">
+          <div class="mt-4 border-t border-[var(--border-default)] pt-4">
+            <dl class="grid grid-cols-2 gap-x-3 gap-y-4">
               <div>
                 <dt
-                  class="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
+                  class="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
                 >
                   <Weight class="size-3.5" /> Peso
                 </dt>
                 <dd
-                  class="flex h-11 items-center justify-center rounded-xl border border-[var(--border-default)] text-sm font-medium tabular-nums"
+                  class="flex h-11 items-center justify-center rounded-md border border-[var(--border-default)] text-base font-medium tabular-nums"
                 >
                   {{ formatWeight(pokemon.weightHectograms) }}
                 </dd>
               </div>
               <div>
                 <dt
-                  class="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
+                  class="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
                 >
                   <Ruler class="size-3.5" /> Altura
                 </dt>
                 <dd
-                  class="flex h-11 items-center justify-center rounded-xl border border-[var(--border-default)] text-sm font-medium tabular-nums"
+                  class="flex h-11 items-center justify-center rounded-md border border-[var(--border-default)] text-base font-medium tabular-nums"
                 >
                   {{ formatHeight(pokemon.heightDecimeters) }}
                 </dd>
               </div>
               <div>
                 <dt
-                  class="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
+                  class="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
                 >
                   <Grid2X2 class="size-3.5" /> Categoría
                 </dt>
                 <dd
-                  class="flex h-11 items-center justify-center rounded-xl border border-[var(--border-default)] px-2 text-center text-sm font-medium uppercase"
+                  class="flex h-11 items-center justify-center rounded-md border border-[var(--border-default)] px-2 text-center text-base font-medium uppercase"
                 >
                   {{ pokemon.category }}
                 </dd>
               </div>
               <div>
                 <dt
-                  class="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
+                  class="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
                 >
                   <CircleDot class="size-3.5" /> Habilidad
                 </dt>
                 <dd
-                  class="flex h-11 items-center justify-center rounded-xl border border-[var(--border-default)] px-2 text-center text-sm font-medium"
+                  class="flex h-11 items-center justify-center rounded-md border border-[var(--border-default)] px-2 text-center text-base font-medium"
                 >
                   {{ pokemon.abilities[0] }}
                 </dd>
@@ -241,7 +245,7 @@ watch(() => props.name, load, { immediate: true })
           <section class="mt-5" aria-labelledby="gender-heading-mobile">
             <h2
               id="gender-heading-mobile"
-              class="text-center text-[10px] font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
+              class="text-center text-xs font-medium uppercase tracking-[0.04em] text-[var(--text-secondary)]"
             >
               Género
             </h2>
@@ -270,10 +274,8 @@ watch(() => props.name, load, { immediate: true })
             </template>
           </section>
 
-          <section class="mt-10" aria-labelledby="weakness-heading-mobile">
-            <h2 id="weakness-heading-mobile" class="text-[20px] font-medium leading-7">
-              Debilidades
-            </h2>
+          <section class="mt-9 pb-4" aria-labelledby="weakness-heading-mobile">
+            <h2 id="weakness-heading-mobile" class="text-lg font-medium leading-7">Debilidades</h2>
             <div class="mt-4 flex flex-wrap gap-x-4 gap-y-3">
               <TypeBadge
                 v-for="weakness in sortedWeaknesses"
@@ -322,6 +324,7 @@ watch(() => props.name, load, { immediate: true })
               </Button>
               <FavoriteButton
                 :favorite="favorite"
+                appearance="toolbar"
                 data-testid="favorite-detail"
                 @toggle="toggleFavorite"
               />
@@ -378,13 +381,13 @@ watch(() => props.name, load, { immediate: true })
           <div class="motion-detail-body min-w-0 pb-14">
             <section aria-labelledby="pokemon-name">
               <p
-                class="tabular-nums text-xs font-semibold uppercase tracking-[0.14em] text-[var(--navigation-active)]"
+                class="tabular-nums text-base font-semibold uppercase tracking-[0.12em] text-[var(--navigation-active)]"
               >
                 {{ formatPokemonNumber(pokemon.id) }}
               </p>
               <h1
                 id="pokemon-name"
-                class="mt-2 text-balance text-[36px] font-semibold leading-tight"
+                class="mt-2 text-balance text-[32px] font-semibold leading-tight"
               >
                 {{ pokemon.displayName }}
               </h1>
@@ -400,7 +403,7 @@ watch(() => props.name, load, { immediate: true })
               class="mt-8 border-t border-[var(--border-default)] pt-7"
               aria-labelledby="features-heading"
             >
-              <h2 id="features-heading" class="text-xl font-semibold">Características</h2>
+              <h2 id="features-heading" class="text-lg font-semibold">Características</h2>
               <dl class="mt-4 grid grid-cols-2 gap-3">
                 <Card as="div" class="p-4 shadow-none">
                   <dt
@@ -408,7 +411,7 @@ watch(() => props.name, load, { immediate: true })
                   >
                     <Weight class="size-4" aria-hidden="true" /> Peso
                   </dt>
-                  <dd class="mt-3 tabular-nums text-lg font-semibold">
+                  <dd class="mt-3 tabular-nums text-base font-semibold">
                     {{ formatWeight(pokemon.weightHectograms) }}
                   </dd>
                 </Card>
@@ -418,7 +421,7 @@ watch(() => props.name, load, { immediate: true })
                   >
                     <Ruler class="size-4" aria-hidden="true" /> Altura
                   </dt>
-                  <dd class="mt-3 tabular-nums text-lg font-semibold">
+                  <dd class="mt-3 tabular-nums text-base font-semibold">
                     {{ formatHeight(pokemon.heightDecimeters) }}
                   </dd>
                 </Card>
@@ -444,7 +447,7 @@ watch(() => props.name, load, { immediate: true })
             </section>
 
             <section class="mt-8" aria-labelledby="gender-heading">
-              <h2 id="gender-heading" class="text-xl font-semibold">Género</h2>
+              <h2 id="gender-heading" class="text-lg font-semibold">Género</h2>
               <Card
                 v-if="pokemon.gender.genderless"
                 class="mt-4 border-transparent bg-[var(--surface-subtle)] p-5 shadow-none"
@@ -455,14 +458,14 @@ watch(() => props.name, load, { immediate: true })
                 <Card class="border-transparent bg-[var(--surface-masculine)] p-5 shadow-none">
                   <Mars class="size-5 text-[var(--gender-male)]" aria-hidden="true" />
                   <p class="mt-3 text-xs text-[var(--text-secondary)]">Masculino</p>
-                  <p class="mt-1 tabular-nums text-lg font-semibold">
+                  <p class="mt-1 tabular-nums text-base font-semibold">
                     {{ formatPercentage(pokemon.gender.male) }}
                   </p>
                 </Card>
                 <Card class="border-transparent bg-[var(--surface-feminine)] p-5 shadow-none">
                   <Venus class="size-5 text-[var(--gender-female)]" aria-hidden="true" />
                   <p class="mt-3 text-xs text-[var(--text-secondary)]">Femenino</p>
-                  <p class="mt-1 tabular-nums text-lg font-semibold">
+                  <p class="mt-1 tabular-nums text-base font-semibold">
                     {{ formatPercentage(pokemon.gender.female) }}
                   </p>
                 </Card>
@@ -470,7 +473,7 @@ watch(() => props.name, load, { immediate: true })
             </section>
 
             <section class="mt-8" aria-labelledby="weakness-heading">
-              <h2 id="weakness-heading" class="text-xl font-semibold">Debilidades</h2>
+              <h2 id="weakness-heading" class="text-lg font-semibold">Debilidades</h2>
               <div class="mt-4 flex flex-wrap gap-3">
                 <div v-for="weakness in sortedWeaknesses" :key="weakness.type" class="relative">
                   <TypeBadge :type="weakness.type" />
